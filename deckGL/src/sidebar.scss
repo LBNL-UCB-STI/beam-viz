@@ -1,0 +1,114 @@
+$background:#000;
+$foreground:#fff;
+
+$foreground-light:#f00;
+
+
+$size:25px;
+$ratio:1.1;
+
+$transition-time:0.3s;
+
+#sidebar {
+  position: fixed;
+  z-index: 10;
+  height: 100%;
+  width: 240px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.5);
+  padding: 0 20px 20px 20px;
+
+  & .sidebar--section {
+      border-bottom: groove 2px #fff;
+      border-left: none;
+      border-right: none;
+      padding: 8px 0;
+
+      & h4 {
+          margin-top: 24px;
+          margin-bottom: 8px;
+      }
+
+      & .sidebar--input-group {
+          color: #333;
+          line-height: 28px;
+          display: table;
+          width: 100%;
+
+          & > * {
+              display: table-cell;
+              width: 50%;
+              vertical-align: middle;
+          }
+      }
+  }
+}
+
+.category-label {
+  padding-left: 5px;
+  display: inline-block;
+}
+
+.sidebar--play {
+  display:block;
+  width: 0;
+  height: 0;
+  border-top: $size solid transparent;
+  border-bottom: $size solid transparent;
+  border-left: ($size*$ratio) solid $foreground;
+  margin: ($size * 2) auto $size auto;
+  position:relative;
+  z-index:1;
+  transition: all $transition-time;
+  cursor: pointer;
+
+  &:before {
+    content:'';
+    position:absolute;
+    top:($size*-1.5);
+    left:($size*-2.3);
+    bottom:($size*-1.5);
+    right:($size*-0.7);
+    border-radius:50%;
+    border: ($size*0.2) solid $foreground;
+    z-index:2;
+    transition: all $transition-time;
+  }
+  &:after {
+    content:'';
+    opacity:0;
+    transition: opacity ($transition-time * 2);
+  }
+
+  &:hover, &:focus {
+    &:before {
+       transform: scale(1.1);
+    }
+  }
+
+  &.active {
+    border-color:transparent;
+    &:after {
+      content:'';
+      opacity:1;
+      width:($size);
+      height:($size*1.6);
+      background:$foreground;
+      position:absolute;
+      right: ($size*0.1);
+      top: ($size*-0.8);
+      border-left:($size*0.4) solid $foreground;
+      box-shadow:inset ($size*0.6) 0 0 0 $background;
+    }
+  }
+}
+
+.sidebar--loop {
+  bottom: 50px;
+  left: 150px;
+  & input {
+    width: 90px;
+  }
+}
