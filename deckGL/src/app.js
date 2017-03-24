@@ -5,10 +5,12 @@ import autoBind from 'react-autobind';
 
 import BeamDeckGL from './BeamDeckGL';
 import Sidebar from './sidebar';
+import Clock from './components/clock';
+
 import tripsData from './trips.json';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ';
-const mapStyle = "mapbox://styles/mapbox/light-v9";
+const mapStyle = "mapbox://styles/rwlbnl/cj0e7o9f6000r2skgfjsutrg9";
 
 
 class App extends Component {
@@ -18,7 +20,7 @@ class App extends Component {
       width: window.innerWidth,
       height: window.innerHeight,
       tripsData: this._parseTripsData(tripsData),
-      mapViewState: { 
+      mapViewState: {
         latitude: 37.75576410580251,
         longitude: -122.41136076769214,
         zoom: 11.77,
@@ -26,11 +28,10 @@ class App extends Component {
         bearing: 0
       },
       isAnimating: true,
-      animationTime: 80000,    // actual time animation should take to finish a loop
+      animationTime: 10000,    // actual time animation should take to finish a loop
       loop: true,
       trailLength: 150,
-      currentTime: 24001,
-	  animationLength: 30000
+      currentTime: 0.2
     }
 
     this._trailRange = {
@@ -179,6 +180,7 @@ class App extends Component {
             setCurrentTime={this._setCurrentTime}
           />
         </MapboxGLMap>
+        <Clock time={this.state.currentTime} />
         <Sidebar
           tripsData={this.state.tripsData}
           toggleCategoryVisible={this._toggleCategoryVisible}
@@ -193,7 +195,6 @@ class App extends Component {
           onTrailLengthChange={this._onTrailLengthChange}
           onChangeCategoryColor={this._onChangeCategoryColor}
           currentTime={this.state.currentTime}
-          animationLength={this._animationLength}
           setCurrentTime={this._setCurrentTime}
         />
       </div>
