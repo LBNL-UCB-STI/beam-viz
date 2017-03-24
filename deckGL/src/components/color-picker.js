@@ -13,60 +13,56 @@ export default class ColorPicker extends Component {
     this.state = {
       displayPicker: false,
     };
+
+    this._originalColor = null;
     autoBind(this);
   }
 
-  _handleClick(e) {
+  _handlePreviewClick(e) {
     if (this.state.displayPicker)
       this._closePicker(e);
     else
       this._openPicker(e);
   }
 
-  _clickListener(e) {
-    let target = e.target;
-    while(target) {
-      if(target == this._divPicker)
-        return;
-      target = target.parentNode;
-    }
-    this._closePicker();
-  }
-
   _openPicker(e) {
     this.setState({displayPicker: true});
-    window.addEventListener('click', this._clickListener);
-    e.stopPropagation();
+    this._originalColor = this.props.color;
   }
 
   _closePicker() {
     this.setState({displayPicker: false});
-    window.removeEventListener('click', this._clickListener);
+    this._originalColor = null;
+  }
+
+  _onChange(color) {
+    const rgbArray = this._toRGBArray(color);
+    this.props.onChangeColor(rgbArray);
+  }
+
+  _onAcceptColor(e) {
+    this._closePicker();
+  }
+
+  _onCancel() {
+    this.props.onChangeColor(this._originalColor);
+    this._closePicker();
   }
 
   _fromRGBArray(colorArray) {
     return {'r': colorArray[0], 'g': colorArray[1], 'b': colorArray[2]};
   }
+
   _toRGBArray(color) {
     const rgbColor = color.rgb;
     return [rgbColor.r, rgbColor.g, rgbColor.b];
-  }
-
-  _onChangeColor(color) {
-    this._tmpNewColor = color;
-  }
-
-  _onAcceptColor(e) {
-    const rgbArray = this._toRGBArray(this._tmpNewColor);
-    this.props.onChangeColor(rgbArray);
-    this._closePicker();
   }
 
   render() {
     return (
       <div>
         <div className='colorPreviewBox'
-          onClick={this._handleClick}
+          onClick={this._handlePreviewClick}
         >
           <div className='colorPreview'
             style={{backgroundColor: 'rgb(' + this.props.color.join(',') + ')'}}
@@ -81,9 +77,9 @@ export default class ColorPicker extends Component {
             <PhotoshopPicker
               header={'Pick color for: ' + this.props.categoryName}
               color={this._fromRGBArray(this.props.color)}
-              onChangeComplete={this._onChangeColor}
+              onChange={this._onChange}
               onAccept={this._onAcceptColor}
-              onCancel={this._closePicker}
+              onCancel={this._onCancel}
             />
           </div>
         : null}
