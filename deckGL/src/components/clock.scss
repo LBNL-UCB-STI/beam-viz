@@ -1,0 +1,50 @@
+#clock {
+  position: fixed;
+  top: 20px;
+  right: 290px;
+  width: 70px;
+  height: 70px;
+  border: 2px solid white;
+  border-radius: 50%;
+  z-index: 10;
+
+  &:after { /* dot in the center */
+    background: #fff;
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 5%;
+    height: 5%;
+    transform: translate(-50%, -50%);
+  }
+
+  & .minutes-container, .hours-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  & .hours-container > .hours {
+    background: #fff;
+    height: 20%;
+    left: 48.75%;
+    position: absolute;
+    top: 30%;
+    transform-origin: 50% 100%;
+    width: 2.5%;
+  }
+
+  & .minutes-container > .minutes {
+    background: #fff;
+    height: 40%;
+    position: absolute;
+    left: 49%;
+    top: 10%;
+    transform-origin: 50% 100%;
+    width: 2%;
+  }
+}

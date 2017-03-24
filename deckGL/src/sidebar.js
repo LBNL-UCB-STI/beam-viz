@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 
-import ColorPicker from './color-picker';
+import ColorPicker from './components/color-picker';
 import './sidebar.scss';
 
 
@@ -19,7 +19,7 @@ export default class Sidebar extends Component {
       isAnimating, setAnimating,
       loop, toggleLoop,
       trailLength, trailRange, onTrailLengthChange,
-      currentTime, animationLength, setCurrentTime,
+      currentTime, setCurrentTime,
       onChangeCategoryColor,
     } = this.props;
     return (
@@ -45,8 +45,10 @@ export default class Sidebar extends Component {
 
           <div className='sidebar--input-group'>
             <label>Amination Length</label>
-            <InputRange tooltip={true} formatLabel={() => ''}
-              value={currentTime} minValue={0} maxValue={animationLength}
+            <InputRange formatLabel={() => ''}
+              minValue={0} maxValue={1}
+              step={0.01}
+              value={currentTime}
               onChange={setCurrentTime}
             />
           </div>

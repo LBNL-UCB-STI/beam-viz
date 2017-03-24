@@ -40,13 +40,13 @@ export default class BeamDeckGL extends Component {
     }
   }
 
-  _startAnimation({animationTime, animationLength} =  this.props) {
-    let intervalSize = animationLength / animationTime * this._refreshInterval;
+  _startAnimation({animationTime} =  this.props) {
+    const speed = this._refreshInterval / animationTime;
     this._animator = setInterval(function() {
       let time = this.props.currentTime;
-      time += intervalSize;
-      if (time > animationLength) {
-        time = 24000;
+      time += speed;
+      if (time > 1) {
+        time = 0;
         if(!this.props.loop) {
           this._stopAnimation();
           this.props.setAnimating(false);
@@ -61,7 +61,7 @@ export default class BeamDeckGL extends Component {
   }
 
   _resetAnimation() {
-    this.setState({time: 24000});
+    this.setState({time: 0});
     if(this.props.isAnimating) {
         this._stopAnimation();
         this._startAnimation();
@@ -71,6 +71,10 @@ export default class BeamDeckGL extends Component {
   _onWebGLInitialized(gl) {
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
+  }
+
+  _convertToTripTimeframe(time) {
+    return time * this.props.animationLength;
   }
 
   render () {
@@ -88,7 +92,7 @@ export default class BeamDeckGL extends Component {
         getColor: d => tripData.color,
         strokeWidth: 2,
         trailLength: trailLength,
-        currentTime: currentTime
+        currentTime: this._convertToTripTimeframe(currentTime),
       })
     );
 
