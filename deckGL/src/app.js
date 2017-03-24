@@ -10,7 +10,7 @@ import Clock from './components/clock';
 import tripsData from './trips.json';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ';
-const mapStyle = "mapbox://styles/mapbox/light-v9";
+const mapStyle = "mapbox://styles/rwlbnl/cj0e7o9f6000r2skgfjsutrg9";
 
 
 class App extends Component {
