@@ -46,7 +46,7 @@ export default class Sidebar extends Component {
           <div className='sidebar--input-group'>
             <label>Amination Length</label>
             <InputRange tooltip={true} formatLabel={() => ''}
-              value={currentTime} minValue={0} maxValue={animationLength}
+              value={currentTime} minValue={24000} maxValue={animationLength}
               onChange={setCurrentTime}
             />
           </div>

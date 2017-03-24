@@ -29,7 +29,7 @@ class App extends Component {
       animationTime: 80000,    // actual time animation should take to finish a loop
       loop: true,
       trailLength: 150,
-      currentTime: 0.2,
+      currentTime: 24001,
 	  animationLength: 30000
     }
 
