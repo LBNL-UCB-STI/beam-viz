@@ -1,0 +1,13 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fp64ify = fp64ify;
+// TODO - move to shaderlib utilities
+function fp64ify(a) {
+  var hiPart = Math.fround(a);
+  var loPart = a - Math.fround(a);
+  return [hiPart, loPart];
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NyYy9saWIvdXRpbHMvZnA2NC5qcyJdLCJuYW1lcyI6WyJmcDY0aWZ5IiwiYSIsImhpUGFydCIsIk1hdGgiLCJmcm91bmQiLCJsb1BhcnQiXSwibWFwcGluZ3MiOiI7Ozs7O1FBQ2dCQSxPLEdBQUFBLE87QUFEaEI7QUFDTyxTQUFTQSxPQUFULENBQWlCQyxDQUFqQixFQUFvQjtBQUN6QixNQUFNQyxTQUFTQyxLQUFLQyxNQUFMLENBQVlILENBQVosQ0FBZjtBQUNBLE1BQU1JLFNBQVNKLElBQUlFLEtBQUtDLE1BQUwsQ0FBWUgsQ0FBWixDQUFuQjtBQUNBLFNBQU8sQ0FBQ0MsTUFBRCxFQUFTRyxNQUFULENBQVA7QUFDRCIsImZpbGUiOiJmcDY0LmpzIiwic291cmNlc0NvbnRlbnQiOlsiLy8gVE9ETyAtIG1vdmUgdG8gc2hhZGVybGliIHV0aWxpdGllc1xuZXhwb3J0IGZ1bmN0aW9uIGZwNjRpZnkoYSkge1xuICBjb25zdCBoaVBhcnQgPSBNYXRoLmZyb3VuZChhKTtcbiAgY29uc3QgbG9QYXJ0ID0gYSAtIE1hdGguZnJvdW5kKGEpO1xuICByZXR1cm4gW2hpUGFydCwgbG9QYXJ0XTtcbn1cbiJdfQ==
