@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "webpack-dev-server --progress --hot --host 0.0.0.0 --max-old-space-size=300",
+    "start": "webpack-dev-server --progress --hot --host 0.0.0.0 --port 8080",
     "start-open": "webpack-dev-server --progress --hot --open --host 0.0.0.0"
   },
   "dependencies": {
