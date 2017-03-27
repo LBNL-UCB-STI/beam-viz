@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "start-tmp": "node --max-old-space-size=300 'C:/Program Files/nodejs/npm.cmd --progress --hot --host 0.0.0.0'",
     "start": "webpack-dev-server --progress --hot --host 0.0.0.0 --max-old-space-size=300",
     "start-open": "webpack-dev-server --progress --hot --open --host 0.0.0.0"
   },
