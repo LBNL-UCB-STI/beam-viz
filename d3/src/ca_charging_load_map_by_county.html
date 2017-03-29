@@ -21,7 +21,7 @@
         }
 
         #container {
-            width: 800px;
+            width: 1500px;
             margin-left: 30px;
             margin-right: auto;
             margin-top: 30px;
@@ -81,6 +81,22 @@
             box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
             pointer-events: none;
             position: absolute;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            stroke-width: 2;
         }
 
     </style>
@@ -146,6 +162,8 @@
         // Initialize Dataframe
         var DataFrame = dfjs.DataFrame;
 
+        var margin = {top: 30, right: 20, bottom: 30, left: 50};
+
         // Width and height for SVG
         var w = 760;
         var h = 600;
@@ -169,14 +187,18 @@
         //Create SVG
         var svgMap = d3.select("#container")
             .append("svg")
-            .attr("id","svgMap")
+            .attr("class","svgMap")
             .attr("width", w)
             .attr("height", h);
 
         var svgLine = d3.select("#container")
             .append("svg")
-            .attr("width", w/2)
-            .attr("height", h/2);
+            .attr("class","svgLine")
+            .attr("width", w/2 + margin.left + margin.right)
+            .attr("height", h/2 + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
 
         // Define linear scale for output
         var color = d3.scale.quantize()
@@ -189,9 +211,20 @@
 
         // Line function
         var lineFunction = d3.svg.line()
-                                 .x(function(d) { return d.x; })
-                                 .y(function(d) { return d.y; })
+                                 .x(function(d) { return x(d.time); })
+                                 .y(function(d) { return y(d.chargingLoad); })
                                  .interpolate("linear");
+
+        // Set the ranges
+        var x = d3.scale.linear().range([0, w/2]);
+        var y = d3.scale.linear().range([h/2, 0]);
+
+        // Define the axes
+        var xAxis = d3.svg.axis().scale(x)
+            .orient("bottom").ticks(5);
+
+        var yAxis = d3.svg.axis().scale(y)
+            .orient("left").ticks(5);
 
         // Load load profile here and set colors to each county based on the daily load sum
         d3.csv("aggregateLoadAndNum.csv", function(aggData){
@@ -218,8 +251,8 @@
             ]);
 
             d3.json("CA_counties.zip.geojson", function(json) {
-                console.log(json);
-                console.log(aggData);
+//                console.log(json);
+//                console.log(aggData);
 
                 // Parse data from the json file and assign it to json object
                 for(var i = 0; i<aggData.length; i ++){
@@ -239,7 +272,7 @@
                 }
 
                 // Bind data and create one path per GeoJson feature
-                var lineGraph;
+                var lineGraph, ax, ay, xlabel, ylabel;
                 svgMap.selectAll("path")
                     .data(json.features)
                     .enter()
@@ -265,31 +298,82 @@
                         sel.moveToFront();
 
                         if(d.properties.chargingLoad){
-                            // TODO: line chart of temporal charging load for the selected county
                             // load disaggregate charging load csv
-//                            const df = DataFrame.fromCSV('run0.3.disaggregateLoadProfile.csv');
-//                            console.log(df);
-                            var l = [];
+                            var tempLoadObj = {};
+                            var keyList = [];
+
+                            // build temporal load object
                             d3.csv("run0.3.disaggregateLoadProfile.csv",function(daggData){
-                                for(var i =0 ; i < daggData.time.length ; i++){
-//                                    if(!contains.call(l,+daggData[i].time)){ // if it is an unique time
-//                                        // initialize the charging load for each county
-//                                        for(var j=0;j<daggData.spatialGroup;)
-//
-//                                    }else{ // if it is not an unique time
-//                                        // check
-//
-//                                    }
+                                for(var i =0 ; i < daggData.length ; i++){
+                                    if(+daggData[i].time >= 27 && +daggData[i].time < 51
+                                        && daggData[i].spatialGroup.contains(d.properties.NAME)){
+
+                                        // Check if the array contains the value
+                                        if(tempLoadObj[daggData[i].time-27]){
+                                            tempLoadObj[daggData[i].time-27].chargingLoad =
+                                                +tempLoadObj[daggData[i].time-27].chargingLoad
+                                                + +daggData[i].chargingLoad;
+                                        }else{
+                                            tempLoadObj[daggData[i].time-27] = {time:daggData[i].time-27, chargingLoad: +daggData[i].chargingLoad};
+                                            keyList.push(daggData[i].time-27);
+                                        }
+                                    }
                                 }
+
+                                // build temporal load list
+                                var tempLoadList = [];
+                                for(var j=0;j<keyList.length;j++){
+                                    tempLoadList.push({time:+tempLoadObj[keyList[j]].time, chargingLoad:+tempLoadObj[keyList[j]].chargingLoad});
+                                }
+                                tempLoadList.forEach(function(d){
+                                   d.time =+d.time;
+                                   d.chargingLoad =+d.chargingLoad;
+                                });
+
+                                // Set domain of x and y axis
+                                x.domain(d3.extent(tempLoadList, function(d) { return +d.time; }));
+                                y.domain([0, d3.max(tempLoadList, function(d) { return +d.chargingLoad; })]);
+
+                                // Draw the line chart
+                                lineGraph = svgLine.append("path")
+                                    .attr("class","line")
+                                    .attr("d", lineFunction(tempLoadList));
+
+                                // Draw x axis
+                                ax = svgLine.append("g")
+                                    .attr("class", "x axis")
+                                    .attr("transform", "translate(0," + h/2 + ")")
+                                    .attr("text","test")
+                                    .call(xAxis);
+
+                                // Draw y axis
+                                ay = svgLine.append("g")
+                                    .attr("class", "y axis")
+                                    .call(yAxis);
+
+//                                ylabel = svgLine.append("text")
+//                                    .attr("transform", "translate(" + (w/2+3) + "," + y(tempLoadList[0].chargingLoad) + ")")
+//                                    .attr("dy", ".35em")
+//                                    .attr("text-anchor", "start")
+//                                    .style("fill", "red")
+//                                    .text("Charging Load (kW)");
+
+                                // Add the text label for the x axis
+                                xlabel = svgLine.append("text")
+                                    .attr("transform", "translate(" + (w/2 / 2) + " ," + (h/2+margin.bottom) + ")")
+                                    .style("text-anchor", "middle")
+                                    .text("Time (hour)");
+
+                                // Add the text label for the y axis
+                                ylabel = svgLine.append("text")
+                                    .attr("transform", "rotate(-90)")
+                                    .attr("y", 0 - margin.left)
+                                    .attr("x",0 - (h/2 / 2))
+                                    .attr("dy", "1em")
+                                    .style("text-anchor", "middle")
+                                    .text("Charging Load (kW)");
+
                             });
-                            // get temporal charging load for selected county
-                            //
-                            // The line SVG Path we draw
-                            lineGraph = svgLine.append("path")
-                                                        .attr("d", lineFunction(lineData))
-                                                        .attr("stroke", "blue")
-                                                        .attr("stroke-width", 1)
-                                                        .attr("fill", "none");
 
                         }else{
                             // Show the simple text tooltip
@@ -307,6 +391,18 @@
                             .style("opacity", 0);
                         if(lineGraph){
                             lineGraph.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                            ax.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                            ay.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                            xlabel.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                            ylabel.transition()
                                 .duration(500)
                                 .style("opacity", 0);
                         }
