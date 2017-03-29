@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Charging load in CA</title>
+
+    <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+
+    <script type="text/javascript" src="http://use.typekit.com/brf5jpj.js"></script>
+    <script type="text/javascript" src="svg-pan-zoom.min.js"></script>
+    <script src="//use.typekit.net/drk2sev.js"></script>
+    <script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/dist/dataframe-min.js"></script>
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+
+    <style type="text/css">
+
+        body {
+            margin: 0;
+            background-color: #48494B;
+            font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+        }
+
+        #container {
+            width: 800px;
+            margin-left: 30px;
+            margin-right: auto;
+            margin-top: 30px;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 3px 3px 7px #222;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+        }
+
+        a {
+            color: #799DCB;
+            text-decoration: none;
+            transition: color .3s, background .3s, border .3s;
+        }
+        a:hover {
+            color: #48494b;
+            background: #e7e8e9;
+        }
+
+        svg {
+            background-color: white;
+            padding-left: 20px;
+        }
+
+        path {
+            fill: #799dcb;
+            stroke: #fff;
+            transition: transform 0.15s;
+        }
+        path:hover {
+            fill:#48494b;
+            cursor:pointer;
+            transform: translateX(-3%) translateY(-3%);
+        }
+
+        /* Style for Custom Tooltip */
+        div.tooltip {
+            width: auto;
+            height: auto;
+            padding: 5px;
+            background-color: #fff;
+            color: #000;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+            position: absolute;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Charging load by CA county</h1>
+        <p>Source: <a href="http://www.beam-model.net/" target="new">Behavior, Energy, Analysis, Mobility Simulator</a></p>
+    </div>
+
+    <script type="text/javascript">
+
+        /*
+         * Returns selected object on the top layer
+         * @returns {*}
+         */
+        d3.selection.prototype.moveToFront = function() {
+            return this.each(function(){
+                this.parentNode.appendChild(this);
+            });
+        };
+        String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
+
+        //Width and height for SVG
+        var w = 760;
+        var h = 600;
+
+        //Define map projection
+        var projection = d3.geo.mercator()
+            .center([ -120, 37.5 ]) // x, y
+            .translate([ w/2, h/2 ])
+            .scale([ w*3.3 ]);
+
+        //Define path generator
+        var path = d3.geo.path()
+            .projection(projection);
+
+        // Append Div for tooltip to SVG
+        var div = d3.select("#container")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        //Create SVG
+        var svgMap = d3.select("#container")
+            .append("svg")
+            .attr("id","svgMap")
+            .attr("width", w)
+            .attr("height", h);
+
+        var svgLine = d3.select("#container")
+            .append("svg")
+            .attr("width", w/2)
+            .attr("height", h/2);
+
+//        var panZoomTiger = svgPanZoom("#svgMap");
+
+        // Define linear scale for output
+        var color = d3.scale.quantize()
+            .range(["rgb(0,109,44)","rgb(49,163,84)","rgb(116,196,118)","rgb(186,228,179)","rgb(237,248,233)"]);
+
+        // Sample data for our line
+        var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
+                             { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
+                             { "x": 80,  "y": 5},  { "x": 100, "y": 60}];
+
+        // Line function
+        var lineFunction = d3.svg.line()
+                                 .x(function(d) { return d.x; })
+                                 .y(function(d) { return d.y; })
+                                 .interpolate("linear");
+
+        // Load load profile here and set colors to each county based on the daily load sum
+        d3.csv("aggregateLoadAndNum.csv", function(aggData){
+            //Set input domain for color scale
+//            document.write(aggData.chargingLoad);
+            color.domain([
+                d3.min(aggData, function(d) {
+                    var minVal = 999;
+                    for(var i =0; i<d.length ; i++){
+                        if(d[i].chargingLoad <= minVal){
+                            minVal = d[i].chargingLoad;
+                        }
+                    }
+                    return minVal;
+                }),
+                d3.max(aggData, function(d) {
+                    var maxVal = 0;
+                    for(var i =0; i<d.length ; i++){
+                        if(d[i].chargingLoad >= maxVal){
+                            maxVal = d[i].chargingLoad;
+                        }
+                    }
+                    return maxVal;
+                })
+            ]);
+
+            d3.json("CA_counties.zip.geojson", function(json) {
+                console.log(json);
+                console.log(aggData);
+
+                // Parse data from the json file and assign it to json object
+                for(var i = 0; i<aggData.length; i ++){
+                    var countyName = aggData[i].spatialGroup;
+                    var chargingLoad = aggData[i].chargingLoad;
+                    var numPlugged = aggData[i].numPlugged;
+
+                    // Find the corresponding state inside the GeoJSON
+                    for (var j = 0; j < json.features.length; j++)  {
+                        if (countyName.contains(json.features[j].properties.NAME)) {
+                            // Copy the data value into the JSON
+                            json.features[j].properties.chargingLoad = chargingLoad;
+                            json.features[j].properties.numPlugged = numPlugged;
+                            break;
+                        }
+                    }
+                }
+
+                // Bind data and create one path per GeoJson feature
+                var lineGraph;
+                svgMap.selectAll("path")
+                    .data(json.features)
+                    .enter()
+                    .append("path")
+                    .attr("d", path)
+                    .style("stroke", "#fff")
+                    .style("stroke-width", "1")
+                    .style("fill", function(d) {
+                        // Get data value
+                        var value = d.properties.chargingLoad;
+                        if (value) {
+                            //If value exists…
+                            return color(value);
+                        } else {
+                            //If value is undefined…
+                            return "rgb(213,222,217)";
+                        }
+                    })
+                    .on("mouseover", function(d){
+                        var xPosition = w/2 + 150;
+                        var yPosition = h/2;
+                        var sel = d3.select(this);
+                        sel.moveToFront();
+
+                        // TODO: replace this division with line plot
+                        if(d.properties.chargingLoad){
+                            // Show line plot here
+                            //The line SVG Path we draw
+                            lineGraph = svgLine.append("path")
+                                                        .attr("d", lineFunction(lineData))
+                                                        .attr("stroke", "blue")
+                                                        .attr("stroke-width", 1)
+                                                        .attr("fill", "none");
+
+                        }else{
+                            // load charging load for the county
+                            // show the line plot
+                            div.transition()
+                                .duration(200)
+                                .style("opacity", .9)
+                                .style("left", xPosition + "px")
+                                .style("top", yPosition + "px");
+                            div.html("County: " + d.properties.NAME + "</br>" + "ChargingLoad: " + d.properties.chargingLoad);
+                        }
+                    })
+                    .on("mouseout", function(){
+                        div.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                        if(lineGraph){
+                            lineGraph.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        }
+                    });
+
+            });
+        });
+
+    </script>
+    </body>
+</html>
