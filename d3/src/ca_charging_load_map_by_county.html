@@ -7,7 +7,6 @@
     <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 
     <script type="text/javascript" src="http://use.typekit.com/brf5jpj.js"></script>
-    <script type="text/javascript" src="svg-pan-zoom.min.js"></script>
     <script src="//use.typekit.net/drk2sev.js"></script>
     <script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/dist/dataframe-min.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -94,6 +93,7 @@
 
     <script type="text/javascript">
 
+        //==================================== Define methods =================================================#
         /*
          * Returns selected object on the top layer
          * @returns {*}
@@ -103,13 +103,54 @@
                 this.parentNode.appendChild(this);
             });
         };
+        /*
+         * Return true if the string contains the substring, it
+         * @param it
+         * @returns {boolean}
+         */
         String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
-        //Width and height for SVG
+        /*
+         * Return true if the array contains the needle as an element
+         * @param needle
+         * @returns {boolean}
+         */
+        var contains = function(needle) {
+            // Per spec, the way to identify NaN is that it is not equal to itself
+            var findNaN = needle !== needle;
+            var indexOf;
+
+            if(!findNaN && typeof Array.prototype.indexOf === 'function') {
+                indexOf = Array.prototype.indexOf;
+            } else {
+                indexOf = function(needle) {
+                    var i = -1, index = -1;
+
+                    for(i = 0; i < this.length; i++) {
+                        var item = this[i];
+
+                        if((findNaN && item !== item) || item === needle) {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    return index;
+                };
+            }
+
+            return indexOf.call(this, needle) > -1;
+        };
+        //===================================== Main scripts ===========================================#
+
+        // Initialize Dataframe
+        var DataFrame = dfjs.DataFrame;
+
+        // Width and height for SVG
         var w = 760;
         var h = 600;
 
-        //Define map projection
+        // Define map projection
         var projection = d3.geo.mercator()
             .center([ -120, 37.5 ]) // x, y
             .translate([ w/2, h/2 ])
@@ -137,8 +178,6 @@
             .attr("width", w/2)
             .attr("height", h/2);
 
-//        var panZoomTiger = svgPanZoom("#svgMap");
-
         // Define linear scale for output
         var color = d3.scale.quantize()
             .range(["rgb(0,109,44)","rgb(49,163,84)","rgb(116,196,118)","rgb(186,228,179)","rgb(237,248,233)"]);
@@ -157,7 +196,6 @@
         // Load load profile here and set colors to each county based on the daily load sum
         d3.csv("aggregateLoadAndNum.csv", function(aggData){
             //Set input domain for color scale
-//            document.write(aggData.chargingLoad);
             color.domain([
                 d3.min(aggData, function(d) {
                     var minVal = 999;
@@ -220,16 +258,33 @@
                             return "rgb(213,222,217)";
                         }
                     })
-                    .on("mouseover", function(d){
+                    .on("mouseover", function(d){ // When mouse is over a county
                         var xPosition = w/2 + 150;
                         var yPosition = h/2;
                         var sel = d3.select(this);
                         sel.moveToFront();
 
-                        // TODO: replace this division with line plot
                         if(d.properties.chargingLoad){
-                            // Show line plot here
-                            //The line SVG Path we draw
+                            // TODO: line chart of temporal charging load for the selected county
+                            // load disaggregate charging load csv
+//                            const df = DataFrame.fromCSV('run0.3.disaggregateLoadProfile.csv');
+//                            console.log(df);
+                            var l = [];
+                            d3.csv("run0.3.disaggregateLoadProfile.csv",function(daggData){
+                                for(var i =0 ; i < daggData.time.length ; i++){
+//                                    if(!contains.call(l,+daggData[i].time)){ // if it is an unique time
+//                                        // initialize the charging load for each county
+//                                        for(var j=0;j<daggData.spatialGroup;)
+//
+//                                    }else{ // if it is not an unique time
+//                                        // check
+//
+//                                    }
+                                }
+                            });
+                            // get temporal charging load for selected county
+                            //
+                            // The line SVG Path we draw
                             lineGraph = svgLine.append("path")
                                                         .attr("d", lineFunction(lineData))
                                                         .attr("stroke", "blue")
@@ -237,8 +292,7 @@
                                                         .attr("fill", "none");
 
                         }else{
-                            // load charging load for the county
-                            // show the line plot
+                            // Show the simple text tooltip
                             div.transition()
                                 .duration(200)
                                 .style("opacity", .9)
@@ -247,7 +301,7 @@
                             div.html("County: " + d.properties.NAME + "</br>" + "ChargingLoad: " + d.properties.chargingLoad);
                         }
                     })
-                    .on("mouseout", function(){
+                    .on("mouseout", function(){ // When mouse leaves
                         div.transition()
                             .duration(500)
                             .style("opacity", 0);
