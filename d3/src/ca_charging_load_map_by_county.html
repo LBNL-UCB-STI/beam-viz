@@ -165,14 +165,16 @@
         var margin = {top: 30, right: 20, bottom: 30, left: 50};
 
         // Width and height for SVG
-        var w = 760;
-        var h = 600;
+        var mapWidth = 760;
+        var mapHeight = 600;
+        var chartWidth = mapWidth/2;
+        var chartHeight = mapHeight/2;
 
         // Define map projection
         var projection = d3.geo.mercator()
             .center([ -120, 37.5 ]) // x, y
-            .translate([ w/2, h/2 ])
-            .scale([ w*3.3 ]);
+            .translate([ mapWidth/2, mapHeight/2 ])
+            .scale([ mapWidth*3.3 ]);
 
         //Define path generator
         var path = d3.geo.path()
@@ -188,14 +190,14 @@
         var svgMap = d3.select("#container")
             .append("svg")
             .attr("class","svgMap")
-            .attr("width", w)
-            .attr("height", h);
+            .attr("width", mapWidth)
+            .attr("height", mapHeight);
 
         var svgLine = d3.select("#container")
             .append("svg")
             .attr("class","svgLine")
-            .attr("width", w/2 + margin.left + margin.right)
-            .attr("height", h/2 + margin.top + margin.bottom)
+            .attr("width", chartWidth+200 + margin.left + margin.right)
+            .attr("height", chartWidth+200 + margin.top + margin.bottom)
             .append("g")
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
@@ -216,8 +218,8 @@
                                  .interpolate("linear");
 
         // Set the ranges
-        var x = d3.scale.linear().range([0, w/2]);
-        var y = d3.scale.linear().range([h/2, 0]);
+        var x = d3.scale.linear().range([0, chartWidth]);
+        var y = d3.scale.linear().range([chartHeight, 0]);
 
         // Define the axes
         var xAxis = d3.svg.axis().scale(x)
@@ -272,7 +274,7 @@
                 }
 
                 // Bind data and create one path per GeoJson feature
-                var lineGraph, ax, ay, xlabel, ylabel;
+                var lineGraph, ax, ay, xlabel, ylabel,lineLabel;
                 svgMap.selectAll("path")
                     .data(json.features)
                     .enter()
@@ -292,8 +294,8 @@
                         }
                     })
                     .on("mouseover", function(d){ // When mouse is over a county
-                        var xPosition = w/2 + 150;
-                        var yPosition = h/2;
+                        var xPosition = chartWidth + 150;
+                        var yPosition = chartHeight;
                         var sel = d3.select(this);
                         sel.moveToFront();
 
@@ -342,7 +344,7 @@
                                 // Draw x axis
                                 ax = svgLine.append("g")
                                     .attr("class", "x axis")
-                                    .attr("transform", "translate(0," + h/2 + ")")
+                                    .attr("transform", "translate(0," + chartHeight + ")")
                                     .attr("text","test")
                                     .call(xAxis);
 
@@ -351,16 +353,16 @@
                                     .attr("class", "y axis")
                                     .call(yAxis);
 
-//                                ylabel = svgLine.append("text")
-//                                    .attr("transform", "translate(" + (w/2+3) + "," + y(tempLoadList[0].chargingLoad) + ")")
-//                                    .attr("dy", ".35em")
-//                                    .attr("text-anchor", "start")
-//                                    .style("fill", "red")
-//                                    .text("Charging Load (kW)");
+                                lineLabel = svgLine.append("text")
+                                    .attr("transform", "translate(" + (chartWidth+2) + "," + (y(tempLoadList[tempLoadList.length-1].chargingLoad)) + ")")
+                                    .attr("dy", ".1em")
+                                    .attr("text-anchor", "start")
+                                    .style("fill", "steelblue")
+                                    .text("Charging Load (kW)");
 
                                 // Add the text label for the x axis
                                 xlabel = svgLine.append("text")
-                                    .attr("transform", "translate(" + (w/2 / 2) + " ," + (h/2+margin.bottom) + ")")
+                                    .attr("transform", "translate(" + (chartWidth / 2) + " ," + (chartHeight+3+margin.bottom) + ")")
                                     .style("text-anchor", "middle")
                                     .text("Time (hour)");
 
@@ -368,7 +370,7 @@
                                 ylabel = svgLine.append("text")
                                     .attr("transform", "rotate(-90)")
                                     .attr("y", 0 - margin.left)
-                                    .attr("x",0 - (h/2 / 2))
+                                    .attr("x",0 - (chartHeight / 2))
                                     .attr("dy", "1em")
                                     .style("text-anchor", "middle")
                                     .text("Charging Load (kW)");
@@ -387,23 +389,26 @@
                     })
                     .on("mouseout", function(){ // When mouse leaves
                         div.transition()
-                            .duration(500)
+                            .duration(200)
                             .style("opacity", 0);
                         if(lineGraph){
                             lineGraph.transition()
-                                .duration(500)
+                                .duration(200)
                                 .style("opacity", 0);
                             ax.transition()
-                                .duration(500)
+                                .duration(200)
                                 .style("opacity", 0);
                             ay.transition()
-                                .duration(500)
+                                .duration(200)
                                 .style("opacity", 0);
                             xlabel.transition()
-                                .duration(500)
+                                .duration(200)
                                 .style("opacity", 0);
                             ylabel.transition()
-                                .duration(500)
+                                .duration(200)
+                                .style("opacity", 0);
+                            lineLabel.transition()
+                                .duration(200)
                                 .style("opacity", 0);
                         }
                     });

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ba4c5561-685c-43d7-9b22-069874eee8ec" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html" afterPath="$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -20,8 +21,8 @@
       <file leaf-file-name="ca_charging_load_map_by_county.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="393" column="46" lean-forward="true" selection-start-line="393" selection-start-column="46" selection-end-line="393" selection-end-column="46" />
+            <state relative-caret-position="23">
+              <caret line="280" column="35" lean-forward="true" selection-start-line="280" selection-start-column="35" selection-end-line="280" selection-end-column="35" />
               <folding>
                 <element signature="e#3164#3283#0" expanded="false" />
                 <element signature="e#3697#4519#0" expanded="false" />
@@ -37,7 +38,13 @@
     <findStrings>
       <find>117</find>
       <find>contains</find>
+      <find>mapWidth/2</find>
+      <find>mapHeight/2</find>
     </findStrings>
+    <replaceStrings>
+      <replace>chartWidth</replace>
+      <replace>chartHeight</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -220,12 +227,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1490758841203</updated>
-      <workItem from="1490758843962" duration="17744000" />
+      <workItem from="1490758843962" duration="19003000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17744000" />
+    <option name="totallyTimeSpent" value="19003000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="6" />
@@ -262,8 +269,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="393" column="46" lean-forward="true" selection-start-line="393" selection-start-column="46" selection-end-line="393" selection-end-column="46" />
+        <state relative-caret-position="23">
+          <caret line="280" column="35" lean-forward="true" selection-start-line="280" selection-start-column="35" selection-end-line="280" selection-end-column="35" />
           <folding>
             <element signature="e#3164#3283#0" expanded="false" />
             <element signature="e#3697#4519#0" expanded="false" />
