@@ -6,11 +6,11 @@ import './clock.scss';
 export default class Clock extends Component {
 
   _getHoursAngle(time) {
-    return time * 360;
+    return (time / (12 * 60)) * 360;
   }
 
   _getMinutesAngle(time) {
-    return time * 12 * 360;
+    return (time / 60) * 360;
   }
 
   render() {

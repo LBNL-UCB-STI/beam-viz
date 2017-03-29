@@ -25,8 +25,8 @@ export default class BeamDeckGL extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const {isAnimating, animationTime} = this.props;
-    if (isAnimating && newProps.animationTime !== animationTime) {
+    const {isAnimating, animationSpeed} = this.props;
+    if (isAnimating && newProps.animationSpeed !== animationSpeed) {
         this._stopAnimation();
         this._startAnimation(newProps);
     }
@@ -40,13 +40,21 @@ export default class BeamDeckGL extends Component {
     }
   }
 
-  _startAnimation({animationTime} =  this.props) {
-    const speed = this._refreshInterval / animationTime;
+  _startAnimation({animationSpeed} =  this.props) {
+    // currentTime, animationSpeed and animationBounds are in seconds,
+    // refreshInterval is in milli-seconds
+    const speed = animationSpeed * this._refreshInterval / 1000;
     this._animator = setInterval(function() {
-      let time = this.props.currentTime;
-      time += speed;
-      if (time > 1) {
-        time = 0;
+      const {currentTime, animationBounds, setCurrentTime} = this.props;
+      let time = currentTime;
+      if (currentTime < animationBounds.startTime) {
+        time = animationBounds.startTime;
+      }
+      else {
+        time += speed;
+      }
+      if (time > animationBounds.endTime) {
+        time = animationBounds.startTime;
         if(!this.props.loop) {
           this._stopAnimation();
           this.props.setAnimating(false);
@@ -61,7 +69,7 @@ export default class BeamDeckGL extends Component {
   }
 
   _resetAnimation() {
-    this.setState({time: 0});
+    this.props.setCurrentTime({currentTime: 0});
     if(this.props.isAnimating) {
         this._stopAnimation();
         this._startAnimation();
@@ -73,10 +81,6 @@ export default class BeamDeckGL extends Component {
     gl.depthFunc(gl.LEQUAL);
   }
 
-  _convertToTripTimeframe(time) {
-    return time * this.props.animationLength;
-  }
-
   render () {
     const props = this.props;
     const {tripsData, currentTime, trailLength, buildingData} = props;
@@ -86,13 +90,13 @@ export default class BeamDeckGL extends Component {
     // If we want to update the color (or anything else) after initialization, it needs to be reflected in the id.
     let layers = tripsData.filter(tripData => tripData.visible)
       .map(tripData => new TripsLayer({
-        id: tripData.category + '-layer' + tripData.color.join(''),
+        id: tripData.categoryName + '-layer' + tripData.color.join(''),
         data: tripData.paths,
         getPath: trip => trip,
         getColor: d => tripData.color,
         strokeWidth: 2,
         trailLength: trailLength,
-        currentTime: this._convertToTripTimeframe(currentTime),
+        currentTime,
       })
     );
 

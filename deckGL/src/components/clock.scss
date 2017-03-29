@@ -1,3 +1,5 @@
+$refresh-interval:100ms;
+
 #clock {
   position: fixed;
   top: 20px;
@@ -36,6 +38,7 @@
     top: 30%;
     transform-origin: 50% 100%;
     width: 2.5%;
+    transition: transform $refresh-interval;
   }
 
   & .minutes-container > .minutes {
@@ -46,5 +49,6 @@
     top: 10%;
     transform-origin: 50% 100%;
     width: 2%;
+    transition: transform $refresh-interval;
   }
 }
