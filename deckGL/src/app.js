@@ -77,9 +77,8 @@ class App extends Component {
         "travel_type": "car",
         "instruction": "Drive northwest on Steuart Street.",
         "length": 0.049,
-        "begin_shape": [-122.394181, 37.793991],
-        "end_shape": [-122.394845, 37.794448],
-        "begin_time": 0,
+        "shp": [-122.394181, 37.793991],
+        "tim": 0,
         "end_time": 11
       }
      *
@@ -93,7 +92,7 @@ class App extends Component {
     let categorizedTrips = {};
 
     tripsData.map(tripData => {
-      const categoryName = tripData[0].travel_type;
+      const categoryName = tripData[0].typ;
 
       if (categoryNames.indexOf(categoryName) === -1) {
         categorizedTrips[categoryName] = {
@@ -109,7 +108,7 @@ class App extends Component {
       let category = categorizedTrips[categoryName];
 
       const path = tripData.map(
-        leg => [leg.begin_shape[0], leg.begin_shape[1], leg.begin_time]
+        leg => [leg.shp[0], leg.shp[1], leg.tim]
       );
       category.paths.push(path);
 
