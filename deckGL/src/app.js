@@ -1,24 +1,54 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import MapboxGLMap from 'react-map-gl';
+import MapboxGLMap from './mapgl.js';
 import autoBind from 'react-autobind';
 
 import BeamDeckGL from './BeamDeckGL';
 import Sidebar from './sidebar';
 import Clock from './components/clock';
 
+<<<<<<< HEAD
 import tripsData from './trips.json';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoiamF0aW5kZXJqaXQiLCJhIjoiY2owZThldzFzMDAxNTJxcWtxbjlpNDczNyJ9.wnOGa7UEh7IEujIYqB80Nw';
 const mapStyle = "mapbox://styles/jatinderjit/cj0cw473u00ci2sobfw07xcl1";
+=======
+import tripsDataJson from './trips.json';
+
+const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ';
+const mapStyleOptions = [
+  {
+    style: "Streets",
+    url: "mapbox://styles/mapbox/streets-v10"
+  },
+  {
+    style: "Light",
+    url: "mapbox://styles/mapbox/light-v9"
+  },
+  {
+    style: "Satellite",
+    url: "mapbox://styles/mapbox/satellite-v9"
+  },
+  {
+    style: "Satellite Streets",
+    url: "mapbox://styles/mapbox/satellite-streets-v10"
+  },
+  {
+    style: "Dark",
+    url: "mapbox://styles/mapbox/dark-v9"
+  },
+];
+>>>>>>> LBNL-UCB-STI/master
 
 
 class App extends Component {
   constructor(props) {
     super(props);
+    const tripsData = this._parseTripsData(tripsDataJson);
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
+<<<<<<< HEAD
       tripsData: this._parseTripsData(tripsData),
       mapViewState: {
         latitude: 37.75576410580251,
@@ -32,10 +62,30 @@ class App extends Component {
       loop: true,
       trailLength: 150,
       currentTime: 0.2
+=======
+      tripsData: tripsData,
+      mapViewState: {
+        latitude: 37.82785803280886,
+        longitude: -122.43169756795798,
+        zoom: 9.82,
+        pitch: 60,
+        bearing: 0
+      },
+      isAnimating: true,
+      animationSpeed: 300,        // 1 second in the animation, represents 300 seconds in real life
+      loop: true,
+      trailLength: 150,
+      currentTime: tripsData[0].startTime,
+      mapStyle: mapStyleOptions[4],
+>>>>>>> LBNL-UCB-STI/master
     }
 
     this._trailRange = {
       min: 10,
+      max: 1000
+    };
+    this._animationSpeedRange = {
+      min: 1,
       max: 1000
     };
 
@@ -50,9 +100,8 @@ class App extends Component {
         "travel_type": "car",
         "instruction": "Drive northwest on Steuart Street.",
         "length": 0.049,
-        "begin_shape": [-122.394181, 37.793991],
-        "end_shape": [-122.394845, 37.794448],
-        "begin_time": 0,
+        "shp": [-122.394181, 37.793991],
+        "tim": 0,
         "end_time": 11
       }
      *
@@ -61,37 +110,43 @@ class App extends Component {
      * Path format: [Leg 1, Leg 2, ..]
      * Leg format: [[lng 1, lat 1, time 1], [lng 2, lat 2, time 2], ...]
      */
-    let categories = [];
-    let colorOptions = [[100, 240, 100], [253, 128, 93], [0, 204, 255], [255, 255, 0]];
+    let categoryNames = [];
+    const colorOptions = [[100, 240, 100], [253, 128, 93], [0, 204, 255], [255, 255, 0]];
     let categorizedTrips = {};
 
-    this._animationLength = 0;
-
     tripsData.map(tripData => {
-      let category = tripData[0].travel_type;
-      if (categories.indexOf(category) === -1) {
-        categories.push(category);
-        categorizedTrips[category] = [];
+      const categoryName = tripData[0].typ;
+
+      if (categoryNames.indexOf(categoryName) === -1) {
+        categorizedTrips[categoryName] = {
+          categoryName,
+          color: colorOptions[categoryNames.length % colorOptions.length],
+          paths: [],
+          startTime: Infinity,
+          endTime: -Infinity,
+          visible: true,
+        };
+        categoryNames.push(categoryName);
+      }
+      let category = categorizedTrips[categoryName];
+
+      const path = tripData.map(
+        leg => [leg.shp[0], leg.shp[1], leg.tim]
+      );
+      category.paths.push(path);
+
+      if (path[0][2] < category.startTime) {
+        category.startTime = path[0][2];
+      }
+      if (path[path.length - 1][2] > category.endTime) {
+        category.endTime = path[path.length - 1][2];
       }
 
-      let path = tripData.map(
-        leg => [leg.begin_shape[0], leg.begin_shape[1], leg.begin_time]
-      );
-      categorizedTrips[category].push(path);
-
-      let last_leg = path[path.length-1];
-      if (last_leg[2] > this._animationLength)
-        this._animationLength = last_leg[2];
     });
 
-    return categories.map((category, i) => {
-      return {
-        category,
-        color: colorOptions[i % colorOptions.length],
-        paths: categorizedTrips[category],
-        visible: true
-      };
-    })
+    return categoryNames.map(
+      categoryName => categorizedTrips[categoryName]
+    );
   }
 
   componentDidMount() {
@@ -127,7 +182,7 @@ class App extends Component {
   _toggleCategoryVisible(categoryName) {
     this.setState({
         tripsData: this.state.tripsData.map(d => {
-            if(d.category !== categoryName)
+            if(d.categoryName !== categoryName)
                 return d;
             return {
                 ...d,
@@ -144,7 +199,7 @@ class App extends Component {
   _onChangeCategoryColor(categoryName, color) {
     this.setState({
       tripsData: this.state.tripsData.map(d => {
-        if (d.category !== categoryName)
+        if (d.categoryName !== categoryName)
           return d;
         return {...d, color};
       }),
@@ -155,16 +210,37 @@ class App extends Component {
     this.setState({currentTime});
   }
 
+  _getAnimationTimeBounds(tripsData) {
+    const visibleCategories = tripsData.filter(tripData => tripData.visible);
+    const startTime = Math.min.apply(null, visibleCategories.map(tripData => tripData.startTime));
+    const endTime = Math.max.apply(null, visibleCategories.map(tripData => tripData.endTime));
+    return {
+      startTime,
+      endTime,
+    };
+  }
+
+  _onAnimationSpeedChange(animationSpeed) {
+    this.setState({animationSpeed});
+  }
+
+  _setMapStyle(style) {
+    const mapStyle = mapStyleOptions.filter(ms => ms.style == style)[0];
+    this.setState({mapStyle});
+  }
+
   render() {
+    const animationBounds = this._getAnimationTimeBounds(this.state.tripsData);
     return (
       <div>
         <MapboxGLMap
-          mapStyle={mapStyle}
+          mapStyle={this.state.mapStyle.url}
           mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
           {...this.state.mapViewState}
           width={this.state.width} height={this.state.height}
           perspectiveEnabled
           onChangeViewport={this._onChangeViewport}
+          mapRef={map => this._map = map}
         >
           <BeamDeckGL
             mapViewState={this.state.mapViewState}
@@ -172,12 +248,12 @@ class App extends Component {
             width={this.state.width} height={this.state.height}
             isAnimating={this.state.isAnimating}
             setAnimating={this._setAnimating}
-            animationTime={this.state.animationTime}
+            animationSpeed={this.state.animationSpeed}
             loop={this.state.loop}
             trailLength={this.state.trailLength}
             currentTime={this.state.currentTime}
-            animationLength={this._animationLength}
             setCurrentTime={this._setCurrentTime}
+            animationBounds={animationBounds}
           />
         </MapboxGLMap>
         <Clock time={this.state.currentTime} />
@@ -196,6 +272,13 @@ class App extends Component {
           onChangeCategoryColor={this._onChangeCategoryColor}
           currentTime={this.state.currentTime}
           setCurrentTime={this._setCurrentTime}
+          animationBounds={animationBounds}
+          animationSpeed={this.state.animationSpeed}
+          animationSpeedRange={this._animationSpeedRange}
+          onAnimationSpeedChange={this._onAnimationSpeedChange}
+          mapStyle={this.state.mapStyle}
+          mapStyleOptions={mapStyleOptions}
+          setMapStyle={this._setMapStyle}
         />
       </div>
     );
