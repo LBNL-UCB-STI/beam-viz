@@ -17,7 +17,7 @@ $transition-time:0.3s;
   right: 0;
   top: 0;
   bottom: 0;
-  background: rgba(200,200,200,0.9);
+  background: rgba(255,255,255,0.5);
   padding: 0 20px 20px 20px;
 
   & .sidebar--section {
@@ -32,26 +32,16 @@ $transition-time:0.3s;
       }
 
       & .sidebar--input-group {
-        color: #333;
-        line-height: 28px;
-        display: table;
-        width: 100%;
+          color: #333;
+          line-height: 28px;
+          display: table;
+          width: 100%;
 
-        & > * {
-          display: table-cell;
-          width: 50%;
-          vertical-align: middle;
-        }
-
-        &.sidebar--layers {
-          & > .layer--description {
-            vertical-align: middle;
-            width: 95%
+          & > * {
+              display: table-cell;
+              width: 50%;
+              vertical-align: middle;
           }
-          & > .chk-category {
-            width: 5%;
-          }
-        }
       }
   }
 }
@@ -59,9 +49,6 @@ $transition-time:0.3s;
 .category-label {
   padding-left: 5px;
   display: inline-block;
-}
-.chk-category {
-  width: 10%;
 }
 
 .sidebar--play {

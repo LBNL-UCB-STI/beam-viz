@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-$refresh-interval:100ms;
-
->>>>>>> LBNL-UCB-STI/master
 #clock {
   position: fixed;
   top: 20px;
@@ -41,10 +36,6 @@ $refresh-interval:100ms;
     top: 30%;
     transform-origin: 50% 100%;
     width: 2.5%;
-<<<<<<< HEAD
-=======
-    transition: transform $refresh-interval;
->>>>>>> LBNL-UCB-STI/master
   }
 
   & .minutes-container > .minutes {
@@ -55,9 +46,5 @@ $refresh-interval:100ms;
     top: 10%;
     transform-origin: 50% 100%;
     width: 2%;
-<<<<<<< HEAD
-=======
-    transition: transform $refresh-interval;
->>>>>>> LBNL-UCB-STI/master
   }
 }

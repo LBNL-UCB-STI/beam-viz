@@ -25,8 +25,8 @@ export default class BeamDeckGL extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const {isAnimating, animationSpeed} = this.props;
-    if (isAnimating && newProps.animationSpeed !== animationSpeed) {
+    const {isAnimating, animationTime} = this.props;
+    if (isAnimating && newProps.animationTime !== animationTime) {
         this._stopAnimation();
         this._startAnimation(newProps);
     }
@@ -40,7 +40,6 @@ export default class BeamDeckGL extends Component {
     }
   }
 
-<<<<<<< HEAD
   _startAnimation({animationTime} =  this.props) {
     const speed = this._refreshInterval / animationTime;
     this._animator = setInterval(function() {
@@ -48,23 +47,6 @@ export default class BeamDeckGL extends Component {
       time += speed;
       if (time > 1) {
         time = 0;
-=======
-  _startAnimation({animationSpeed} =  this.props) {
-    // currentTime, animationSpeed and animationBounds are in seconds,
-    // refreshInterval is in milli-seconds
-    const speed = animationSpeed * this._refreshInterval / 1000;
-    this._animator = setInterval(function() {
-      const {currentTime, animationBounds, setCurrentTime} = this.props;
-      let time = currentTime;
-      if (currentTime < animationBounds.startTime) {
-        time = animationBounds.startTime;
-      }
-      else {
-        time += speed;
-      }
-      if (time > animationBounds.endTime) {
-        time = animationBounds.startTime;
->>>>>>> LBNL-UCB-STI/master
         if(!this.props.loop) {
           this._stopAnimation();
           this.props.setAnimating(false);
@@ -79,11 +61,7 @@ export default class BeamDeckGL extends Component {
   }
 
   _resetAnimation() {
-<<<<<<< HEAD
     this.setState({time: 0});
-=======
-    this.props.setCurrentTime({currentTime: 0});
->>>>>>> LBNL-UCB-STI/master
     if(this.props.isAnimating) {
         this._stopAnimation();
         this._startAnimation();
@@ -108,17 +86,13 @@ export default class BeamDeckGL extends Component {
     // If we want to update the color (or anything else) after initialization, it needs to be reflected in the id.
     let layers = tripsData.filter(tripData => tripData.visible)
       .map(tripData => new TripsLayer({
-        id: tripData.categoryName + '-layer' + tripData.color.join(''),
+        id: tripData.category + '-layer' + tripData.color.join(''),
         data: tripData.paths,
         getPath: trip => trip,
         getColor: d => tripData.color,
         strokeWidth: 2,
         trailLength: trailLength,
-<<<<<<< HEAD
         currentTime: this._convertToTripTimeframe(currentTime),
-=======
-        currentTime,
->>>>>>> LBNL-UCB-STI/master
       })
     );
 
