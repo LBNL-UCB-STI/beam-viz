@@ -1,0 +1,17 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _reflectionEffect = require('./reflection-effect');
+
+Object.defineProperty(exports, 'ReflectionEffect', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_reflectionEffect).default;
+  }
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3NyYy9leHBlcmltZW50YWwvZWZmZWN0cy9pbmRleC5qcyJdLCJuYW1lcyI6WyJkZWZhdWx0Il0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7OztxREFBUUEsTyIsImZpbGUiOiJpbmRleC5qcyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCB7ZGVmYXVsdCBhcyBSZWZsZWN0aW9uRWZmZWN0fSBmcm9tICcuL3JlZmxlY3Rpb24tZWZmZWN0JztcbiJdfQ==

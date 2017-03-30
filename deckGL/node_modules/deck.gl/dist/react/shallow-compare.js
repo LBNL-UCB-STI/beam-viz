@@ -1,0 +1,16 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = shallowCompare;
+
+var _utils = require('../lib/utils');
+
+/**
+ * Does a shallow comparison for React props and state.
+ */
+function shallowCompare(instance, nextProps, nextState) {
+  return !(0, _utils.areEqualShallow)(instance.props, nextProps) || !(0, _utils.areEqualShallow)(instance.state, nextState);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9yZWFjdC9zaGFsbG93LWNvbXBhcmUuanMiXSwibmFtZXMiOlsic2hhbGxvd0NvbXBhcmUiLCJpbnN0YW5jZSIsIm5leHRQcm9wcyIsIm5leHRTdGF0ZSIsInByb3BzIiwic3RhdGUiXSwibWFwcGluZ3MiOiI7Ozs7O2tCQUt3QkEsYzs7QUFMeEI7O0FBRUE7OztBQUdlLFNBQVNBLGNBQVQsQ0FBd0JDLFFBQXhCLEVBQWtDQyxTQUFsQyxFQUE2Q0MsU0FBN0MsRUFBd0Q7QUFDckUsU0FDRSxDQUFDLDRCQUFnQkYsU0FBU0csS0FBekIsRUFBZ0NGLFNBQWhDLENBQUQsSUFDQSxDQUFDLDRCQUFnQkQsU0FBU0ksS0FBekIsRUFBZ0NGLFNBQWhDLENBRkg7QUFJRCIsImZpbGUiOiJzaGFsbG93LWNvbXBhcmUuanMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQge2FyZUVxdWFsU2hhbGxvd30gZnJvbSAnLi4vbGliL3V0aWxzJztcblxuLyoqXG4gKiBEb2VzIGEgc2hhbGxvdyBjb21wYXJpc29uIGZvciBSZWFjdCBwcm9wcyBhbmQgc3RhdGUuXG4gKi9cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIHNoYWxsb3dDb21wYXJlKGluc3RhbmNlLCBuZXh0UHJvcHMsIG5leHRTdGF0ZSkge1xuICByZXR1cm4gKFxuICAgICFhcmVFcXVhbFNoYWxsb3coaW5zdGFuY2UucHJvcHMsIG5leHRQcm9wcykgfHxcbiAgICAhYXJlRXF1YWxTaGFsbG93KGluc3RhbmNlLnN0YXRlLCBuZXh0U3RhdGUpXG4gICk7XG59XG4iXX0=
