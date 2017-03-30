@@ -23,11 +23,25 @@ export default class Sidebar extends Component {
       animationSpeed, animationSpeedRange, onAnimationSpeedChange,
       animationBounds,
       onChangeCategoryColor,
+      mapStyle, mapStyleOptions, setMapStyle,
     } = this.props;
     return (
       <div id='sidebar'>
         <div className='sidebar--section'>
           <h4>Settings</h4>
+
+          <div className='sidebar--input-group'>
+            <label>Map style</label>
+            <select value={mapStyle.style}
+              onChange={e => setMapStyle(e.target.value)}
+            >
+              {mapStyleOptions.map(ms => {
+                return (
+                  <option key={ms.style} value={ms.style}>{ms.style}</option>
+                );
+              })}
+            </select>
+          </div>
 
           <div className='sidebar--input-group'>
             <label>Animation</label>
@@ -85,8 +99,8 @@ export default class Sidebar extends Component {
           <h4>Layers</h4>
 
           {tripsData.map(d =>
-          <div key={d.categoryName} className='sidebar--input-group'>
-            <div style={{verticalAlign: 'middle'}}>
+          <div key={d.categoryName} className='sidebar--layers sidebar--input-group'>
+            <div className='layer--description'>
               <div style={{display: 'inline-block'}}>
               <ColorPicker
                 categoryName={d.categoryName}
@@ -100,10 +114,12 @@ export default class Sidebar extends Component {
                 </label>
               </div>
             </div>
-            <input id={'chk-' + d.categoryName} type="checkbox"
-              checked={d.visible}
-              onChange={() => toggleCategoryVisible(d.categoryName)}
-            />
+            <div className='chk-category'>
+              <input id={'chk-' + d.categoryName} type="checkbox"
+                checked={d.visible}
+                onChange={() => toggleCategoryVisible(d.categoryName)}
+              />
+            </div>
           </div>
           )}
 

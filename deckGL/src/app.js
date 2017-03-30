@@ -10,7 +10,28 @@ import Clock from './components/clock';
 import tripsDataJson from './trips.json';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ';
-const mapStyle = "mapbox://styles/rwlbnl/cj0e7o9f6000r2skgfjsutrg9";
+const mapStyleOptions = [
+  {
+    style: "Streets",
+    url: "mapbox://styles/mapbox/streets-v10"
+  },
+  {
+    style: "Light",
+    url: "mapbox://styles/mapbox/light-v9"
+  },
+  {
+    style: "Satellite",
+    url: "mapbox://styles/mapbox/satellite-v9"
+  },
+  {
+    style: "Satellite Streets",
+    url: "mapbox://styles/mapbox/satellite-streets-v10"
+  },
+  {
+    style: "Dark",
+    url: "mapbox://styles/mapbox/dark-v9"
+  },
+];
 
 
 class App extends Component {
@@ -33,6 +54,7 @@ class App extends Component {
       loop: true,
       trailLength: 150,
       currentTime: tripsData[0].startTime,
+      mapStyle: mapStyleOptions[4],
     }
 
     this._trailRange = {
@@ -180,12 +202,17 @@ class App extends Component {
     this.setState({animationSpeed});
   }
 
+  _setMapStyle(style) {
+    const mapStyle = mapStyleOptions.filter(ms => ms.style == style)[0];
+    this.setState({mapStyle});
+  }
+
   render() {
     const animationBounds = this._getAnimationTimeBounds(this.state.tripsData);
     return (
       <div>
         <MapboxGLMap
-          mapStyle={mapStyle}
+          mapStyle={this.state.mapStyle.url}
           mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
           {...this.state.mapViewState}
           width={this.state.width} height={this.state.height}
@@ -227,6 +254,9 @@ class App extends Component {
           animationSpeed={this.state.animationSpeed}
           animationSpeedRange={this._animationSpeedRange}
           onAnimationSpeedChange={this._onAnimationSpeedChange}
+          mapStyle={this.state.mapStyle}
+          mapStyleOptions={mapStyleOptions}
+          setMapStyle={this._setMapStyle}
         />
       </div>
     );
