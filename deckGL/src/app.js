@@ -94,6 +94,9 @@ class App extends Component {
     tripsData.map(tripData => {
       const categoryName = tripData[0].typ;
 
+      if (categoryName.toUpperCase() === 'ERROR')
+        return null;
+
       if (categoryNames.indexOf(categoryName) === -1) {
         categorizedTrips[categoryName] = {
           categoryName,
@@ -119,7 +122,7 @@ class App extends Component {
         category.endTime = path[path.length - 1][2];
       }
 
-    });
+    }).filter(Boolean);
 
     return categoryNames.map(
       categoryName => categorizedTrips[categoryName]
