@@ -9,29 +9,39 @@ import Clock from './components/clock';
 
 import tripsDataJson from './trips.json';
 
-const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ';
 const mapStyleOptions = [
   {
     style: "Streets",
-    url: "mapbox://styles/mapbox/streets-v10"
+    url: "mapbox://styles/mapbox/streets-v10",
+    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
   },
   {
     style: "Light",
-    url: "mapbox://styles/mapbox/light-v9"
+    url: "mapbox://styles/mapbox/light-v9",
+    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
   },
   {
     style: "Satellite",
-    url: "mapbox://styles/mapbox/satellite-v9"
+    url: "mapbox://styles/mapbox/satellite-v9",
+    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
   },
   {
     style: "Satellite Streets",
-    url: "mapbox://styles/mapbox/satellite-streets-v10"
+    url: "mapbox://styles/mapbox/satellite-streets-v10",
+    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
   },
   {
     style: "Dark",
-    url: "mapbox://styles/mapbox/dark-v9"
+    url: "mapbox://styles/mapbox/dark-v9",
+    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
+  },
+  {
+    style: "Dark - No Label",
+    url: "mapbox://styles/rwlbnl/cj0e7o9f6000r2skgfjsutrg9",
+    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
   },
 ];
+
 
 
 class App extends Component {
@@ -54,7 +64,7 @@ class App extends Component {
       loop: true,
       trailLength: 150,
       currentTime: tripsData[0].startTime,
-      mapStyle: mapStyleOptions[4],
+      mapStyle: mapStyleOptions[5],
     }
 
     this._trailRange = {
@@ -94,8 +104,8 @@ class App extends Component {
     tripsData.map(tripData => {
       const categoryName = tripData[0].typ;
 
-      if (categoryName.toUpperCase() === 'ERROR')
-        return null;
+      if (categoryName.toUpperCase() === 'ERROR')     // HARDCODE
+        return;
 
       if (categoryNames.indexOf(categoryName) === -1) {
         categorizedTrips[categoryName] = {
@@ -106,6 +116,10 @@ class App extends Component {
           endTime: -Infinity,
           visible: true,
         };
+
+        if (categoryName.toUpperCase() === 'CAR')     // HARDCODE: car should be in white color
+          categorizedTrips[categoryName].color = [255, 255, 255];
+
         categoryNames.push(categoryName);
       }
       let category = categorizedTrips[categoryName];
@@ -122,7 +136,7 @@ class App extends Component {
         category.endTime = path[path.length - 1][2];
       }
 
-    }).filter(Boolean);
+    });
 
     return categoryNames.map(
       categoryName => categorizedTrips[categoryName]
@@ -215,7 +229,7 @@ class App extends Component {
       <div>
         <MapboxGLMap
           mapStyle={this.state.mapStyle.url}
-          mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
+          mapboxApiAccessToken={this.state.mapStyle.accessToken}
           {...this.state.mapViewState}
           width={this.state.width} height={this.state.height}
           perspectiveEnabled
