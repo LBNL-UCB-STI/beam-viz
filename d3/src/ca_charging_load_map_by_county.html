@@ -387,7 +387,7 @@
 
         // Load load profile here and set colors to each county based on the daily load sum
         var minVal = 999;
-        var maxVal = 0;
+        var maxVal = 0, countyNameClicked, totalLoadClicked;
         d3.csv("aggregateLoadAndNum.csv", function(aggData){
             //Set input domain for color scale
             color.domain([
@@ -456,24 +456,26 @@
                         sel.moveToFront();
 
                         // Show county name on the left
-                        tvCountyName = svgCountyInfo
-                            .append("text")
-                            .attr("id","countyName")
-                            .attr("color","#000")
-                            .attr("font-size","30")
-                            .attr("font-weight","bold")
-                            .attr("transform", "translate(10,10)")
-                            .text(d.properties.NAMELSAD)
-                            .transition().duration(500).attr("opacity","0.9");
+                        if(!countyNameClicked){
+                            tvCountyName = svgCountyInfo
+                                .append("text")
+                                .attr("id","countyName")
+                                .attr("color","#000")
+                                .attr("font-size","30")
+                                .attr("font-weight","bold")
+                                .attr("transform", "translate(10,10)")
+                                .text(d.properties.NAMELSAD)
+                                .transition().duration(500).attr("opacity","0.9");
 
-                        tvTotalChargingLoad = svgCountyInfo
-                            .append("text")
-                            .attr("id","totalLoad")
-                            .attr("color","#000")
-                            .attr("font-size","15")
-                            .attr("transform", "translate(10,35)")
-                            .text("Total Charging Load (kWH): " + d.properties.chargingLoad/4)
-                            .transition().duration(500).attr("opacity","0.5");
+                            tvTotalChargingLoad = svgCountyInfo
+                                .append("text")
+                                .attr("id","totalLoad")
+                                .attr("color","#000")
+                                .attr("font-size","15")
+                                .attr("transform", "translate(10,35)")
+                                .text("Total Charging Load (kWH): " + d.properties.chargingLoad/4)
+                                .transition().duration(500).attr("opacity","0.5");
+                        }
 
                         // Show the simple text tooltip
 //                        divTooltip.transition()
@@ -487,6 +489,131 @@
 //                            .attr("id","rectToolTip")
 //                            .attr("transform","translate(-100,-250)scale(1,1)")
 //                            .style("opacity", 0.9);
+
+//                        if(d.properties.chargingLoad){
+//                            // load disaggregate charging load csv
+//                            var tempLoadObj = {};
+//                            var keyList = [];
+//
+//                            // build temporal load object
+//                            d3.csv("run0.3.disaggregateLoadProfile.csv",function(daggData){
+//                                for(var i =0 ; i < daggData.length ; i++){
+//                                    if(+daggData[i].time >= 27 && +daggData[i].time < 51
+//                                        && daggData[i].spatialGroup.contains(d.properties.NAME)){
+//
+//                                        // Check if the array contains the value
+//                                        if(tempLoadObj[daggData[i].time-27]){
+//                                            tempLoadObj[daggData[i].time-27].chargingLoad =
+//                                                +tempLoadObj[daggData[i].time-27].chargingLoad
+//                                                + +daggData[i].chargingLoad;
+//                                        }else{
+//                                            tempLoadObj[daggData[i].time-27] = {time:daggData[i].time-27, chargingLoad: +daggData[i].chargingLoad};
+//                                            keyList.push(daggData[i].time-27);
+//                                        }
+//                                    }
+//                                }
+//
+//                                // build temporal load list
+//                                var tempLoadList = [];
+//                                for(var j=0;j<keyList.length;j++){
+//                                    tempLoadList.push({time:+tempLoadObj[keyList[j]].time, chargingLoad:+tempLoadObj[keyList[j]].chargingLoad});
+//                                }
+//                                tempLoadList.forEach(function(d){
+//                                   d.time =+d.time;
+//                                   d.chargingLoad =+d.chargingLoad;
+//                                });
+//
+//                                // Set domain of x and y axis
+//                                x.domain(d3.extent(tempLoadList, function(d) { return +d.time; }));
+//                                y.domain([0, d3.max(tempLoadList, function(d) { return +d.chargingLoad; })]);
+//
+//                                // Draw the line chart
+//                                lineGraph = svgLine.append("path")
+//                                    .attr("id","chargingLoadChart")
+//                                    .attr("d", lineFunction(tempLoadList));
+//
+//                                // Draw x axis
+//                                ax = svgLine.append("g")
+//                                    .attr("id","ax")
+//                                    .attr("class", "x axis")
+//                                    .attr("transform", "translate(0," + chartHeight + ")")
+//                                    .attr("text","test")
+//                                    .call(xAxis);
+//
+//                                // Draw y axis
+//                                ay = svgLine.append("g")
+//                                    .attr("id","ay")
+//                                    .attr("class", "y axis")
+//                                    .call(yAxis);
+//
+//                                lineLabel = svgLine.append("text")
+//                                    .attr("transform", "translate(" + (chartWidth+2) + "," + (y(tempLoadList[tempLoadList.length-1].chargingLoad)) + ")")
+//                                    .attr("id","lineLabel")
+//                                    .attr("dy", ".1em")
+//                                    .attr("text-anchor", "start")
+//                                    .style("fill", "steelblue")
+//                                    .style("font-size", "10px")
+//                                    .text("Charging Load (kW)");
+//
+//                                // Add the text label for the x axis
+//                                xlabel = svgLine.append("text")
+//                                    .attr("transform", "translate(" + (chartWidth/2) + " ," + (chartHeight+3+margin.bottom) + ")")
+//                                    .attr("id","xlabel")
+//                                    .style("text-anchor", "middle")
+//                                    .text("Time (hour)");
+//
+//                                // Add the text label for the y axis
+//                                ylabel = svgLine.append("text")
+//                                    .attr("transform", "rotate(-90)")
+//                                    .attr("id","ylabel")
+//                                    .attr("y", 0 - margin.left)
+//                                    .attr("x",0 - (chartHeight / 2))
+//                                    .attr("dy", "1em")
+//                                    .style("text-anchor", "middle")
+//                                    .text("Charging Load (kW)");
+//
+//                                // Title
+//                                chargingLoadTitle = svgLine.append("text")
+//                                    .attr("transform", "translate(" + (chartWidth/2) + ",-10)")
+//                                    .attr("id","chargingLoadTitle")
+//                                    .style("text-anchor", "middle")
+//                                    .attr("margin-bottom","10px")
+//                                    .text("Charging Load (kW) by site type");
+//
+//                            });
+//                        }
+                    })
+                    .on("click", function(d){
+                        d3.select("#countyName").remove();
+                        d3.select("#totalLoad").remove();
+                        d3.select("#countyNameClicked").remove();
+                        d3.select("#totalLoadClicked").remove();
+                        d3.select("#chargingLoadChart").remove();
+                        d3.select("#ax").remove();
+                        d3.select("#ay").remove();
+                        d3.select("#xlabel").remove();
+                        d3.select("#ylabel").remove();
+                        d3.select("#lineLabel").remove();
+                        d3.select("#chargingLoadTitle").remove();
+
+                        countyNameClicked = svgCountyInfo
+                            .append("text")
+                            .attr("id","countyNameClicked")
+                            .attr("color","#000")
+                            .attr("font-size","30")
+                            .attr("font-weight","bold")
+                            .attr("transform", "translate(10,10)")
+                            .text(d.properties.NAMELSAD)
+                            .transition().duration(500).attr("opacity","0.9");
+
+                        totalLoadClicked = svgCountyInfo
+                            .append("text")
+                            .attr("id","totalLoadClicked")
+                            .attr("color","#000")
+                            .attr("font-size","15")
+                            .attr("transform", "translate(10,35)")
+                            .text("Total Charging Load (kWH): " + d.properties.chargingLoad/4)
+                            .transition().duration(500).attr("opacity","0.5");
 
                         if(d.properties.chargingLoad){
                             // load disaggregate charging load csv
@@ -517,8 +644,8 @@
                                     tempLoadList.push({time:+tempLoadObj[keyList[j]].time, chargingLoad:+tempLoadObj[keyList[j]].chargingLoad});
                                 }
                                 tempLoadList.forEach(function(d){
-                                   d.time =+d.time;
-                                   d.chargingLoad =+d.chargingLoad;
+                                    d.time =+d.time;
+                                    d.chargingLoad =+d.chargingLoad;
                                 });
 
                                 // Set domain of x and y axis
@@ -535,13 +662,14 @@
                                     .attr("id","ax")
                                     .attr("class", "x axis")
                                     .attr("transform", "translate(0," + chartHeight + ")")
-                                    .attr("text","test")
+                                    .attr("font-size",10)
                                     .call(xAxis);
 
                                 // Draw y axis
                                 ay = svgLine.append("g")
                                     .attr("id","ay")
                                     .attr("class", "y axis")
+                                    .attr("font-size",10)
                                     .call(yAxis);
 
                                 lineLabel = svgLine.append("text")
@@ -557,6 +685,7 @@
                                 xlabel = svgLine.append("text")
                                     .attr("transform", "translate(" + (chartWidth/2) + " ," + (chartHeight+3+margin.bottom) + ")")
                                     .attr("id","xlabel")
+                                    .attr("font-size",13)
                                     .style("text-anchor", "middle")
                                     .text("Time (hour)");
 
@@ -567,12 +696,13 @@
                                     .attr("y", 0 - margin.left)
                                     .attr("x",0 - (chartHeight / 2))
                                     .attr("dy", "1em")
+                                    .attr("font-size",13)
                                     .style("text-anchor", "middle")
                                     .text("Charging Load (kW)");
 
                                 // Title
                                 chargingLoadTitle = svgLine.append("text")
-                                    .attr("transform", "translate(" + (chartWidth/2) + ",-10)")
+                                    .attr("transform", "translate(" + (chartWidth/2) + ",-15)")
                                     .attr("id","chargingLoadTitle")
                                     .style("text-anchor", "middle")
                                     .attr("margin-bottom","10px")
@@ -580,21 +710,22 @@
 
                             });
                         }
+
                     })
                     .on("mouseout", function(){ // When mouse leaves
-                        d3.select("#chargingLoadChart").remove();
-                        d3.select("#ax").remove();
-                        d3.select("#ay").remove();
-                        d3.select("#xlabel").remove();
-                        d3.select("#ylabel").remove();
-                        d3.select("#lineLabel").remove();
-                        d3.select("#chargingLoadTitle").remove();
+//                        d3.select("#chargingLoadChart").remove();
+//                        d3.select("#ax").remove();
+//                        d3.select("#ay").remove();
+//                        d3.select("#xlabel").remove();
+//                        d3.select("#ylabel").remove();
+//                        d3.select("#lineLabel").remove();
+//                        d3.select("#chargingLoadTitle").remove();
                         d3.select("#countyName").remove();
                         d3.select("#totalLoad").remove();
-                        d3.select("#rectToolTip").remove();
-                        tvDefaultDisplay.transition()
-                            .duration(50)
-                            .style("opacity", 0.5);
+//                        d3.select("#rectToolTip").remove();
+//                        tvDefaultDisplay.transition()
+//                            .duration(50)
+//                            .style("opacity", 0.5);
                     })
                     .append("title")
                     .text(function(d) { return d.properties.NAME; });
