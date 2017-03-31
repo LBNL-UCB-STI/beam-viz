@@ -8,7 +8,8 @@
 
     <script type="text/javascript" src="http://use.typekit.com/brf5jpj.js"></script>
     <script src="//use.typekit.net/drk2sev.js"></script>
-    <script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/dist/dataframe-min.js"></script>
+    <!--<script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/dist/dataframe-min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.pan-zoom.js/2.7.0/svg.pan-zoom.min.js"></script>-->
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
 
@@ -20,15 +21,78 @@
             font-family: "proxima-nova", "Source Sans Pro", sans-serif;
         }
 
-        #container {
-            width: 1500px;
-            margin-left: 30px;
-            margin-right: auto;
-            margin-top: 30px;
+        #header-container {
+            width: auto;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-top: 5px;
             padding: 30px;
+            overflow:hidden;
             background-color: white;
             box-shadow: 3px 3px 7px #222;
         }
+
+        #container {
+
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-top: 2px;
+            position: relative;
+            /*padding: 30px;*/
+            overflow:hidden;
+            /*background-color: white;*/
+            box-shadow: 3px 3px 7px #222;
+        }
+
+        #left {
+            float: left;
+            width: 29.8%;
+            height: 600px;
+            min-height:10px;
+            overflow:hidden;
+            /*padding-left:30px;*/
+            margin:auto;
+            background-color: #ececec;
+        }
+        #right {
+            float: right;
+            width: 70%;
+            height: 600px;
+            overflow:hidden;
+            background-color: #696969;
+        }
+        #cleared {
+            clear: both;
+        }
+        #chargingLoadChart {
+            fill: none;
+            stroke: steelblue;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            stroke-width: 1.5;
+        }
+        #rectToolTip{
+            display: block;
+            width: 40%;
+            height: auto;
+            padding: 5px;
+            background-color: #fff;
+            color: #000;
+            fill: #fff;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+            position: relative;
+        }
+        /*#overlay {*/
+            /*width: 100%;*/
+            /*height: 100%;*/
+            /*display: block;*/
+        /*}*/
 
         h1 {
             font-size: 24px;
@@ -39,6 +103,13 @@
             font-size: 16px;
             margin: 15px 0 10px 0;
         }
+
+        /*g{*/
+            /*background: #FFF;*/
+            /*display:block;*/
+            /*width: 100%;*/
+            /*height: 100%;*/
+        /*}*/
 
         a {
             color: #799DCB;
@@ -51,28 +122,41 @@
         }
 
         svg {
-            background-color: white;
-            padding-left: 20px;
+            /*background-color: white;*/
+            /*padding-left: 20px;*/
+            display:block;
+            width: 100%;
+            height: 100%;
         }
+
+        /*rect{*/
+            /*width: auto;*/
+            /*height: auto;*/
+            /*background: #799dcb;*/
+        /*}*/
 
         path {
             fill: #799dcb;
             stroke: #fff;
+            stroke-width: 0.5;
             transition: transform 0.15s;
         }
         path:hover {
-            fill:#48494b;
+            stroke: #FF7F50;
+            stroke-width: 1.5;
             cursor:pointer;
-            transform: translateX(-3%) translateY(-3%);
+            transform: translateX(-3%) translateY(-5%);
         }
 
         /* Style for Custom Tooltip */
         div.tooltip {
-            width: auto;
+            display: block;
+            width: 40%;
             height: auto;
             padding: 5px;
             background-color: #fff;
             color: #000;
+            fill: #fff;
             -webkit-border-radius: 5px;
             -moz-border-radius: 5px;
             border-radius: 5px;
@@ -80,7 +164,7 @@
             -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
             box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
             pointer-events: none;
-            position: absolute;
+            position: relative;
         }
 
         .axis path,
@@ -91,20 +175,20 @@
             shape-rendering: crispEdges;
         }
 
-        .line {
-            fill: none;
-            stroke: steelblue;
-            stroke-linejoin: round;
-            stroke-linecap: round;
-            stroke-width: 2;
-        }
+
 
     </style>
 </head>
 <body>
-    <div id="container">
+    <div id="header-container">
         <h1>Charging load by CA county</h1>
         <p>Source: <a href="http://www.beam-model.net/" target="new">Behavior, Energy, Analysis, Mobility Simulator</a></p>
+        <!--<hr>-->
+    </div>
+    <div id="container">
+        <div id="left"></div>
+        <div id="right"></div>
+        <div id="cleared"></div>
     </div>
 
     <script type="text/javascript">
@@ -157,10 +241,42 @@
 
             return indexOf.call(this, needle) > -1;
         };
-        //===================================== Main scripts ===========================================#
 
-        // Initialize Dataframe
-        var DataFrame = dfjs.DataFrame;
+        function wrapText(text, width) {
+            text.each(function () {
+                var text = d3.select(this),
+                    words = "Put your mouse cursor over a county to see the charging load!".split(/\s+/).reverse(),
+                    word,
+                    line = [],
+                    lineNumber = 0,
+                    lineHeight = 1.1, // ems
+                    x = text.attr("x"),
+                    y = text.attr("y"),
+                    dy = 0, //parseFloat(text.attr("dy")),
+                    tspan = text.text(null)
+                        .append("tspan")
+                        .attr("x", x)
+                        .attr("y", y);
+//                        .attr("dy", dy + "em");
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = text.append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dx", (x-tspan.node().getComputedTextLength()))
+                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                            .text(word);
+                    }
+                }
+            });
+        }
+
+        //===================================== Main scripts ===========================================#
 
         var margin = {top: 30, right: 20, bottom: 30, left: 50};
 
@@ -169,6 +285,14 @@
         var mapHeight = 600;
         var chartWidth = mapWidth/3;
         var chartHeight = mapHeight/3;
+        var lineChartYPosition = chartHeight + 200;
+        var lineGraph, ax, ay, xlabel, ylabel,lineLabel,
+            chargingLoadTitle, tvCountyName, tvTotalChargingLoad, rectToolTip;
+
+//        var divTooltip = d3.select("#right")
+//            .append("div")
+//            .attr("class", "tooltip")
+//            .style("opacity", 0);
 
         // Define map projection
         var projection = d3.geo.mercator()
@@ -180,36 +304,69 @@
         var path = d3.geo.path()
             .projection(projection);
 
-        // Append Div for tooltip to SVG
-        var div = d3.select("#container")
-            .append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
-
         //Create SVG
-        var svgMap = d3.select("#container")
+        var svgRight = d3.select("#right")
             .append("svg")
-            .attr("class","svgMap")
+            .attr("width", mapWidth)
+            .attr("height", mapHeight)
+            .attr("background", "#FFF");
+
+        var zoom = d3.behavior.zoom()
+            .translate([-100, -250])
+            .scale(2,2)
+            .scaleExtent([1, 8])
+            .on("zoom", zoomed);
+
+        var svgLeft = d3.select("#left")
+            .append("svg")
             .attr("width", mapWidth)
             .attr("height", mapHeight);
 
-        var svgLine = d3.select("#container")
-            .append("svg")
-            .attr("class","svgLine")
+        var svgMap = svgRight.append("g")
+            .attr("id","svgMap")
+            .call(zoom)
+            .attr("transform","translate(-100,-250)scale(2,2)");
+
+        var svgCountyInfo = svgLeft.append("g")
+            .attr("id","svgCountyInfo")
+            .attr("transform",
+                "translate(" + (margin.left-40) + "," + margin.top + ")");
+
+        var svgLine = svgLeft
+            .append("g")
+            .attr("id","svgLine")
             .attr("width", chartWidth+200 + margin.left + margin.right)
             .attr("height", chartWidth+200 + margin.top + margin.bottom)
             .append("g")
             .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
+                "translate(" + (margin.left+10) + "," + 120 + ")");
+
+        var mapOverlay = svgMap.append("rect")
+            .attr("class","overlay")
+            .attr("id","overlay")
+            .attr("fill","#696969")
+            .attr("display","block")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("transform","translate(-100,-250)scale(2,2)")
+            .call(zoom);
+
+        var tvDefaultDisplay = svgLeft.append("text")
+            .attr("width","100%")
+            .attr("height","100%")
+            .attr("font-size","20")
+            .attr("text-align","center")
+            .attr("transform","translate(20,100)")
+            .attr("opacity", "0.5")
+            .call(wrapText, 300);
 
         // Define linear scale for output
         var color = d3.scale.quantize()
-            .range(["rgb(0,109,44)","rgb(49,163,84)","rgb(116,196,118)","rgb(186,228,179)","rgb(237,248,233)"]);
-
-        // Sample data for our line
-        var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
-                             { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
-                             { "x": 80,  "y": 5},  { "x": 100, "y": 60}];
+            .range(["#758AA8",
+                "#4C668C",
+                "#2C4770",
+                "#2C4900",
+                "#051A38"]);
 
         // Line function
         var lineFunction = d3.svg.line()
@@ -229,24 +386,20 @@
             .orient("left").ticks(5);
 
         // Load load profile here and set colors to each county based on the daily load sum
+        var minVal = 999;
+        var maxVal = 0;
         d3.csv("aggregateLoadAndNum.csv", function(aggData){
             //Set input domain for color scale
             color.domain([
                 d3.min(aggData, function(d) {
-                    var minVal = 999;
-                    for(var i =0; i<d.length ; i++){
-                        if(d[i].chargingLoad <= minVal){
-                            minVal = d[i].chargingLoad;
-                        }
+                    if(d.chargingLoad < minVal){
+                        minVal = d.chargingLoad;
                     }
                     return minVal;
                 }),
                 d3.max(aggData, function(d) {
-                    var maxVal = 0;
-                    for(var i =0; i<d.length ; i++){
-                        if(d[i].chargingLoad >= maxVal){
-                            maxVal = d[i].chargingLoad;
-                        }
+                    if(d.chargingLoad > maxVal){
+                        maxVal = d.chargingLoad;
                     }
                     return maxVal;
                 })
@@ -274,14 +427,11 @@
                 }
 
                 // Bind data and create one path per GeoJson feature
-                var lineGraph, ax, ay, xlabel, ylabel,lineLabel;
                 svgMap.selectAll("path")
                     .data(json.features)
                     .enter()
                     .append("path")
                     .attr("d", path)
-                    .style("stroke", "#fff")
-                    .style("stroke-width", "1")
                     .style("fill", function(d) {
                         // Get data value
                         var value = d.properties.chargingLoad;
@@ -294,10 +444,49 @@
                         }
                     })
                     .on("mouseover", function(d){ // When mouse is over a county
+
+                        // Hide the default font
+                        tvDefaultDisplay.transition()
+                            .duration(50)
+                            .style("opacity", 0);
+
                         var xPosition = chartWidth + 150;
                         var yPosition = chartHeight;
                         var sel = d3.select(this);
                         sel.moveToFront();
+
+                        // Show county name on the left
+                        tvCountyName = svgCountyInfo
+                            .append("text")
+                            .attr("id","countyName")
+                            .attr("color","#000")
+                            .attr("font-size","30")
+                            .attr("font-weight","bold")
+                            .attr("transform", "translate(10,10)")
+                            .text(d.properties.NAMELSAD)
+                            .transition().duration(500).attr("opacity","0.9");
+
+                        tvTotalChargingLoad = svgCountyInfo
+                            .append("text")
+                            .attr("id","totalLoad")
+                            .attr("color","#000")
+                            .attr("font-size","15")
+                            .attr("transform", "translate(10,35)")
+                            .text("Total Charging Load (kWH): " + d.properties.chargingLoad/4)
+                            .transition().duration(500).attr("opacity","0.5");
+
+                        // Show the simple text tooltip
+//                        divTooltip.transition()
+//                            .duration(200)
+//                            .style("opacity", .9)
+//                            .style("left", 10 + "px")
+//                            .style("top", 10 + "px");
+//                        divTooltip.html("County: " + d.properties.NAME + "</br>" + "ChargingLoad: " + d.properties.chargingLoad);
+
+//                        svgMap.append("rect")
+//                            .attr("id","rectToolTip")
+//                            .attr("transform","translate(-100,-250)scale(1,1)")
+//                            .style("opacity", 0.9);
 
                         if(d.properties.chargingLoad){
                             // load disaggregate charging load csv
@@ -338,11 +527,12 @@
 
                                 // Draw the line chart
                                 lineGraph = svgLine.append("path")
-                                    .attr("class","line")
+                                    .attr("id","chargingLoadChart")
                                     .attr("d", lineFunction(tempLoadList));
 
                                 // Draw x axis
                                 ax = svgLine.append("g")
+                                    .attr("id","ax")
                                     .attr("class", "x axis")
                                     .attr("transform", "translate(0," + chartHeight + ")")
                                     .attr("text","test")
@@ -350,71 +540,73 @@
 
                                 // Draw y axis
                                 ay = svgLine.append("g")
+                                    .attr("id","ay")
                                     .attr("class", "y axis")
                                     .call(yAxis);
 
                                 lineLabel = svgLine.append("text")
                                     .attr("transform", "translate(" + (chartWidth+2) + "," + (y(tempLoadList[tempLoadList.length-1].chargingLoad)) + ")")
+                                    .attr("id","lineLabel")
                                     .attr("dy", ".1em")
                                     .attr("text-anchor", "start")
                                     .style("fill", "steelblue")
+                                    .style("font-size", "10px")
                                     .text("Charging Load (kW)");
 
                                 // Add the text label for the x axis
                                 xlabel = svgLine.append("text")
-                                    .attr("transform", "translate(" + (chartWidth / 2) + " ," + (chartHeight+3+margin.bottom) + ")")
+                                    .attr("transform", "translate(" + (chartWidth/2) + " ," + (chartHeight+3+margin.bottom) + ")")
+                                    .attr("id","xlabel")
                                     .style("text-anchor", "middle")
                                     .text("Time (hour)");
 
                                 // Add the text label for the y axis
                                 ylabel = svgLine.append("text")
                                     .attr("transform", "rotate(-90)")
+                                    .attr("id","ylabel")
                                     .attr("y", 0 - margin.left)
                                     .attr("x",0 - (chartHeight / 2))
                                     .attr("dy", "1em")
                                     .style("text-anchor", "middle")
                                     .text("Charging Load (kW)");
 
-                            });
+                                // Title
+                                chargingLoadTitle = svgLine.append("text")
+                                    .attr("transform", "translate(" + (chartWidth/2) + ",-10)")
+                                    .attr("id","chargingLoadTitle")
+                                    .style("text-anchor", "middle")
+                                    .attr("margin-bottom","10px")
+                                    .text("Charging Load (kW) by site type");
 
-                        }else{
-                            // Show the simple text tooltip
-                            div.transition()
-                                .duration(200)
-                                .style("opacity", .9)
-                                .style("left", xPosition + "px")
-                                .style("top", yPosition + "px");
-                            div.html("County: " + d.properties.NAME + "</br>" + "ChargingLoad: " + d.properties.chargingLoad);
+                            });
                         }
                     })
                     .on("mouseout", function(){ // When mouse leaves
-                        div.transition()
-                            .duration(200)
-                            .style("opacity", 0);
-                        if(lineGraph){
-                            lineGraph.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                            ax.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                            ay.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                            xlabel.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                            ylabel.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                            lineLabel.transition()
-                                .duration(200)
-                                .style("opacity", 0);
-                        }
-                    });
+                        d3.select("#chargingLoadChart").remove();
+                        d3.select("#ax").remove();
+                        d3.select("#ay").remove();
+                        d3.select("#xlabel").remove();
+                        d3.select("#ylabel").remove();
+                        d3.select("#lineLabel").remove();
+                        d3.select("#chargingLoadTitle").remove();
+                        d3.select("#countyName").remove();
+                        d3.select("#totalLoad").remove();
+                        d3.select("#rectToolTip").remove();
+                        tvDefaultDisplay.transition()
+                            .duration(50)
+                            .style("opacity", 0.5);
+                    })
+                    .append("title")
+                    .text(function(d) { return d.properties.NAME; });
 
             });
         });
+
+        function zoomed() {
+            svgMap.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+//            svgMap.select(".state-border").style("stroke-width", 1.5 / d3.event.scale + "px");
+//            svgMap.select(".county-border").style("stroke-width", .5 / d3.event.scale + "px");
+        }
 
     </script>
     </body>
