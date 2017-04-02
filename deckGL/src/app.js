@@ -5,7 +5,8 @@ import autoBind from 'react-autobind';
 
 import BeamDeckGL from './BeamDeckGL';
 import Sidebar from './sidebar';
-import Clock from './components/clock';
+import Clock from './components/Clock';
+import {getCategorizedLayers, setCategoryColor, toggleCategoryVisible} from './category-manager';
 
 import tripsDataJson from './trips.json';
 
@@ -43,15 +44,15 @@ const mapStyleOptions = [
 ];
 
 
-
 class App extends Component {
   constructor(props) {
     super(props);
-    const tripsData = this._parseTripsData(tripsDataJson);
+
+    const categorizedData = getCategorizedLayers(tripsDataJson);
     this.state = {
       width: window.innerWidth,
       height: window.innerHeight,
-      tripsData: tripsData,
+      categorizedData: categorizedData,
       mapViewState: {
         latitude: 37.82785803280886,
         longitude: -122.43169756795798,
@@ -63,7 +64,7 @@ class App extends Component {
       animationSpeed: 300,        // 1 second in the animation, represents 300 seconds in real life
       loop: true,
       trailLength: 150,
-      currentTime: tripsData[0].startTime,
+      currentTime: categorizedData[0].startTime,
       mapStyle: mapStyleOptions[5],
     }
 
@@ -77,70 +78,6 @@ class App extends Component {
     };
 
     autoBind(this);
-  }
-
-  _parseTripsData(tripsData) {
-    /*
-     * Input format: [InputTrip 1, InputTrip 2, ...]
-     * InputTrip format: [[InputLeg 1, InputLeg 2, ...]
-     * InputLeg format: {
-        "travel_type": "car",
-        "instruction": "Drive northwest on Steuart Street.",
-        "length": 0.049,
-        "shp": [-122.394181, 37.793991],
-        "tim": 0,
-        "end_time": 11
-      }
-     *
-     * output format: [Category 1, Category 2, ...]
-     * Category format: {name: 'Category 1', color: 'c', paths: [Path 1, Path 2, Path 3]}
-     * Path format: [Leg 1, Leg 2, ..]
-     * Leg format: [[lng 1, lat 1, time 1], [lng 2, lat 2, time 2], ...]
-     */
-    let categoryNames = [];
-    const colorOptions = [[100, 240, 100], [253, 128, 93], [0, 204, 255], [255, 255, 0]];
-    let categorizedTrips = {};
-
-    tripsData.map(tripData => {
-      const categoryName = tripData[0].typ;
-
-      if (categoryName.toUpperCase() === 'ERROR')     // HARDCODE
-        return;
-
-      if (categoryNames.indexOf(categoryName) === -1) {
-        categorizedTrips[categoryName] = {
-          categoryName,
-          color: colorOptions[categoryNames.length % colorOptions.length],
-          paths: [],
-          startTime: Infinity,
-          endTime: -Infinity,
-          visible: true,
-        };
-
-        if (categoryName.toUpperCase() === 'CAR')     // HARDCODE: car should be in white color
-          categorizedTrips[categoryName].color = [255, 255, 255];
-
-        categoryNames.push(categoryName);
-      }
-      let category = categorizedTrips[categoryName];
-
-      const path = tripData.map(
-        leg => [leg.shp[0], leg.shp[1], leg.tim]
-      );
-      category.paths.push(path);
-
-      if (path[0][2] < category.startTime) {
-        category.startTime = path[0][2];
-      }
-      if (path[path.length - 1][2] > category.endTime) {
-        category.endTime = path[path.length - 1][2];
-      }
-
-    });
-
-    return categoryNames.map(
-      categoryName => categorizedTrips[categoryName]
-    );
   }
 
   componentDidMount() {
@@ -159,7 +96,7 @@ class App extends Component {
   }
 
   _onChangeViewport(mapViewState) {
-    if(mapViewState.pitch > 60) {
+    if (mapViewState.pitch > 60) {
       mapViewState.pitch = 60;
     }
     this.setState({mapViewState});
@@ -175,14 +112,7 @@ class App extends Component {
 
   _toggleCategoryVisible(categoryName) {
     this.setState({
-        tripsData: this.state.tripsData.map(d => {
-            if(d.categoryName !== categoryName)
-                return d;
-            return {
-                ...d,
-                visible: !d.visible,
-            }
-        })
+      categorizedData: toggleCategoryVisible(this.state.categorizedData, categoryName)
     });
   }
 
@@ -192,11 +122,7 @@ class App extends Component {
 
   _onChangeCategoryColor(categoryName, color) {
     this.setState({
-      tripsData: this.state.tripsData.map(d => {
-        if (d.categoryName !== categoryName)
-          return d;
-        return {...d, color};
-      }),
+      categorizedData: setCategoryColor(this.state.categorizedData, categoryName, color),
     });
   }
 
@@ -204,10 +130,10 @@ class App extends Component {
     this.setState({currentTime});
   }
 
-  _getAnimationTimeBounds(tripsData) {
-    const visibleCategories = tripsData.filter(tripData => tripData.visible);
-    const startTime = Math.min.apply(null, visibleCategories.map(tripData => tripData.startTime));
-    const endTime = Math.max.apply(null, visibleCategories.map(tripData => tripData.endTime));
+  _getAnimationTimeBounds(categorizedData) {
+    const visibleCategories = categorizedData.filter(categoryData => categoryData.visible);
+    const startTime = Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
+    const endTime = Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
     return {
       startTime,
       endTime,
@@ -224,7 +150,7 @@ class App extends Component {
   }
 
   render() {
-    const animationBounds = this._getAnimationTimeBounds(this.state.tripsData);
+    const animationBounds = this._getAnimationTimeBounds(this.state.categorizedData);
     return (
       <div>
         <MapboxGLMap
@@ -238,7 +164,7 @@ class App extends Component {
         >
           <BeamDeckGL
             mapViewState={this.state.mapViewState}
-            tripsData={this.state.tripsData}
+            categorizedData={this.state.categorizedData}
             width={this.state.width} height={this.state.height}
             isAnimating={this.state.isAnimating}
             setAnimating={this._setAnimating}
@@ -252,7 +178,7 @@ class App extends Component {
         </MapboxGLMap>
         <Clock time={this.state.currentTime} />
         <Sidebar
-          tripsData={this.state.tripsData}
+          categorizedData={this.state.categorizedData}
           toggleCategoryVisible={this._toggleCategoryVisible}
           isAnimating={this.state.isAnimating}
           setAnimating={this._setAnimating}

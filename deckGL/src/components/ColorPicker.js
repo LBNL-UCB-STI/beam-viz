@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
+
 import autoBind from 'react-autobind';
 
 import {PhotoshopPicker} from 'react-color';
-import './color-picker.scss';
+import './ColorPicker.scss';
 
 
 export default class ColorPicker extends Component {

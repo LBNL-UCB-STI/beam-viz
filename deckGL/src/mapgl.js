@@ -1,7 +1,7 @@
 import GLMap from 'react-map-gl';
 
-function loadBuildings(map) {
-  map.on('load', function() {
+const loadBuildings = (map) => {
+  map.on('load', () => {
     map.addLayer({
       'id': '3d-buildings',
       'source': 'composite',
@@ -28,7 +28,7 @@ function loadBuildings(map) {
 export default class MapboxGLMap extends GLMap {
   componentDidMount() {
     super.componentDidMount();
-    if(this.props.mapRef) {
+    if (this.props.mapRef) {
       this.props.mapRef(this._map);
     }
     loadBuildings(this._map);

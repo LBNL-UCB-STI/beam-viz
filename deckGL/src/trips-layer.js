@@ -26,11 +26,11 @@ export default class TripsLayer extends Layer {
 
   updateState({props, oldProps, changeFlags: {dataChanged, somethingChanged}}) {
     const {attributeManager} = this.state;
-    if(dataChanged) {
+    if (dataChanged) {
       this.countVertices(props.data);
       this.state.attributeManager.invalidateAll();
     }
-    if(somethingChanged) {
+    if (somethingChanged) {
       this.updateUniforms();
     }
   }

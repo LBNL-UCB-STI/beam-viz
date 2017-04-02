@@ -44,7 +44,7 @@ export default class BeamDeckGL extends Component {
     // currentTime, animationSpeed and animationBounds are in seconds,
     // refreshInterval is in milli-seconds
     const speed = animationSpeed * this._refreshInterval / 1000;
-    this._animator = setInterval(function() {
+    this._animator = setInterval(() => {
       const {currentTime, animationBounds, setCurrentTime} = this.props;
       let time = currentTime;
       if (currentTime < animationBounds.startTime) {
@@ -55,13 +55,13 @@ export default class BeamDeckGL extends Component {
       }
       if (time > animationBounds.endTime) {
         time = animationBounds.startTime;
-        if(!this.props.loop) {
+        if (!this.props.loop) {
           this._stopAnimation();
           this.props.setAnimating(false);
         }
       }
       this.props.setCurrentTime(time);
-    }.bind(this), this._refreshInterval)
+    }, this._refreshInterval)
   }
 
   _stopAnimation() {
@@ -70,7 +70,7 @@ export default class BeamDeckGL extends Component {
 
   _resetAnimation() {
     this.props.setCurrentTime({currentTime: 0});
-    if(this.props.isAnimating) {
+    if (this.props.isAnimating) {
         this._stopAnimation();
         this._startAnimation();
     }
@@ -83,17 +83,21 @@ export default class BeamDeckGL extends Component {
 
   render () {
     const props = this.props;
-    const {tripsData, currentTime, trailLength, buildingData} = props;
+    const {categorizedData, currentTime, trailLength, buildingData} = props;
 
     // new TripsLayer is created with each render.
     // The new layer's id is compared with the old's. If the id's match, the new layer is ignored..
     // If we want to update the color (or anything else) after initialization, it needs to be reflected in the id.
-    let layers = tripsData.filter(tripData => tripData.visible)
-      .map(tripData => new TripsLayer({
-        id: tripData.categoryName + '-layer' + tripData.color.join(''),
-        data: tripData.paths,
+    let layers = categorizedData.filter(({ visible }) => visible)
+      .map(categoryData => new TripsLayer({
+        id: categoryData.categoryName + '-layer' + categoryData.colorID,
+        data: categoryData.paths,
         getPath: trip => trip,
-        getColor: d => tripData.color,
+        getColor: path => (
+          categoryData.getColor
+          ? categoryData.getColor(categoryData, path)
+          : categoryData.color
+        ),
         strokeWidth: 2,
         trailLength: trailLength,
         currentTime,

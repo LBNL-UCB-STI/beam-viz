@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 
-import ColorPicker from './components/color-picker';
+import SidebarCategoryLabel from './components/SidebarCategoryLabel';
+
 import './sidebar.scss';
 
 
@@ -15,7 +15,7 @@ export default class Sidebar extends Component {
 
   render() {
     const {
-      tripsData, toggleCategoryVisible,
+      categorizedData, toggleCategoryVisible,
       isAnimating, setAnimating,
       loop, toggleLoop,
       trailLength, trailRange, onTrailLengthChange,
@@ -97,32 +97,32 @@ export default class Sidebar extends Component {
 
         <div className='sidebar--section'>
           <h4>Layers</h4>
-
-          {tripsData.map(d =>
-          <div key={d.categoryName} className='sidebar--layers sidebar--input-group'>
-            <div className='layer--description'>
-              <div style={{display: 'inline-block'}}>
-              <ColorPicker
-                categoryName={d.categoryName}
-                color={d.color}
-                onChangeColor={(color) => onChangeCategoryColor(d.categoryName, color)}
-              />
+          {categorizedData.map(categoryData =>
+            categoryData.categoryName.toUpperCase() !== 'CHOICE'
+            ? (<SidebarCategoryLabel
+                key={categoryData.categoryName}
+                className='sidebar--layers sidebar--input-group'
+                categoryData={categoryData}
+                onChangeCategoryColor={onChangeCategoryColor}
+                toggleCategoryVisible={toggleCategoryVisible}
+              />)
+            : (
+              <div key={categoryData.categoryName}>
+                <SidebarCategoryLabel
+                  className='sidebar--layers sidebar--input-group'
+                  categoryData={{...categoryData, categoryName: 'CHOICE_HIGH'}}
+                  onChangeCategoryColor={onChangeCategoryColor}
+                  toggleCategoryVisible={toggleCategoryVisible}
+                />
+                <SidebarCategoryLabel
+                  className='sidebar--layers sidebar--input-group'
+                  categoryData={{...categoryData, categoryName: 'CHOICE_LOW'}}
+                  onChangeCategoryColor={onChangeCategoryColor}
+                  toggleCategoryVisible={toggleCategoryVisible}
+                />
               </div>
-              <div className='category-label'>
-                <label htmlFor={'chk-' + d.categoryName}>
-                  <span>{d.categoryName}</span>
-                </label>
-              </div>
-            </div>
-            <div className='chk-category'>
-              <input id={'chk-' + d.categoryName} type="checkbox"
-                checked={d.visible}
-                onChange={() => toggleCategoryVisible(d.categoryName)}
-              />
-            </div>
-          </div>
+            )
           )}
-
         </div>
       </div>
     );
