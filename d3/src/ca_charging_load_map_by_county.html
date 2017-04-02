@@ -27,7 +27,8 @@
             margin-left: 5px;
             margin-right: 5px;
             margin-top: 5px;
-            padding: 30px;
+            padding: 20px;
+            /*padding-left:20px;*/
             overflow:hidden;
             background-color: white;
             box-shadow: 3px 3px 7px #222;
@@ -37,16 +38,16 @@
             float: left;
             width: 69.8%;
             min-height:10px;
-            /*overflow:hidden;*/
-            /*padding-left:30px;*/
+            overflow:hidden;
             margin:auto;
-            /*background-color: #ececec;*/
         }
         #header-right {
-            float: right;;
+            float: right;
             width: 30%;
+            height: auto;
+            min-height:10px;
             overflow:hidden;
-            /*background-color: #696969;*/
+            margin:auto;
         }
 
         #container {
@@ -113,7 +114,7 @@
         /*}*/
 
         h1 {
-            font-size: 30px;
+            font-size: 25px;
             margin: 0;
         }
 
@@ -205,7 +206,7 @@
         </div>
         <div id="header-right" align="right">
             <img src="http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,fl_lossy,h_1440,w_720,f_auto,q_auto/v1/992571/beam-logo-filled_rxqvr0.png"
-            width="auto" height="65">
+            width="auto" height="54">
         </div>
     </div>
     <div id="container">
@@ -317,14 +318,9 @@
 //            .append("div")
 //            .attr("class", "tooltip")
 //            .style("opacity", 0);
+
         var zoom = d3.zoom()
-        //            .translateBy([-170,-290])
-        //            .scaleBy(2,2)
-            .scaleExtent([1, 40])
-            .translateExtent([[0, 0], [mapWidth, mapHeight]])
-            //            .attr("transform","translate(-170,-290)scale(2,2)")
-            //            .translateExtent([[-170, -290], [mapWidth + 90, mapHeight + 100]])
-            //            .translateExtent([-170,-290])
+            .scaleExtent([0, 8])
             .on("zoom", zoomed);
 
         // Define map projection
@@ -338,22 +334,12 @@
             .projection(projection);
 
         //Create SVG
-        var svgRight = d3.select("#right")
-            .append("svg:svg")
-            .attr("background", "#FFF");
+        // ======================================== div left ================================================//
+
 
         var svgLeft = d3.select("#left")
             .append("svg:svg")
             .attr("display","block");
-
-
-
-        var svgMap = svgRight.append("svg:g")
-            .attr("id","svgMap")
-            .call(zoom)
-            .call(zoom.translateBy, -170, 290)
-            .call(zoom.scaleTo,2,2)
-            .attr("transform","translate(-170,-290)scale(2,2)");
 
         var svgCountyInfo = svgLeft.append("g")
             .attr("id","svgCountyInfo")
@@ -369,22 +355,35 @@
             .attr("transform",
                 "translate(" + (margin.left) + "," + 120 + ")");
 
-//        var mapOverlay = svgMap.append("rect")
-//            .attr("class","overlay")
-//            .attr("id","overlay")
-//            .attr("fill","#696969")
-//            .attr("display","block")
-//            .attr("width", "100%")
-//            .attr("height", "100%")
-//            .attr("transform","translate(-170,-290)scale(2,2)")
-//            .call(zoom);
-
         var tvDefaultDisplay = svgLeft.append("text")
             .attr("font-size","20")
             .attr("text-align","center")
             .attr("transform","translate(20,100)")
             .attr("opacity", "0.5")
             .call(wrapText, 300);
+
+
+        // ======================================== div right ================================================//
+        var svgRight = d3.select("#right")
+            .append("svg:svg")
+            .attr("background", "#FFF");
+
+        var svgMap = svgRight.append("svg:g")
+            .attr("id","svgMap");
+//        .call(zoom)
+//            .call(zoom.transform, d3.zoomIdentity.translate(-200,-300).scale(2,2));
+
+        var zoomer = svgMap.append("rect")
+            .attr("class","overlay")
+            .attr("id","overlay")
+            .attr("fill","#696969")
+            .attr("display","block")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .call(zoom)
+            .call(zoom.transform, d3.zoomIdentity.translate(-200,-300).scale(2,2));
+
+        //=======================================================================================================
 
         // Define linear scale for output
         var color = d3.scaleQuantize()
@@ -626,7 +625,6 @@
                                     .attr("transform", "translate(0," + chartHeight + ")")
                                     .call(d3.axisBottom(x))
                                     .append("text")
-//                                    .attr("transform", "rotate(-90)")
                                     .attr("x", 11)
                                     .attr("dx", "10.8em")
                                     .attr("dy", "2.8em")
@@ -679,23 +677,9 @@
                     .text(function(d) { return d.properties.NAME; });
             });
         });
-
-//        function zoomed() {
-//            context.save();
-////            context.clearRect(0, 0, width, height);
-//            context.translate(d3.event.transform.x, d3.event.transform.y);
-//            context.scale(d3.event.transform.k, d3.event.transform.k);
-//            drawPoints();
-//            context.restore();
-//        }
         function zoomed() {
-            svgMap.attr("transform", 'translate(' + d3.event.transform.x + ',' + d3.event.transform.y + ')scale(' + d3.event.transform.k+ ")");
+            svgMap.attr("transform", d3.event.transform);
         }
-//        function zooming(d) {
-//            svgMap.attr("transform",
-//                "translate(" + d3.event.translate + ")"+ " scale(" + d3.event.scale + ")");
-//        }
-
     </script>
     </body>
 </html>
