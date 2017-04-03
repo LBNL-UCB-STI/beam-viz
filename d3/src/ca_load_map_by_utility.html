@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Charging load in CA</title>
+
+    <!--<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>-->
+    <script src="//d3js.org/d3.v4.min.js"></script>
+
+    <script type="text/javascript" src="http://use.typekit.com/brf5jpj.js"></script>
+    <script src="//use.typekit.net/drk2sev.js"></script>
+    <!--<script src="https://cdn.rawgit.com/Gmousse/dataframe-js/master/dist/dataframe-min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.pan-zoom.js/2.7.0/svg.pan-zoom.min.js"></script>-->
+    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+
+    <style type="text/css">
+
+        body {
+            margin: 0;
+            background-color: #48494B;
+            font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+        }
+
+        #header-container {
+            width: auto;
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-top: 5px;
+            padding: 20px;
+            /*padding-left:20px;*/
+            overflow:hidden;
+            background-color: white;
+            box-shadow: 3px 3px 7px #222;
+        }
+
+        #header-left {
+            float: left;
+            width: 69.8%;
+            min-height:10px;
+            overflow:hidden;
+            margin:auto;
+        }
+        #header-right {
+            float: right;
+            width: 30%;
+            height: auto;
+            min-height:10px;
+            overflow:hidden;
+            margin:auto;
+        }
+
+        #container {
+
+            margin-left: 5px;
+            margin-right: 5px;
+            margin-top: 2px;
+            position: relative;
+            overflow:hidden;
+            box-shadow: 3px 3px 7px #222;
+        }
+
+        #left {
+            float: left;
+            width: 32.8%;
+            height: 0;
+            padding-top:49%;
+            margin-bottom: -1000px;
+            padding-bottom: 1000px;
+            background-color: #ececec;
+            position: relative;
+        }
+        #right {
+            float: right;
+            width: 67%;
+            height: 0;
+            padding-top:49%;
+            margin-bottom: -1000px;
+            padding-bottom: 1000px;
+            background-color: #696969;
+            position: relative;
+        }
+        #cleared {
+            clear: both;
+        }
+        #chargingLoadChart {
+            fill: none;
+            stroke: #0080ff;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            stroke-width: 1.5;
+        }
+        #rectToolTip{
+            display: block;
+            width: 40%;
+            height: auto;
+            padding: 5px;
+            background-color: #fff;
+            color: #000;
+            fill: #fff;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+            position: relative;
+        }
+        /*#overlay {*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+        /*display: block;*/
+        /*}*/
+
+        h1 {
+            font-size: 25px;
+            margin: 0;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 5px 0 5px 0;
+        }
+
+        g{
+            background: #FFF;
+            /*position:relative;*/
+            /*display:block;*/
+            width: 100%;
+            height: 100%;
+        }
+
+        a {
+            color: #799DCB;
+            text-decoration: none;
+            transition: color .3s, background .3s, border .3s;
+        }
+        a:hover {
+            color: #48494b;
+            background: #e7e8e9;
+        }
+
+        svg {
+            /*display:block;*/
+            position: absolute;
+            display: block;
+            top:0;
+            left:0;
+            width: 100%;
+            height: 100%;
+        }
+
+        path {
+            fill: #799dcb;
+            stroke: #fff;
+            stroke-width: 0.5;
+            transition: transform 0.15s;
+        }
+        path:hover {
+            stroke: #FF7F50;
+            stroke-width: 1.5;
+            cursor:pointer;
+            /*transform: translateX(-3%) translateY(-5%);*/
+        }
+
+        /* Style for Custom Tooltip */
+        div.tooltip {
+            display: block;
+            width: 40%;
+            height: auto;
+            padding: 5px;
+            background-color: #fff;
+            color: #000;
+            fill: #fff;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            pointer-events: none;
+            position: relative;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+        .axis--x path {
+            display: none;
+        }
+        .utilityName {
+            -webkit-user-select: none; /* Chrome/Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+ */
+            /* Rules below not implemented in browsers yet */
+            /*-o-user-select: none;*/
+            user-select: none;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+<div id="header-container" >
+    <div id="header-left">
+        <h1>Power exports by CA utility (PLEXOS output)</h1>
+        <p>Source: <a href="http://www.beam-model.net/" target="new">Behavior, Energy, Analysis, Mobility Simulator</a></p>
+    </div>
+    <div id="header-right" align="right">
+        <img src="http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,fl_lossy,h_1440,w_720,f_auto,q_auto/v1/992571/beam-logo-filled_rxqvr0.png"
+             width="auto" height="54">
+    </div>
+</div>
+<div id="container">
+    <div id="left"></div>
+    <div id="right"></div>
+    <div id="cleared"></div>
+</div>
+
+<script type="text/javascript">
+
+    //==================================== Define methods =================================================#
+    /*
+     * Returns selected object on the top layer
+     * @returns {*}
+     */
+    d3.selection.prototype.moveToFront = function() {
+        return this.each(function(){
+            this.parentNode.appendChild(this);
+        });
+    };
+    /*
+     * Return true if the string contains the substring, it
+     * @param it
+     * @returns {boolean}
+     */
+    String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
+
+    /*
+     * Return true if the array contains the needle as an element
+     * @param needle
+     * @returns {boolean}
+     */
+    var contains = function(needle) {
+        // Per spec, the way to identify NaN is that it is not equal to itself
+        var findNaN = needle !== needle;
+        var indexOf;
+
+        if(!findNaN && typeof Array.prototype.indexOf === 'function') {
+            indexOf = Array.prototype.indexOf;
+        } else {
+            indexOf = function(needle) {
+                var i = -1, index = -1;
+
+                for(i = 0; i < this.length; i++) {
+                    var item = this[i];
+
+                    if((findNaN && item !== item) || item === needle) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                return index;
+            };
+        }
+
+        return indexOf.call(this, needle) > -1;
+    };
+
+    function wrapText(text, width) {
+        text.each(function () {
+            var text = d3.select(this),
+                words = "Click a utility to see the power exports!".split(/\s+/).reverse(),
+                word,
+                line = [],
+                lineNumber = 0,
+                lineHeight = 1.1, // ems
+                x = text.attr("x"),
+                y = text.attr("y"),
+                dy = 0, //parseFloat(text.attr("dy")),
+                tspan = text.text(null)
+                    .append("tspan")
+                    .attr("x", x)
+                    .attr("y", y);
+//                        .attr("dy", dy + "em");
+            while (word = words.pop()) {
+                line.push(word);
+                tspan.text(line.join(" "));
+                if (tspan.node().getComputedTextLength() > width) {
+                    line.pop();
+                    tspan.text(line.join(" "));
+                    line = [word];
+                    tspan = text.append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dx", (x-tspan.node().getComputedTextLength()))
+                        .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                        .text(word);
+                }
+            }
+        });
+    }
+
+    //===================================== Main scripts ===========================================#
+
+    var margin = {top: 30, right: 20, bottom: 30, left: 50};
+
+    // Width and height for SVG
+    var mapWidth = 760;
+    var mapHeight = 600;
+    var chartWidth = mapWidth/3;
+    var chartHeight = mapHeight/3;
+    var chargingLoadTitle, tvCountyName, tvTotalChargingLoad;
+
+    var zoom = d3.zoom()
+        .scaleExtent([0, 8])
+        .on("zoom", zoomed);
+
+    // Define map projection
+    var projection = d3.geoMercator()
+        .center([ -120, 37.5 ]) // x, y
+        .translate([ mapWidth/2, mapHeight/2 ])
+        .scale([ mapWidth*3.3 ]);
+
+    //Define path generator
+    var path = d3.geoPath()
+        .projection(projection);
+
+    //Create SVG
+    // ======================================== div left ================================================//
+
+
+    var svgLeft = d3.select("#left")
+        .append("svg:svg")
+        .attr("display","block");
+
+    var svgUtilityInfo = svgLeft.append("g")
+        .attr("id","svgCountyInfo")
+        .attr("transform",
+            "translate(" + (margin.left-40) + "," + margin.top + ")");
+
+    var svgLine = svgLeft
+        .append("g")
+        .attr("id","svgLine")
+        .attr("width", chartWidth+200 + margin.left + margin.right)
+        .attr("height", chartWidth+200 + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + (margin.left) + "," + 120 + ")");
+
+    var tvDefaultDisplay = svgLeft.append("text")
+        .attr("font-size","20")
+        .attr("text-align","center")
+        .attr("transform","translate(20,100)")
+        .attr("opacity", "0.5")
+        .call(wrapText, 300);
+
+
+    // ======================================== div right ================================================//
+    var svgRight = d3.select("#right")
+        .append("svg:svg")
+        .attr("background", "#FFF");
+
+    var svgMap = svgRight.append("svg:g")
+        .attr("id","svgMap");
+
+    var zoomer = svgMap.append("rect")
+        .attr("class","overlay")
+        .attr("id","overlay")
+        .attr("fill","#696969")
+        .attr("display","block")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .call(zoom)
+        .call(zoom.transform, d3.zoomIdentity.translate(-100,-100).scale(1.2,1.2));
+
+    //=======================================================================================================
+
+    // Define linear scale for output
+    var color = d3.scaleQuantize()
+        .range(["#758AA8",
+            "#4C668C",
+            "#2C4770",
+            "#2C4900",
+            "#051A38"]);
+
+    // Line function
+    var lineFunction = d3.line()
+        .curve(d3.curveBasis)
+        .x(function(d) { return x(d.time); })
+        .y(function(d) { return y(d.chargingLoad); });
+
+//    var parseTime = d3.timeParse("%Y-%m-%d HH:MM:SS");
+
+    var x = d3.scaleLinear().range([0, chartWidth]),
+        y = d3.scaleLinear().range([chartHeight, 0]),
+        z = d3.scaleOrdinal(d3.schemeCategory10);
+
+    // Load load profile here and set colors to each utility based on the daily load sum
+    var minVal = 999;
+    var maxVal = 0, utilityNameClicked, totalLoadClicked;
+    d3.csv("export_ca_utilities.csv", function(data){
+        console.log(data);
+
+        // GET UTILITY NAMES
+        var utilityKeys = [];
+        var utilityKeyMap = {
+            IID: "Imperial Irrigation District",
+            LDWP: "Los Angeles Department of Water & Power",
+            "PG&E_BAY": "Pacific Gas & Electric Company",
+            "PG&E_VLY": "Pacific Gas & Electric Company",
+            SCE: "Southern California Edison",
+            SDGE: "San Diego Gas & Electric",
+            SMUD: "Sacramento Municipal Utility District",
+            TIDC: "Turlock Irrigation District"
+        };
+        // SET KEYS FOR UTILITY NAME
+        for(var k=0;k<data.length;k++){
+            // Get utility keys
+            if(!contains.call(utilityKeys, data[k].utilities)){
+                utilityKeys.push(data[k].utilities);
+            }
+        }
+        // GET TOTAL ENERGY CONSUMPTION FOR EACH UTILITY
+        var aggLoad = [];
+        for(var j=0;j<utilityKeys.length;j++){
+            var tempAgg = 0;
+            for(var i=0;i<data.length;i++){
+                if(data[i].utilities === utilityKeys[j]){
+                    tempAgg = +tempAgg + (+data[i].inflexEV + +data[i].noEV + +data[i].smartEV)/3;
+                }
+            }
+            // Check if the key already exists
+            var dupIndex = -1;
+            for(var p=0;p<aggLoad.length;p++){
+                if(aggLoad[p].id === utilityKeyMap[utilityKeys[j]]){
+                    dupIndex = p;
+                    break;
+                }
+            }
+
+            if(dupIndex !== -1){
+                aggLoad[dupIndex].chargingLoad = +aggLoad[dupIndex].chargingLoad + tempAgg;
+            }else{
+                aggLoad.push({id: utilityKeyMap[utilityKeys[j]], chargingLoad:tempAgg});
+            }
+        }
+        console.log(aggLoad);
+
+
+        //Set input domain for color scale
+        color.domain([
+            d3.min(aggLoad, function(d) {
+                if(d.chargingLoad < minVal){
+                    minVal = d.chargingLoad;
+                }
+                return minVal;
+            }),
+            d3.max(aggLoad, function(d) {
+                if(d.chargingLoad > maxVal){
+                    maxVal = d.chargingLoad;
+                }
+                return maxVal;
+            })
+        ]);
+
+        d3.json("CA_utilities.zip.geojson", function(geojson) {
+                console.log(geojson);
+
+            // Parse data from the json file and assign it to json object
+            for(var i = 0; i<aggLoad.length; i ++){
+                var utility = aggLoad[i].id;
+                var chargingLoad = aggLoad[i].chargingLoad;
+
+                // Find the corresponding state inside the GeoJSON
+                for (var j = 0; j < geojson.features.length; j++)  {
+                    if (utility === geojson.features[j].properties.Name) {
+                        // Add abbreviation of the name
+                        var temp = geojson.features[j].properties.Name.replace(/[a-z]/g, '');
+                        geojson.features[j].properties.AbbrName = temp.replace(/ /g,'');
+                        // Copy the data value into the JSON
+                        geojson.features[j].properties.chargingLoad = chargingLoad;
+                        break;
+                    }
+
+                }
+            }
+
+            // Bind data and create one path per GeoJson feature
+            svgMap.selectAll("path")
+                .data(geojson.features)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .style("fill", function(d) {
+                    // Get data value
+                    var value = d.properties.chargingLoad;
+                    if (value) {
+                        //If value exists…
+                        return color(value);
+                    } else {
+                        //If value is undefined…
+                        return "rgb(213,222,217)";
+                    }
+                })
+                .on("mouseover", function(d){ // When mouse is over a utility
+
+                    // Hide the default font
+                    tvDefaultDisplay.transition()
+                        .duration(50)
+                        .style("opacity", 0);
+//                    var sel = d3.select(this);
+//                    sel.moveToFront();
+
+                    // Show utility name on the left
+                    if(!utilityNameClicked){
+                        tvCountyName = svgUtilityInfo
+                            .append("text")
+                            .attr("id","utilityName")
+                            .attr("color","#000")
+                            .attr("font-size","18")
+                            .attr("font-weight","bold")
+                            .attr("transform", "translate(10,10)")
+                            .text(d.properties.Name)
+                            .transition().duration(500).attr("opacity","0.9");
+
+                        tvTotalChargingLoad = svgUtilityInfo
+                            .append("text")
+                            .attr("id","totalLoad")
+                            .attr("color","#000")
+                            .attr("font-size","15")
+                            .attr("transform", "translate(10,35)")
+                            .text("Daily Total Charging Load (MWH): " +  (+d.properties.chargingLoad > 0? d.properties.chargingLoad.toFixed(2) : "undefined"))
+                            .transition().duration(500).attr("opacity","0.5");
+                    }
+                })
+                .on("click", function(d){
+                    d3.select("#utilityName").remove();
+                    d3.select("#totalLoad").remove();
+                    d3.select("#utilityNameClicked").remove();
+                    d3.select("#totalLoadClicked").remove();
+                    d3.select("#svgLine").remove();
+
+                    // County name when a utility is clicked
+                    utilityNameClicked = svgUtilityInfo
+                        .append("text")
+                        .attr("id","utilityNameClicked")
+                        .attr("color","#000")
+                        .attr("font-size","18")
+                        .attr("font-weight","bold")
+                        .attr("transform", "translate(10,10)")
+                        .text(d.properties.Name)
+                        .transition().duration(500).attr("opacity","0.9");
+
+                    // Total load when a utility is clicked
+                    totalLoadClicked = svgUtilityInfo
+                        .append("text")
+                        .attr("id","totalLoadClicked")
+                        .attr("color","#000")
+                        .attr("font-size","15")
+                        .attr("transform", "translate(10,35)")
+                        .text("Daily Total Power exports (MWH): " +  (+d.properties.chargingLoad > 0? d.properties.chargingLoad.toFixed(2) : "undefined"))
+                        .transition().duration(500).attr("opacity","0.5");
+
+                    // If the utility has charging load
+                    if(d.properties.chargingLoad){
+                        svgLine = svgLeft
+                            .append("g")
+                            .attr("id","svgLine")
+                            .attr("width", chartWidth+200 + margin.left + margin.right)
+                            .attr("height", chartWidth+200 + margin.top + margin.bottom)
+                            .append("g")
+                            .attr("transform",
+                                "translate(" + (margin.left+30) + "," + 120 + ")");
+                        
+                        // load disaggregate charging load csv
+                        var tempLoadList = [];
+
+                        // Get scenario types
+                        var scenarioKeys = ["noEV","inflexEV","smartEV"];
+                        for(var n=0;n<data.length;n++){
+                            // Check if the data is for the selected utility
+                            if(utilityKeyMap[data[n].utilities] === d.properties.Name){
+                                // Check if the key already exists
+                                var dupIndex = -1;
+                                for(var p=0;p<tempLoadList.length;p++){
+                                    if(tempLoadList[p].time === +data[n].time){
+                                        dupIndex = p;
+                                        break;
+                                    }
+                                }
+
+                                if(dupIndex !== -1){
+                                    tempLoadList[dupIndex].noEV += +data[n].noEV;
+                                    tempLoadList[dupIndex].inflexEV += +data[n].inflexEV;
+                                    tempLoadList[dupIndex].smartEV += +data[n].smartEV;
+                                }else{
+                                    tempLoadList.push({time: +data[n].time, noEV: +data[n].noEV, inflexEV: +data[n].inflexEV, smartEV: +data[n].smartEV});
+                                }
+
+                            }
+                        }
+                        var chargingScenarios = scenarioKeys.map(function(id) {
+                            return {
+                                id: id,
+                                values: tempLoadList.map(function(d) {
+                                    return {time: +d.time, chargingLoad: d[id]};
+                                })
+                            };
+                        });
+
+                        x.domain(d3.extent(tempLoadList, function(d) { return d.time; }));
+                        y.domain([
+                            d3.min(chargingScenarios, function(c) { return d3.min(c.values, function(d) { return d.chargingLoad; }); }),
+                            d3.max(chargingScenarios, function(c) { return d3.max(c.values, function(d) { return d.chargingLoad; }); })
+                        ]);
+                        z.domain(chargingScenarios.map(function(c) { return c.id; }));
+
+                        // Title
+                        svgLine.append("text")
+                            .attr("transform", "translate(" + (chartWidth/2) + ",-15)")
+                            .attr("id","chargingLoadTitle")
+                            .style("font-size","15px")
+                            .style("text-anchor", "middle")
+                            .attr("margin-bottom","10px")
+                            .text("Exports (MW) by EV charging scenario");
+
+                        svgLine.append("g")
+                            .attr("class", "axis axis--x")
+                            .attr("transform", "translate(0," + chartHeight + ")")
+                            .call(d3.axisBottom(x))
+                            .append("text")
+                            .attr("x", 11)
+                            .attr("dx", "10.8em")
+                            .attr("dy", "2.8em")
+                            .attr("fill", "#000")
+                            .text("Time, hour");;
+
+                        svgLine.append("g")
+                            .attr("class", "axis axis--y")
+                            .call(d3.axisLeft(y))
+                            .append("text")
+                            .attr("transform", "rotate(-90)")
+                            .attr("y", 6)
+                            .attr("dy", "0.71em")
+                            .attr("fill", "#000")
+                            .text("Exports, MW");
+
+                        var chart = svgLine.selectAll(".siteType")
+                            .data(chargingScenarios)
+                            .enter().append("g")
+                            .attr("class", "siteType");
+
+                        chart.append("path")
+                            .attr("class", "line")
+                            .attr("id","chargingLoadChart")
+                            .attr("d", function(d) { return lineFunction(d.values); })
+                            .style("stroke", function(d) { return z(d.id); });
+
+                        chart.append("text")
+                            .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
+                            .attr("transform", function(d) {
+                                return "translate(" + x(d.value.time) + "," + y(d.value.chargingLoad) + ")";
+                            })
+                            .attr("x", 3)
+                            .attr("dy", "0.35em")
+                            .style("font", "10px sans-serif")
+                            .style("fill", function(d){return z(d.id)})
+                            .text(function(d) { return d.id; });
+
+//                        chart.append("text")
+//                            .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
+//                            .attr("transform", function(d) {
+//                                return "translate(" + (chartWidth/2) + "," + chartHeight + ")";
+//                            })
+////                            .attr("x", 3)
+////                            .attr("dy", "0.35em")
+//                            .style("font", "10px sans-serif")
+//                            .style("fill", function(d){return z(d.id)})
+//                            .text(function(d) { return d.id; });
+                    }
+
+                })
+                .on("mouseout", function(){ // When mouse leaves
+                    d3.select("#utilityName").remove();
+                    d3.select("#totalLoad").remove();
+                    if(!utilityNameClicked){
+                        tvDefaultDisplay.transition()
+                            .duration(50)
+                            .style("opacity", 0.5);
+                    }
+                })
+                .append("title")
+                .text(function(d) { return d.properties.Name; });
+            svgMap.selectAll("text")
+                .data(geojson.features)
+                .enter()
+                .append("svg:text")
+                .attr("class","utilityName")
+                .text(function(d){
+                    return (d.properties.AbbrName?d.properties.AbbrName:'');
+                })
+                .attr("x", function(d){
+                    return path.centroid(d)[0];
+                })
+                .attr("y", function(d){
+                    return  path.centroid(d)[1];
+                })
+                .attr("text-anchor","middle")
+                .attr('font-size','6pt')
+                .style("fill","white");
+        });
+    });
+    function zoomed() {
+        svgMap.attr("transform", d3.event.transform);
+    }
+    function type(d, _, columns) {
+        d.date = parseTime(d.date);
+        for (var i = 1, n = columns.length, c; i < n; ++i) d[c = columns[i]] = +d[c];
+        return d;
+    }
+</script>
+</body>
+</html>
