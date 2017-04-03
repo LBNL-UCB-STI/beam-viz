@@ -208,7 +208,7 @@
 <body>
 <div id="header-container" >
     <div id="header-left">
-        <h1>Power exports by CA utility (PLEXOS output)</h1>
+        <h1>Net load by CA utility (PLEXOS output)</h1>
         <p>Source: <a href="http://www.beam-model.net/" target="new">Behavior, Energy, Analysis, Mobility Simulator</a></p>
     </div>
     <div id="header-right" align="right">
@@ -276,7 +276,7 @@
     function wrapText(text, width) {
         text.each(function () {
             var text = d3.select(this),
-                words = "Click a utility to see the power exports!".split(/\s+/).reverse(),
+                words = "Click a utility to see the power net load!".split(/\s+/).reverse(),
                 word,
                 line = [],
                 lineNumber = 0,
@@ -387,7 +387,7 @@
         .range(["#758AA8",
             "#4C668C",
             "#2C4770",
-            "#2C4900",
+            "#1A1F4B",
             "#051A38"]);
 
     // Line function
@@ -396,7 +396,7 @@
         .x(function(d) { return x(d.time); })
         .y(function(d) { return y(d.chargingLoad); });
 
-//    var parseTime = d3.timeParse("%Y-%m-%d HH:MM:SS");
+    //    var parseTime = d3.timeParse("%Y-%m-%d HH:MM:SS");
 
     var x = d3.scaleLinear().range([0, chartWidth]),
         y = d3.scaleLinear().range([chartHeight, 0]),
@@ -405,7 +405,7 @@
     // Load load profile here and set colors to each utility based on the daily load sum
     var minVal = 99999;
     var maxVal = -99999, utilityNameClicked, totalLoadClicked;
-    d3.csv("export_ca_utilities.csv", function(data){
+    d3.csv("net_load_ca_utilities.csv", function(data){
         console.log(data);
 
         // GET UTILITY NAMES
@@ -471,7 +471,7 @@
         ]);
 
         d3.json("CA_utilities.zip.geojson", function(geojson) {
-                console.log(geojson);
+            console.log(geojson);
 
             // Parse data from the json file and assign it to json object
             for(var i = 0; i<aggLoad.length; i ++){
@@ -536,7 +536,7 @@
                             .attr("color","#000")
                             .attr("font-size","15")
                             .attr("transform", "translate(10,35)")
-                            .text("Daily Total Charging Load (MWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
+                            .text("Daily Total Net Load (MWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
                             .transition().duration(500).attr("opacity","0.5");
                     }
                 })
@@ -565,7 +565,7 @@
                         .attr("color","#000")
                         .attr("font-size","15")
                         .attr("transform", "translate(10,35)")
-                        .text("Daily Total Power exports (MWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
+                        .text("Daily Total Net Load (MWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
                         .transition().duration(500).attr("opacity","0.5");
 
                     // If the utility has charging load
@@ -578,7 +578,7 @@
                             .append("g")
                             .attr("transform",
                                 "translate(" + (margin.left+30) + "," + 120 + ")");
-                        
+
                         // load disaggregate charging load csv
                         var tempLoadList = [];
 
@@ -629,7 +629,7 @@
                             .style("font-size","15px")
                             .style("text-anchor", "middle")
                             .attr("margin-bottom","10px")
-                            .text("Exports (MW) by EV charging scenario");
+                            .text("Net load (MW) by EV charging scenario");
 
                         svgLine.append("g")
                             .attr("class", "axis axis--x")
@@ -650,7 +650,7 @@
                             .attr("y", 6)
                             .attr("dy", "0.71em")
                             .attr("fill", "#000")
-                            .text("Exports, MW");
+                            .text("Net load, MW");
 
                         var chart = svgLine.selectAll(".siteType")
                             .data(chargingScenarios)
