@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ba4c5561-685c-43d7-9b22-069874eee8ec" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/ca_load_map_by_utility.html" afterPath="$PROJECT_DIR$/d3/src/ca_load_map_by_utility.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html" afterPath="$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/net_load_ca_utilities.csv" afterPath="$PROJECT_DIR$/d3/src/net_load_ca_utilities.csv" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -22,8 +22,8 @@
       <file leaf-file-name="ca_charging_load_map_by_county.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="545" column="49" lean-forward="true" selection-start-line="545" selection-start-column="49" selection-end-line="545" selection-end-column="49" />
+            <state relative-caret-position="7590">
+              <caret line="545" column="49" lean-forward="false" selection-start-line="545" selection-start-column="49" selection-end-line="545" selection-end-column="49" />
               <folding>
                 <element signature="e#6218#6337#0" expanded="false" />
                 <element signature="e#6751#7573#0" expanded="false" />
@@ -37,8 +37,8 @@
       <file leaf-file-name="ca_load_map_by_utility.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/d3/src/ca_load_map_by_utility.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="769">
-              <caret line="441" column="68" lean-forward="true" selection-start-line="441" selection-start-column="68" selection-end-line="441" selection-end-column="68" />
+            <state relative-caret-position="6615">
+              <caret line="441" column="68" lean-forward="false" selection-start-line="441" selection-start-column="68" selection-end-line="441" selection-end-column="68" />
               <folding />
             </state>
           </provider>
@@ -47,8 +47,8 @@
       <file leaf-file-name="ca_net_load_by_utility.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="561" column="53" lean-forward="true" selection-start-line="561" selection-start-column="53" selection-end-line="561" selection-end-column="53" />
+            <state relative-caret-position="369">
+              <caret line="542" column="21" lean-forward="true" selection-start-line="542" selection-start-column="21" selection-end-line="542" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -68,7 +68,7 @@
         <entry file="jar://$APPLICATION_HOME_DIR$/lib/webstorm.jar!/resources/html5-schema/html5/sectional.rnc">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="315">
-              <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+              <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -77,8 +77,8 @@
       <file leaf-file-name="multi_line_legend_example.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/d3/src/multi_line_legend_example.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="615">
-              <caret line="267" column="24" lean-forward="true" selection-start-line="267" selection-start-column="24" selection-end-line="267" selection-end-column="24" />
+            <state relative-caret-position="4005">
+              <caret line="267" column="24" lean-forward="false" selection-start-line="267" selection-start-column="24" selection-end-line="267" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -87,7 +87,7 @@
       <file leaf-file-name="multi_line_example.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/d3/src/multi_line_example.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
+            <state relative-caret-position="1140">
               <caret line="76" column="25" lean-forward="true" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
               <folding />
             </state>
@@ -105,8 +105,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>tooltip</find>
-      <find>defa</find>
       <find>defaultTe</find>
       <find>[0]</find>
       <find>tooltiip</find>
@@ -135,6 +133,8 @@
       <find>Power exports by</find>
       <find>exports</find>
       <find>Charging Load</find>
+      <find>TID</find>
+      <find>MW</find>
     </findStrings>
     <replaceStrings>
       <replace>chartWidth</replace>
@@ -143,6 +143,7 @@
       <replace>utility</replace>
       <replace>net load</replace>
       <replace>Net Load</replace>
+      <replace>GW</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -166,7 +167,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-293" />
+    <option name="x" value="-296" />
     <option name="y" value="-1057" />
     <option name="width" value="1920" />
     <option name="height" value="1053" />
@@ -187,6 +188,7 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -233,7 +235,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -339,26 +340,27 @@
       <option name="presentableId" value="Default" />
       <updated>1490758841203</updated>
       <workItem from="1490758843962" duration="54772000" />
-      <workItem from="1491105009231" duration="22234000" />
+      <workItem from="1491105009231" duration="22395000" />
+      <workItem from="1491249673826" duration="603000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="77006000" />
+    <option name="totallyTimeSpent" value="77770000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-293" y="-1057" width="1920" height="1053" extended-state="6" />
+    <frame x="-296" y="-1057" width="1920" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1790416" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1864139" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -379,6 +381,67 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7590">
+          <caret line="545" column="49" lean-forward="false" selection-start-line="545" selection-start-column="49" selection-end-line="545" selection-end-column="49" />
+          <folding>
+            <element signature="e#6218#6337#0" expanded="false" />
+            <element signature="e#6751#7573#0" expanded="false" />
+            <element signature="e#7198#7442#0" expanded="false" />
+            <element signature="e#14849#15277#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d3/src/ca_load_map_by_utility.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6615">
+          <caret line="441" column="68" lean-forward="true" selection-start-line="441" selection-start-column="68" selection-end-line="441" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d3/src/CA_counties.zip.geojson">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/webstorm.jar!/resources/html5-schema/html5/sectional.rnc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d3/src/multi_line_legend_example.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4005">
+          <caret line="267" column="24" lean-forward="true" selection-start-line="267" selection-start-column="24" selection-end-line="267" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d3/src/multi_line_example.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1140">
+          <caret line="76" column="25" lean-forward="true" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8160">
+          <caret line="544" column="53" lean-forward="true" selection-start-line="544" selection-start-column="53" selection-end-line="544" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -402,8 +465,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/multi_line_legend_example.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="267" column="24" lean-forward="true" selection-start-line="267" selection-start-column="24" selection-end-line="267" selection-end-column="24" />
+        <state relative-caret-position="4005">
+          <caret line="267" column="24" lean-forward="false" selection-start-line="267" selection-start-column="24" selection-end-line="267" selection-end-column="24" />
           <folding />
         </state>
       </provider>
@@ -411,7 +474,7 @@
     <entry file="jar://$APPLICATION_HOME_DIR$/lib/webstorm.jar!/resources/html5-schema/html5/sectional.rnc">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
-          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -426,8 +489,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="545" column="49" lean-forward="true" selection-start-line="545" selection-start-column="49" selection-end-line="545" selection-end-column="49" />
+        <state relative-caret-position="7590">
+          <caret line="545" column="49" lean-forward="false" selection-start-line="545" selection-start-column="49" selection-end-line="545" selection-end-column="49" />
           <folding>
             <element signature="e#6218#6337#0" expanded="false" />
             <element signature="e#6751#7573#0" expanded="false" />
@@ -439,7 +502,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/multi_line_example.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
+        <state relative-caret-position="1140">
           <caret line="76" column="25" lean-forward="true" selection-start-line="76" selection-start-column="25" selection-end-line="76" selection-end-column="25" />
           <folding />
         </state>
@@ -447,16 +510,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/ca_load_map_by_utility.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="769">
-          <caret line="441" column="68" lean-forward="true" selection-start-line="441" selection-start-column="68" selection-end-line="441" selection-end-column="68" />
+        <state relative-caret-position="6615">
+          <caret line="441" column="68" lean-forward="false" selection-start-line="441" selection-start-column="68" selection-end-line="441" selection-end-column="68" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="561" column="53" lean-forward="true" selection-start-line="561" selection-start-column="53" selection-end-line="561" selection-end-column="53" />
+        <state relative-caret-position="369">
+          <caret line="542" column="21" lean-forward="true" selection-start-line="542" selection-start-column="21" selection-end-line="542" selection-end-column="21" />
           <folding />
         </state>
       </provider>

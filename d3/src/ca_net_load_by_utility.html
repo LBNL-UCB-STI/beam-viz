@@ -415,6 +415,8 @@
             LDWP: "Los Angeles Department of Water & Power",
             "PG&E_BAY": "Pacific Gas & Electric Company",
             "PG&E_VLY": "Pacific Gas & Electric Company",
+            PGE_BAY: "Pacific Gas & Electric Company",
+            PGE_VLY: "Pacific Gas & Electric Company",
             SCE: "Southern California Edison",
             SDGE: "San Diego Gas & Electric",
             SMUD: "Sacramento Municipal Utility District",
@@ -536,7 +538,7 @@
                             .attr("color","#000")
                             .attr("font-size","15")
                             .attr("transform", "translate(10,35)")
-                            .text("Daily Total Net Load (MWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
+                            .text("Daily Total Net Load (GWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
                             .transition().duration(500).attr("opacity","0.5");
                     }
                 })
@@ -565,7 +567,7 @@
                         .attr("color","#000")
                         .attr("font-size","15")
                         .attr("transform", "translate(10,35)")
-                        .text("Daily Total Net Load (MWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
+                        .text("Daily Total Net Load (GWH): " +  (d.properties.chargingLoad? d.properties.chargingLoad.toFixed(2) : "undefined"))
                         .transition().duration(500).attr("opacity","0.5");
 
                     // If the utility has charging load
@@ -584,6 +586,7 @@
 
                         // Get scenario types
                         var scenarioKeys = ["noEV","inflexEV","smartEV"];
+//                        var scenarioKeys = ["noEV","Unmanaged","Managed"];
                         for(var n=0;n<data.length;n++){
                             // Check if the data is for the selected utility
                             if(utilityKeyMap[data[n].utilities] === d.properties.Name){
@@ -629,7 +632,7 @@
                             .style("font-size","15px")
                             .style("text-anchor", "middle")
                             .attr("margin-bottom","10px")
-                            .text("Net load (MW) by EV charging scenario");
+                            .text("Net load (GW) by EV charging scenario");
 
                         svgLine.append("g")
                             .attr("class", "axis axis--x")
@@ -650,7 +653,7 @@
                             .attr("y", 6)
                             .attr("dy", "0.71em")
                             .attr("fill", "#000")
-                            .text("Net load, MW");
+                            .text("Net load, GW");
 
                         var chart = svgLine.selectAll(".siteType")
                             .data(chargingScenarios)
