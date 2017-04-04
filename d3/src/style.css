@@ -1,0 +1,183 @@
+/*<style type="text/css">*/
+
+body {
+    margin: 0;
+    background-color: #48494B;
+    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+}
+
+#header-container {
+    width: auto;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    padding: 20px;
+    /*padding-left:20px;*/
+    overflow:hidden;
+    background-color: white;
+    box-shadow: 3px 3px 7px #222;
+}
+
+#header-left {
+    float: left;
+    width: 69.8%;
+    min-height:10px;
+    overflow:hidden;
+    margin:auto;
+}
+#header-right {
+    float: right;
+    width: 30%;
+    height: auto;
+    min-height:10px;
+    overflow:hidden;
+    margin:auto;
+}
+
+#container {
+
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 2px;
+    position: relative;
+    overflow:hidden;
+    box-shadow: 3px 3px 7px #222;
+}
+
+#left {
+    float: left;
+    width: 32.8%;
+    height: 0;
+    padding-top:49%;
+    margin-bottom: -1000px;
+    padding-bottom: 1000px;
+    background-color: #ececec;
+    position: relative;
+}
+#right {
+    float: right;
+    width: 67%;
+    height: 0;
+    padding-top:49%;
+    margin-bottom: -1000px;
+    padding-bottom: 1000px;
+    background-color: #696969;
+    position: relative;
+}
+#cleared {
+    clear: both;
+}
+#chargingLoadChart {
+    fill: none;
+    stroke: #0080ff;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-width: 1.5;
+}
+#rectToolTip{
+    display: block;
+    width: 40%;
+    height: auto;
+    padding: 5px;
+    background-color: #fff;
+    color: #000;
+    fill: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    position: relative;
+}
+/*#overlay {*/
+/*width: 100%;*/
+/*height: 100%;*/
+/*display: block;*/
+/*}*/
+
+h1 {
+    font-size: 25px;
+    margin: 0;
+}
+
+p {
+    font-size: 16px;
+    margin: 5px 0 5px 0;
+}
+
+g{
+    background: #FFF;
+    /*position:relative;*/
+    /*display:block;*/
+    width: 100%;
+    height: 100%;
+}
+
+a {
+    color: #799DCB;
+    text-decoration: none;
+    transition: color .3s, background .3s, border .3s;
+}
+a:hover {
+    color: #48494b;
+    background: #e7e8e9;
+}
+
+svg {
+    /*display:block;*/
+    position: absolute;
+    display: block;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+}
+
+path {
+    fill: #799dcb;
+    stroke: #fff;
+    stroke-width: 0.5;
+    transition: transform 0.15s;
+}
+path:hover {
+    stroke: #FF7F50;
+    stroke-width: 1.5;
+    cursor:pointer;
+    transform: translateX(-3%) translateY(-5%);
+}
+
+/* Style for Custom Tooltip */
+div.tooltip {
+    display: block;
+    width: 40%;
+    height: auto;
+    padding: 5px;
+    background-color: #fff;
+    color: #000;
+    fill: #fff;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    position: relative;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+.axis--x path {
+    display: none;
+}
+
+
+
+/*</style>*/

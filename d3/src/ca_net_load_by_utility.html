@@ -276,7 +276,7 @@
     function wrapText(text, width) {
         text.each(function () {
             var text = d3.select(this),
-                words = "Click a utility to see the power net load!".split(/\s+/).reverse(),
+                words = "Click a utility to see the net load!".split(/\s+/).reverse(),
                 word,
                 line = [],
                 lineNumber = 0,
@@ -378,17 +378,14 @@
         .attr("width", "100%")
         .attr("height", "100%")
         .call(zoom)
-        .call(zoom.transform, d3.zoomIdentity.translate(-100,-100).scale(1.2,1.2));
+        .call(zoom.transform, d3.zoomIdentity.translate(-130,-130).scale(1.4,1.4));
 
     //=======================================================================================================
 
     // Define linear scale for output
-    var color = d3.scaleQuantize()
-        .range(["#758AA8",
-            "#4C668C",
-            "#2C4770",
-            "#1A1F4B",
-            "#051A38"]);
+    var color = d3.scaleLinear()
+        .range(["#FFAAAA",
+            "#550000"]);
 
     // Line function
     var lineFunction = d3.line()
@@ -405,6 +402,7 @@
     // Load load profile here and set colors to each utility based on the daily load sum
     var minVal = 99999;
     var maxVal = -99999, utilityNameClicked, totalLoadClicked;
+
     d3.csv("net_load_ca_utilities.csv", function(data){
         console.log(data);
 
