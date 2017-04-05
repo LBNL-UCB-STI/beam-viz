@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ba4c5561-685c-43d7-9b22-069874eee8ec" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/d3/src/style.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/beam-viz.iml" afterPath="$PROJECT_DIR$/.idea/beam-viz.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html" afterPath="$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html" afterPath="$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -25,13 +20,15 @@
       <file leaf-file-name="ca_charging_load_map_by_county.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="433">
-              <caret line="550" column="62" lean-forward="true" selection-start-line="550" selection-start-column="62" selection-end-line="550" selection-end-column="62" />
+            <state relative-caret-position="510">
+              <caret line="421" column="67" lean-forward="true" selection-start-line="421" selection-start-column="67" selection-end-line="421" selection-end-column="67" />
               <folding>
                 <element signature="e#1379#2574#0" expanded="false" />
                 <element signature="e#3518#4340#0" expanded="false" />
-                <element signature="e#4469#5820#0" expanded="false" />
-                <element signature="e#17108#17483#0" expanded="false" />
+                <element signature="e#4394#4436#0" expanded="false" />
+                <element signature="e#8315#9260#0" expanded="false" />
+                <element signature="e#11200#11672#0" expanded="false" />
+                <element signature="e#23339#23766#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -119,14 +116,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>mercator</find>
-      <find>d3.line</find>
-      <find>line</find>
-      <find>city</find>
-      <find>zoom()</find>
-      <find>zoomed()</find>
-      <find>ca_</find>
-      <find>contains.call</find>
       <find>county</find>
       <find>charging load</find>
       <find>to see the</find>
@@ -149,6 +138,14 @@
       <find>[&quot;site.type&quot;]</find>
       <find>remove(</find>
       <find>svgmap</find>
+      <find>mouseover</find>
+      <find>461</find>
+      <find>wrapText</find>
+      <find>chargingloadchart</find>
+      <find>getbounding</find>
+      <find>console</find>
+      <find>cons</find>
+      <find>get</find>
     </findStrings>
     <replaceStrings>
       <replace>chartWidth</replace>
@@ -184,9 +181,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-295" />
+    <option name="x" value="443" />
     <option name="y" value="-1057" />
-    <option name="width" value="1920" />
+    <option name="width" value="1182" />
     <option name="height" value="1057" />
   </component>
   <component name="ProjectView">
@@ -359,15 +356,15 @@
       <updated>1490758841203</updated>
       <workItem from="1490758843962" duration="54772000" />
       <workItem from="1491105009231" duration="22395000" />
-      <workItem from="1491249673826" duration="16032000" />
+      <workItem from="1491249673826" duration="20197000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="93199000" />
+    <option name="totallyTimeSpent" value="97364000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-295" y="-1057" width="1920" height="1057" extended-state="6" />
+    <frame x="443" y="-1057" width="1182" height="1057" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1790416" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -375,7 +372,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1858873" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20979765" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -406,8 +403,10 @@
           <folding>
             <element signature="e#1379#2574#0" expanded="false" />
             <element signature="e#3518#4340#0" expanded="false" />
-            <element signature="e#4469#5820#0" expanded="false" />
-            <element signature="e#17108#17483#0" expanded="false" />
+            <element signature="e#4394#4436#0" expanded="false" />
+            <element signature="e#8315#9260#0" expanded="false" />
+            <element signature="e#11200#11672#0" expanded="false" />
+            <element signature="e#23339#23766#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -467,8 +466,10 @@
           <folding>
             <element signature="e#1379#2574#0" expanded="false" />
             <element signature="e#3518#4340#0" expanded="false" />
-            <element signature="e#4469#5820#0" expanded="false" />
-            <element signature="e#17108#17483#0" expanded="false" />
+            <element signature="e#4394#4436#0" expanded="false" />
+            <element signature="e#8315#9260#0" expanded="false" />
+            <element signature="e#11200#11672#0" expanded="false" />
+            <element signature="e#23339#23766#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -539,13 +540,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="550" column="62" lean-forward="true" selection-start-line="550" selection-start-column="62" selection-end-line="550" selection-end-column="62" />
+        <state relative-caret-position="510">
+          <caret line="421" column="67" lean-forward="true" selection-start-line="421" selection-start-column="67" selection-end-line="421" selection-end-column="67" />
           <folding>
             <element signature="e#1379#2574#0" expanded="false" />
             <element signature="e#3518#4340#0" expanded="false" />
-            <element signature="e#4469#5820#0" expanded="false" />
-            <element signature="e#17108#17483#0" expanded="false" />
+            <element signature="e#4394#4436#0" expanded="false" />
+            <element signature="e#8315#9260#0" expanded="false" />
+            <element signature="e#11200#11672#0" expanded="false" />
+            <element signature="e#23339#23766#0" expanded="false" />
           </folding>
         </state>
       </provider>
