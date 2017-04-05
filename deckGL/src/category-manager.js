@@ -1,15 +1,6 @@
 import {
+  CATEGORY_COLORS,
   COLOR_OPTIONS,
-  CAR_COLOR,
-  WALK_COLOR,
-  TAXI_COLOR,
-  BUS_COLOR,
-  SUBWAY_COLOR,
-  TRAM_COLOR,
-  RAIL_COLOR,
-  CABLE_CAR_COLOR,
-  CHOICE_HIGH_COLOR,
-  CHOICE_LOW_COLOR
 } from './constants';
 
 const normalizeValue = (minValue, maxValue, value) => (
@@ -52,11 +43,11 @@ const getCategorizedLayers = (tripsData) => {
     if (categoryName.toUpperCase() === 'LEG_SWITCH')     // HARDCODED
       return;
 
-    let category;
+    let autoColoredCount = 0;
     if (categoryNames.indexOf(categoryName) === -1) {
-      category = categorizedData[categoryName] = {
+      let category = categorizedData[categoryName] = {
         categoryName,
-        color: COLOR_OPTIONS[categoryNames.length % COLOR_OPTIONS.length],
+        color: CATEGORY_COLORS[categoryName],
         paths: [],
         startTime: Infinity,
         endTime: -Infinity,
@@ -65,35 +56,18 @@ const getCategorizedLayers = (tripsData) => {
         maxValue: -Infinity,
       };
 
-      if (categoryName === 'WALK') {
-         category.color = WALK_COLOR;
-      } else if (categoryName === 'BUS') {
-         category.color = BUS_COLOR;
-      }else if (categoryName === 'CAR') {
-         category.color = CAR_COLOR;
-      }else if (categoryName === 'TAXI') {
-         category.color = TAXI_COLOR;
-      }else if (categoryName === 'TRAM') {
-         category.color = TRAM_COLOR;
-      }else if (categoryName === 'SUBWAY') {
-         category.color = SUBWAY_COLOR;
-      }else if (categoryName === 'RAIL') {
-         category.color = RAIL_COLOR;
-      }else if (categoryName === 'CABLE_CAR') {
-         category.color = CABLE_CAR_COLOR; 
+      if (!category.color) {
+        category.color = COLOR_OPTIONS[autoColoredCount % COLOR_OPTIONS.length];
+        autoColoredCount++;
       }
 
       if (categoryName === 'CHOICE') {
-        let color = category.color = {
-          lowColor: CHOICE_LOW_COLOR,
-          highColor: CHOICE_HIGH_COLOR
-        };
-        category.colorID = category.color.lowColor.concat(category.color.highColor).join('');
         category.getColor = (categoryData, path) => {
           const value = path.choiceValue;
           const normalValue = normalizeValue(categoryData.minValue, categoryData.maxValue, value);
           return normalizedColor(categoryData.color.lowColor, categoryData.color.highColor, normalValue);
         };
+        category.colorID = category.color.lowColor.concat(category.color.highColor).join('');
       }
       else {
         category.colorID = category.color.join('');
@@ -101,9 +75,7 @@ const getCategorizedLayers = (tripsData) => {
 
       categoryNames.push(categoryName);
     }
-    else {
-      category = categorizedData[categoryName];
-    }
+    let category = categorizedData[categoryName];
 
     const path = tripData.map(
       leg => [leg.shp[0], leg.shp[1], leg.tim]

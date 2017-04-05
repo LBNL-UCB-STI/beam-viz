@@ -70,9 +70,9 @@ class App extends Component {
 
        this.setState({jump: jumpValue});
     }
-    
+
     handleFrameSizeD(event) {
-        
+
         const frameSizeValueD = document.getElementById("framesize").value;
 
         if(frameSizeValueD.length > 6){
