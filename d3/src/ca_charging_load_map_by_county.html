@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Charging load in CA</title>
 
     <script src="http://d3js.org/d3.v4.min.js"></script>
-    <script type="text/javascript" src="http://use.typekit.com/brf5jpj.js"></script>
-    <script src="http://use.typekit.net/drk2sev.js"></script>
+
     <script src="http://spin.js.org/spin.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
+    <script src="http://use.typekit.net/drk2sev.js"></script>
+    <script type="text/javascript" src="http://use.typekit.com/brf5jpj.js"></script>
     <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
 
     <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
     <div id="header-container" >
@@ -26,9 +32,9 @@
             width="auto" height="54">
         </div>
     </div>
-    <div id="container">
-        <div id="left"></div>
-        <div id="right"></div>
+    <div id="container" class="ui-widget-content">
+        <div id="left" class="ui-widget-content"></div>
+        <div id="right" class="ui-widget-content"></div>
         <div id="cleared"></div>
     </div>
 
@@ -150,7 +156,7 @@
          * Initialize charging load map with given input file
          * @param inputFile
          */
-        function initChargingLoadMap(inputFile, geoJson){
+        function initChargingLoadMap(inputFile, geoJson) {
             spinner.spin(target);
 
             isCountyClicked = false;
@@ -161,14 +167,6 @@
                 .attr("id","svgCountyInfo")
                 .attr("transform",
                     "translate(" + (margin.left-40) + "," + margin.top + ")");
-
-//            var svgLine = svgLeft.append("g")
-//                .attr("id","svgLine")
-////                .attr("width", chartWidth+200 + margin.left + margin.right)
-////                .attr("height", chartWidth+200 + margin.top + margin.bottom)
-//                .attr("width", 100)
-//                .attr("height", 100);
-//                .attr("transform", "translate(" + (margin.left) + "," + 120 + ")");
 
             tvDefaultDisplay = svgLeft.append("text")
                 .attr("font-size","20")
@@ -526,6 +524,21 @@
 
         });
 
+        $( function() {
+            $( "#left" ).resizable();
+        } );
+
+        $('#left').resize(function(){
+//            console.log($("#right").parent().width());
+//            console.log($("#svgLeft").parent().width());
+//            document.getElementById('left').setAttribute("style","width:"+($("#svgLeft").parent().width()));
+            document.getElementById('right').setAttribute("width:",($("#left").parent().width() - $("#svgLeft").parent().width())+"px");
+//            document.getElementById('svgLeft').setAttribute("style","width:"+($("#svgLeft").parent().width()));
+            document.getElementById('svgRight').setAttribute("width",($("#left").parent().width() - $("#svgLeft").parent().width())+"px");
+//            d3.select("#svgRight").attr("width",($("#left").parent().width() - $("#svgLeft").parent().width()));
+            console.log($("#left").parent().width() - $("#svgLeft").parent().width());
+        });
+
         //===================================== Main scripts ===========================================#
 
         // GLOBAL VARIABLES
@@ -561,26 +574,17 @@
             .attr("transform",
                 "translate(" + (margin.left-40) + "," + margin.top + ")");
 
-//        var svgLine = svgLeft
-//            .append("g")
-//            .attr("id","svgLine")
-//            .attr("width", chartWidth+200 + margin.left + margin.right)
-//            .attr("height", chartWidth+200 + margin.top + margin.bottom)
-//            .attr("transform", "translate(" + (margin.left) + "," + 120 + ")");
-
         var tvDefaultDisplay = svgLeft.append("text")
             .attr("font-size","20")
             .attr("text-align","center")
             .attr("transform","translate(20,100)")
             .attr("opacity", "0.5")
             .text("Please choose a file to display!");
-//            .call(wrapText, 400);
-
 
         // ============= div right ============//
         var svgRight = d3.select("#right")
             .append("svg:svg")
-            .attr("id","svgLeft")
+            .attr("id","svgRight")
             .attr("background", "#FFF");
         var svgMap = svgRight.append("g").attr("id","svgMap");
         var zoom = d3.zoom()
@@ -615,11 +619,6 @@
             .range(["#FFAAAA",
                 "#550000"]);
 
-        // Set the ranges
-//        var x = d3.scaleLinear().range([0, chartWidth]),
-//            y = d3.scaleLinear().range([chartHeight, 0]),
-//            z = d3.scaleOrdinal(d3.schemeCategory10);
-
         // Load load profile here and set colors to each county based on the daily load sum
         var minVal = 999;
         var maxVal = 0, countyNameClicked, totalLoadClicked;
@@ -628,16 +627,24 @@
 
         d3.select(window)
             .on("resize", function() {
-//                console.log('width: ' + $('#svgLine')[0].getBBox().width);
-//                console.log('height: ' + $('#svgLine')[0].getBBox().height);
-//                console.log('parent width: ' + $('#svgLeft').parent().width());
-//                console.log('parent height: ' + $('#svgLeft').parent().height());
-//                $('#svgLine').width($('#svgLeft').parent().width()).height();
-//                d3.select('#svgLine')
-//                    .attr("width",$('#svgLeft').parent().width())
-//                    .attr("height",$('#svgLeft').parent().width()/ chartAspect);
-//                console.log('width: ' + $('#svgLine')[0].getBBox().width);
+                // Resize the chart
             });
+//        d3.select("#right")
+//            .on("resize",function(){
+//               // Resize the right svg
+//                console.log($("#right").parent().width);
+//                console.log($("#svgLeft").parent().width);
+//                d3.select("svgRight").attr("width",$("#right").parent().width - $("#svgLeft").parent().width);
+//            });
+//        d3.select("#left")
+//            .on("resize",function(){
+//                // Resize the left svg
+//                console.log($("#right").parent().width);
+//                console.log($("#svgLeft").parent().width);
+//                d3.select("#left").attr("width",$("#svgLeft").parent().width);
+//                d3.select("#right").attr("width",$("#left").parent().width - $("#svgRight").parent().width);
+//
+//            });
 
         spinner.stop();
     </script>

@@ -39,28 +39,30 @@ body {
     margin-left: 5px;
     margin-right: 5px;
     margin-top: 2px;
-    position: relative;
+    /*position: relative;*/
+    background-color: #696969;
     overflow:hidden;
     box-shadow: 3px 3px 7px #222;
 }
 
 #left {
     float: left;
-    width: 32.8%;
+    width: 32.5%;
     height: 0;
     padding-top:49%;
     margin-bottom: -1000px;
     padding-bottom: 1000px;
+    overflow: scroll;
     background-color: #ececec;
     position: relative;
 }
 #right {
     float: right;
     width: 67%;
-    height: 0;
-    padding-top:49%;
-    margin-bottom: -1000px;
-    padding-bottom: 1000px;
+    height: 1000px;
+    /*padding-top:49%;*/
+    /*margin-bottom: -1000px;*/
+    /*padding-bottom: 1000px;*/
     background-color: #696969;
     position: relative;
 }
@@ -108,7 +110,7 @@ p {
 }
 
 g{
-    background: #FFF;
+    background: #696969;
     position:relative;
     /*display:block;*/
     width: 100%;
@@ -155,9 +157,9 @@ div.tooltip {
     width: 40%;
     height: auto;
     padding: 5px;
-    background-color: #fff;
+    background-color: #696969;
     color: #000;
-    fill: #fff;
+    fill: #696969;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
