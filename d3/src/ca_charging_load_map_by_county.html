@@ -162,12 +162,13 @@
                 .attr("transform",
                     "translate(" + (margin.left-40) + "," + margin.top + ")");
 
-            svgLine = svgLeft.append("g")
-                .attr("id","svgLine")
-                .attr("width", chartWidth+200 + margin.left + margin.right)
-                .attr("height", chartWidth+200 + margin.top + margin.bottom)
-                .attr("transform",
-                    "translate(" + (margin.left) + "," + 120 + ")");
+//            var svgLine = svgLeft.append("g")
+//                .attr("id","svgLine")
+////                .attr("width", chartWidth+200 + margin.left + margin.right)
+////                .attr("height", chartWidth+200 + margin.top + margin.bottom)
+//                .attr("width", 100)
+//                .attr("height", 100);
+//                .attr("transform", "translate(" + (margin.left) + "," + 120 + ")");
 
             tvDefaultDisplay = svgLeft.append("text")
                 .attr("font-size","20")
@@ -310,12 +311,30 @@
                             }
                         })
                         .on("click", function(d){
+                            //============================== on clicked =================================//
                             d3.select("#countyName").remove();
                             d3.select("#totalLoad").remove();
                             d3.select("#countyNameClicked").remove();
                             d3.select("#totalLoadClicked").remove();
                             d3.select("#svgLine").remove();
+
                             isCountyClicked = true;
+
+                            // Readjust the range of the chart
+                            console.log($('#svgLeft').parent().width());
+
+                            var chartWidthUpdated = $('#svgLeft').parent().width()-(margin.right+ margin.left + 60);
+                            var chartHeightUpdated = chartWidthUpdated / chartAspect;
+                            var x = d3.scaleLinear().range([0, chartWidthUpdated]),
+                                y = d3.scaleLinear().range([chartHeightUpdated, 0]),
+                                z = d3.scaleOrdinal(d3.schemeCategory10);
+
+                            // Line function
+                            var lineFunction = d3.line()
+                                .curve(d3.curveBasis)
+                                .x(function(d) { return x(d.time); })
+                                .y(function(d) { return y(d.chargingLoad); });
+
                             // County name when a county is clicked
                             countyNameClicked = svgCountyInfo
                                 .append("text")
@@ -340,15 +359,6 @@
                             // If the county has charging load
 
                             if(d.properties[chargingLoadKey]){
-                                svgLine = svgLeft
-                                    .append("g")
-                                    .attr("id","svgLine")
-                                    .attr("width", $('#svgLeft').parent().width())
-                                    .attr("height", $('#svgLeft').parent().width() * chartAspect)
-                                    .append("g")
-                                    .attr("transform",
-                                        "translate(" + (margin.left) + "," + 120 + ")");
-
 
                                 // load disaggregate charging load csv
                                 var tempLoadObj = {};
@@ -416,26 +426,37 @@
                                 ]);
                                 z.domain(siteTypes.map(function(c) { return c.id; }));
 
+                                var svgLine = svgLeft
+                                    .append("g")
+                                    .attr("id","svgLine")
+                                    .attr("width", chartWidthUpdated)
+                                    .attr("height", chartHeightUpdated)
+                                    //                                    .append("g")
+                                    .attr("transform",
+                                        "translate(" + (margin.left) + "," + 120 + ")");
+
                                 // Title
                                 svgLine.append("text")
-                                    .attr("transform", "translate(" + ($('#svgLeft').parent().width()/2-10) + ",-15)")
+//                                    .attr("transform", "translate(" + chartWidthUpdated + ",-15)")
+                                    .attr("transform", "translate(" + (chartWidthUpdated /2) + ",-15)")
                                     .attr("id","chargingLoadTitle")
                                     .style("text-anchor", "middle")
                                     .attr("margin-bottom","10px")
                                     .text("Charging Load (kW) by site type");
 
-                                console.log(chartAspect);
+                                // x-axis
                                 svgLine.append("g")
                                     .attr("class", "axis axis--x")
-                                    .attr("transform", "translate(0," + $('#svgLine')[0].getBBox().height + ")")
+                                    .attr("transform", "translate(0," + chartHeightUpdated + ")")
                                     .call(d3.axisBottom(x))
                                     .append("text")
                                     .attr("x", 11)
                                     .attr("dx", "10.8em")
                                     .attr("dy", "2.8em")
                                     .attr("fill", "#000")
-                                    .text("Time, hour");;
+                                    .text("Time, hour");
 
+                                // y-axis
                                 svgLine.append("g")
                                     .attr("class", "axis axis--y")
                                     .call(d3.axisLeft(y))
@@ -447,9 +468,11 @@
                                     .attr("fill", "#000")
                                     .text("Charging Load, kW");
 
+                                // chart
                                 var lineChart = svgLine.selectAll("siteType")
                                     .data(siteTypes)
-                                    .enter().append("g")
+                                    .enter()
+                                    .append("g")
                                     .attr("class", "siteType");
 
                                 lineChart.append("path")
@@ -458,12 +481,14 @@
                                     .attr("d", function(d) { return lineFunction(d.values); })
                                     .style("stroke", function(d) { return z(d.id); });
 
+                                // line label
                                 lineChart.append("text")
                                     .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
                                     .attr("transform", function(d) { return "translate(" + x(d.value.time) + "," + y(d.value.chargingLoad) + ")"; })
                                     .attr("x", 3)
                                     .attr("dy", "0.35em")
                                     .style("font", "10px sans-serif")
+                                    .style("fill", function(d){return z(d.id)})
                                     .text(function(d) { return d.id; });
                             }
 
@@ -536,13 +561,12 @@
             .attr("transform",
                 "translate(" + (margin.left-40) + "," + margin.top + ")");
 
-        var svgLine = svgLeft
-            .append("g")
-            .attr("id","svgLine")
-            .attr("width", chartWidth+200 + margin.left + margin.right)
-            .attr("height", chartWidth+200 + margin.top + margin.bottom)
-            .attr("transform",
-                "translate(" + (margin.left) + "," + 120 + ")");
+//        var svgLine = svgLeft
+//            .append("g")
+//            .attr("id","svgLine")
+//            .attr("width", chartWidth+200 + margin.left + margin.right)
+//            .attr("height", chartWidth+200 + margin.top + margin.bottom)
+//            .attr("transform", "translate(" + (margin.left) + "," + 120 + ")");
 
         var tvDefaultDisplay = svgLeft.append("text")
             .attr("font-size","20")
@@ -591,16 +615,10 @@
             .range(["#FFAAAA",
                 "#550000"]);
 
-        // Line function
-        var lineFunction = d3.line()
-            .curve(d3.curveBasis)
-             .x(function(d) { return x(d.time); })
-             .y(function(d) { return y(d.chargingLoad); });
-
         // Set the ranges
-        var x = d3.scaleLinear().range([0, chartWidth]),
-            y = d3.scaleLinear().range([chartHeight, 0]),
-            z = d3.scaleOrdinal(d3.schemeCategory10);
+//        var x = d3.scaleLinear().range([0, chartWidth]),
+//            y = d3.scaleLinear().range([chartHeight, 0]),
+//            z = d3.scaleOrdinal(d3.schemeCategory10);
 
         // Load load profile here and set colors to each county based on the daily load sum
         var minVal = 999;

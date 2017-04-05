@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ba4c5561-685c-43d7-9b22-069874eee8ec" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html" afterPath="$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/d3/src/style.css" afterPath="$PROJECT_DIR$/d3/src/style.css" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -20,15 +21,18 @@
       <file leaf-file-name="ca_charging_load_map_by_county.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="421" column="67" lean-forward="true" selection-start-line="421" selection-start-column="67" selection-end-line="421" selection-end-column="67" />
+            <state relative-caret-position="261">
+              <caret line="325" column="113" lean-forward="false" selection-start-line="325" selection-start-column="113" selection-end-line="325" selection-end-column="113" />
               <folding>
                 <element signature="e#1379#2574#0" expanded="false" />
                 <element signature="e#3518#4340#0" expanded="false" />
                 <element signature="e#4394#4436#0" expanded="false" />
-                <element signature="e#8315#9260#0" expanded="false" />
-                <element signature="e#11200#11672#0" expanded="false" />
-                <element signature="e#23339#23766#0" expanded="false" />
+                <element signature="e#8391#9336#0" expanded="false" />
+                <element signature="e#9418#9926#0" expanded="false" />
+                <element signature="e#11276#11748#0" expanded="false" />
+                <element signature="e#11802#13488#0" expanded="false" />
+                <element signature="e#12258#13462#0" expanded="false" />
+                <element signature="e#24718#25145#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -37,8 +41,8 @@
       <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/d3/src/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="20" lean-forward="false" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+            <state relative-caret-position="601">
+              <caret line="168" column="1" lean-forward="true" selection-start-line="168" selection-start-column="1" selection-end-line="168" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -47,8 +51,8 @@
       <file leaf-file-name="ca_net_load_by_utility.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="496" column="29" lean-forward="false" selection-start-line="496" selection-start-column="22" selection-end-line="496" selection-end-column="29" />
+            <state relative-caret-position="368">
+              <caret line="254" column="46" lean-forward="true" selection-start-line="254" selection-start-column="46" selection-end-line="254" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -116,15 +120,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>county</find>
-      <find>charging load</find>
-      <find>to see the</find>
-      <find>&lt;h</find>
-      <find>var sel</find>
-      <find>abbr</find>
-      <find>zoomer</find>
-      <find>total charging</find>
-      <find>total char</find>
       <find>Power exports by</find>
       <find>exports</find>
       <find>Charging Load</find>
@@ -141,11 +136,20 @@
       <find>mouseover</find>
       <find>461</find>
       <find>wrapText</find>
-      <find>chargingloadchart</find>
       <find>getbounding</find>
-      <find>console</find>
       <find>cons</find>
       <find>get</find>
+      <find>svgLine.append(&quot;g&quot;</find>
+      <find>margin</find>
+      <find>console</find>
+      <find>chartaspect</find>
+      <find>console.log</find>
+      <find>chargingloadchart</find>
+      <find>sitetype</find>
+      <find>svgline</find>
+      <find>line</find>
+      <find>x</find>
+      <find>linf</find>
     </findStrings>
     <replaceStrings>
       <replace>chartWidth</replace>
@@ -181,9 +185,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="443" />
+    <option name="x" value="-296" />
     <option name="y" value="-1057" />
-    <option name="width" value="1182" />
+    <option name="width" value="1920" />
     <option name="height" value="1057" />
   </component>
   <component name="ProjectView">
@@ -356,15 +360,15 @@
       <updated>1490758841203</updated>
       <workItem from="1490758843962" duration="54772000" />
       <workItem from="1491105009231" duration="22395000" />
-      <workItem from="1491249673826" duration="20197000" />
+      <workItem from="1491249673826" duration="25234000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="97364000" />
+    <option name="totallyTimeSpent" value="102401000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="443" y="-1057" width="1182" height="1057" extended-state="0" />
+    <frame x="-296" y="-1057" width="1920" height="1057" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1790416" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -404,9 +408,12 @@
             <element signature="e#1379#2574#0" expanded="false" />
             <element signature="e#3518#4340#0" expanded="false" />
             <element signature="e#4394#4436#0" expanded="false" />
-            <element signature="e#8315#9260#0" expanded="false" />
-            <element signature="e#11200#11672#0" expanded="false" />
-            <element signature="e#23339#23766#0" expanded="false" />
+            <element signature="e#8391#9336#0" expanded="false" />
+            <element signature="e#9418#9926#0" expanded="false" />
+            <element signature="e#11276#11748#0" expanded="false" />
+            <element signature="e#11802#13488#0" expanded="false" />
+            <element signature="e#12258#13462#0" expanded="false" />
+            <element signature="e#24718#25145#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -467,9 +474,12 @@
             <element signature="e#1379#2574#0" expanded="false" />
             <element signature="e#3518#4340#0" expanded="false" />
             <element signature="e#4394#4436#0" expanded="false" />
-            <element signature="e#8315#9260#0" expanded="false" />
-            <element signature="e#11200#11672#0" expanded="false" />
-            <element signature="e#23339#23766#0" expanded="false" />
+            <element signature="e#8391#9336#0" expanded="false" />
+            <element signature="e#9418#9926#0" expanded="false" />
+            <element signature="e#11276#11748#0" expanded="false" />
+            <element signature="e#11802#13488#0" expanded="false" />
+            <element signature="e#12258#13462#0" expanded="false" />
+            <element signature="e#24718#25145#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -524,31 +534,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="20" lean-forward="false" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+        <state relative-caret-position="601">
+          <caret line="168" column="1" lean-forward="true" selection-start-line="168" selection-start-column="1" selection-end-line="168" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/ca_net_load_by_utility.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="496" column="29" lean-forward="false" selection-start-line="496" selection-start-column="22" selection-end-line="496" selection-end-column="29" />
+        <state relative-caret-position="368">
+          <caret line="254" column="46" lean-forward="true" selection-start-line="254" selection-start-column="46" selection-end-line="254" selection-end-column="46" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/d3/src/ca_charging_load_map_by_county.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="421" column="67" lean-forward="true" selection-start-line="421" selection-start-column="67" selection-end-line="421" selection-end-column="67" />
+        <state relative-caret-position="261">
+          <caret line="325" column="113" lean-forward="false" selection-start-line="325" selection-start-column="113" selection-end-line="325" selection-end-column="113" />
           <folding>
             <element signature="e#1379#2574#0" expanded="false" />
             <element signature="e#3518#4340#0" expanded="false" />
             <element signature="e#4394#4436#0" expanded="false" />
-            <element signature="e#8315#9260#0" expanded="false" />
-            <element signature="e#11200#11672#0" expanded="false" />
-            <element signature="e#23339#23766#0" expanded="false" />
+            <element signature="e#8391#9336#0" expanded="false" />
+            <element signature="e#9418#9926#0" expanded="false" />
+            <element signature="e#11276#11748#0" expanded="false" />
+            <element signature="e#11802#13488#0" expanded="false" />
+            <element signature="e#12258#13462#0" expanded="false" />
+            <element signature="e#24718#25145#0" expanded="false" />
           </folding>
         </state>
       </provider>

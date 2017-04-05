@@ -109,7 +109,7 @@ p {
 
 g{
     background: #FFF;
-    /*position:relative;*/
+    position:relative;
     /*display:block;*/
     width: 100%;
     height: 100%;
@@ -128,6 +128,7 @@ a:hover {
 svg {
     /*display:block;*/
     position: absolute;
+    overflow: hidden;
     display: block;
     top:0;
     left:0;
