@@ -42,7 +42,8 @@ const config = {
         test: /node_modules[\/\\]mapbox-gl/,
         loader: 'babel-loader',
         query: {
-          plugins: ['transform-flow-strip-types']
+          plugins: ['transform-flow-strip-types'],
+          presets: ['es2015']
         }
       },
       {
