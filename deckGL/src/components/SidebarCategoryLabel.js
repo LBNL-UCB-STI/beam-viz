@@ -19,9 +19,9 @@ const SidebarCategoryLabel = ({
           categoryName={categoryName}
           color={
             categoryName === 'CHOICE_HIGH'
-              ? color.maxColor
+              ? color.highColor
               : categoryName === 'CHOICE_LOW'
-                ? color.minColor
+                ? color.lowColor
                 : color
           }
           onChangeColor={newColor => onChangeCategoryColor(categoryName, newColor)}

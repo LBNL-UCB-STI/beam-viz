@@ -1,11 +1,18 @@
+import {
+  COLOR_OPTIONS,
+  CAR_COLOR,
+  CHOICE_LOW_COLOR,
+  CHOICE_HIGH_COLOR,
+} from './constants';
+
 const normalizeValue = (minValue, maxValue, value) => (
   (minValue === maxValue)
   ? 1
   : (value - minValue) / (maxValue - minValue)
 );
 
-const normalizedColor = (minColor, maxColor, normalValue) => (
-  minColor.map((c, i) => c + (maxColor[i] - c) * normalValue)
+const normalizedColor = (lowColor, highColor, normalValue) => (
+  lowColor.map((c, i) => c + (highColor[i] - c) * normalValue)
 );
 
 const getCategorizedLayers = (tripsData) => {
@@ -27,24 +34,22 @@ const getCategorizedLayers = (tripsData) => {
    * Leg format: [[lng 1, lat 1, time 1], [lng 2, lat 2, time 2], ...]
    */
   let categoryNames = [];
-  const colorOptions = [[100, 240, 100], [253, 128, 93], [0, 204, 255], [255, 255, 0]];
-  let categorizedTrips = {};
-  // let getLayerColor = layerColorer(colorOptions);
+  let categorizedData = {};
 
   tripsData.map(tripData => {
     const categoryName = tripData[0].typ;
 
     if (categoryName.toUpperCase() === 'ERROR')     // HARDCODED
       return;
-      
+
     if (categoryName.toUpperCase() === 'LEG_SWITCH')     // HARDCODED
       return;
 
     let category;
     if (categoryNames.indexOf(categoryName) === -1) {
-      category = categorizedTrips[categoryName] = {
+      category = categorizedData[categoryName] = {
         categoryName,
-        color: colorOptions[categoryNames.length % colorOptions.length],
+        color: COLOR_OPTIONS[categoryNames.length % COLOR_OPTIONS.length],
         paths: [],
         startTime: Infinity,
         endTime: -Infinity,
@@ -56,31 +61,29 @@ const getCategorizedLayers = (tripsData) => {
       if (categoryName === 'WALK') {
          category.color = [85,195,74];   // HARDCODED
       } else if (categoryName === 'BUS') {
-         category.color = [238,208,34];   
+         category.color = [238,208,34];
       }else if (categoryName === 'CAR') {
-         category.color = [68,178,170];   
+         category.color = [68,178,170];
       }else if (categoryName === 'TRAM') {
-         category.color = [182,113,206];   
+         category.color = [182,113,206];
       }else if (categoryName === 'SUBWAY') {
-         category.color = [234,33,45];   
+         category.color = [234,33,45];
       }else if (categoryName === 'RAIL') {
-         category.color = [182,113,206];   
+         category.color = [182,113,206];
       }else if (categoryName === 'CABLE_CAR') {
-         category.color = [182,113,206];   
+         category.color = [182,113,206];
       }
 
       if (categoryName === 'CHOICE') {
-        const minColor = [127, 23, 29];
-        const maxColor = [255, 255, 255];
-        category.color = {
-          minColor,
-          maxColor,
+        let color = category.color = {
+          lowColor: CHOICE_LOW_COLOR,
+          highColor: CHOICE_HIGH_COLOR
         };
-        category.colorID = minColor.concat(maxColor).join('');
+        category.colorID = category.color.lowColor.concat(category.color.highColor).join('');
         category.getColor = (categoryData, path) => {
           const value = path.choiceValue;
           const normalValue = normalizeValue(categoryData.minValue, categoryData.maxValue, value);
-          return normalizedColor(categoryData.color.minColor, categoryData.color.maxColor, normalValue);
+          return normalizedColor(categoryData.color.lowColor, categoryData.color.highColor, normalValue);
         };
       }
       else {
@@ -90,7 +93,7 @@ const getCategorizedLayers = (tripsData) => {
       categoryNames.push(categoryName);
     }
     else {
-      category = categorizedTrips[categoryName];
+      category = categorizedData[categoryName];
     }
 
     const path = tripData.map(
@@ -117,7 +120,7 @@ const getCategorizedLayers = (tripsData) => {
   });
 
   return categoryNames.map(
-    categoryName => categorizedTrips[categoryName]
+    categoryName => categorizedData[categoryName]
   );
 }
 
@@ -125,12 +128,12 @@ const getCategorizedLayers = (tripsData) => {
 const setCategoryColor = (categorizedData, categoryName, color) => (
   categorizedData.map(categoryData => {
     if (categoryData.categoryName === 'CHOICE' && (categoryName === 'CHOICE_HIGH' || categoryName === 'CHOICE_LOW')) {
-      const minColor = (categoryName === 'CHOICE_LOW') ? color : categoryData.color.minColor;
-      const maxColor = (categoryName === 'CHOICE_HIGH') ? color : categoryData.color.maxColor;
+      const lowColor = (categoryName === 'CHOICE_LOW') ? color : categoryData.color.lowColor;
+      const highColor = (categoryName === 'CHOICE_HIGH') ? color : categoryData.color.highColor;
       return {
         ...categoryData,
-        color: {minColor, maxColor},
-        colorID: minColor.concat(maxColor).join(''),
+        color: {lowColor, highColor},
+        colorID: lowColor.concat(highColor).join(''),
       };
     }
     if (categoryData.categoryName !== categoryName) {

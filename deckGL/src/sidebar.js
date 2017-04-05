@@ -24,6 +24,7 @@ export default class Sidebar extends Component {
       animationBounds,
       onChangeCategoryColor,
       mapStyle, mapStyleOptions, setMapStyle,
+      allCategoriesVisible, toggleAllCategoriesVisibility,
     } = this.props;
     return (
       <div id='sidebar'>
@@ -46,7 +47,7 @@ export default class Sidebar extends Component {
           <div className='sidebar--input-group'>
             <label>Animation</label>
             <input type='button'
-              onClick={() => setAnimating(!isAnimating)}
+              onClick={() => setAnimating(!isAnimating, true)}
               value={isAnimating ? 'Pause' : 'Play'}
             />
           </div>
@@ -97,6 +98,17 @@ export default class Sidebar extends Component {
 
         <div className='sidebar--section'>
           <h4>Layers</h4>
+          <div className='sidebar--layers sidebar--input-group'>
+            <div className='layer--description all-categories'>
+              <label htmlFor='chk-all-categories'>Show all</label>
+            </div>
+            <div className='chk-category'>
+              <input id='chk-all-categories' type="checkbox"
+                checked={allCategoriesVisible}
+                onChange={toggleAllCategoriesVisibility}
+              />
+            </div>
+          </div>
           {categorizedData.map(categoryData =>
             categoryData.categoryName.toUpperCase() !== 'CHOICE'
             ? (<SidebarCategoryLabel
@@ -124,6 +136,31 @@ export default class Sidebar extends Component {
             )
           )}
         </div>
+        <div>
+          <br/>
+
+           <form>
+            <label className="goto_label" >
+              Goto
+            </label>&nbsp;
+            <input type="text" ref="jump" id ="jump" defaultValue="0"  className="cbtn framesize" />
+            <button type="button" onClick={this.props.handleClick} className="sbtn">Jump</button>
+          </form>
+         
+          <br/>
+           
+          <form>
+            <label className="framesize_label" >
+              Frame size
+            </label>
+            &nbsp;
+            <input type="number" ref="framesize" defaultValue="60" className="framesize" id ="framesize"/>
+
+            <button type="button" onClick={this.props.handleFrameSizeF} className="sbtn"> &gt;</button>
+            <button type="button" onClick={this.props.handleFrameSizeD} className="sbtn"> &lt;</button>
+            
+          </form>
+          </div>
       </div>
     );
   }
