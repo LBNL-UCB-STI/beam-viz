@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import MapboxGLMap from './mapgl.js';
 import autoBind from 'react-autobind';
 
+import {MAP_STYLES} from './constants';
 import BeamDeckGL from './BeamDeckGL';
 import Sidebar from './sidebar';
 import Clock from './components/Clock';
@@ -10,43 +11,16 @@ import {getCategorizedLayers, setCategoryColor, toggleCategoryVisible} from './c
 
 import tripsDataJson from './trips.json';
 
-const mapStyleOptions = [
-  {
-    style: "Streets",
-    url: "mapbox://styles/mapbox/streets-v10",
-    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
-  },
-  {
-    style: "Light",
-    url: "mapbox://styles/mapbox/light-v9",
-    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
-  },
-  {
-    style: "Satellite",
-    url: "mapbox://styles/mapbox/satellite-v9",
-    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
-  },
-  {
-    style: "Satellite Streets",
-    url: "mapbox://styles/mapbox/satellite-streets-v10",
-    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
-  },
-  {
-    style: "Dark",
-    url: "mapbox://styles/mapbox/dark-v9",
-    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
-  },
-  {
-    style: "Dark - No Label",
-    url: "mapbox://styles/rwlbnl/cj0e7o9f6000r2skgfjsutrg9",
-    accessToken: "pk.eyJ1IjoicndsYm5sIiwiYSI6ImNqMGU3bjE5YjAxMDkzM3F5emQxcHU4ZnUifQ.WnLnWmzjvp9d1dvi3egHwQ"
-  },
-];
 
 
 class App extends Component {
   constructor(props) {
     super(props);
+
+     this.handleClick = this.handleClick.bind(this);
+     this.handleFrameSizeF = this.handleFrameSizeF.bind(this);
+     this.handleFrameSizeD = this.handleFrameSizeD.bind(this);
+
 
     const categorizedData = getCategorizedLayers(tripsDataJson);
     this.state = {
@@ -65,7 +39,8 @@ class App extends Component {
       loop: true,
       trailLength: 150,
       currentTime: categorizedData[0].startTime,
-      mapStyle: mapStyleOptions[5],
+      mapStyle: MAP_STYLES[5],
+      allCategoriesVisible: true,
     }
 
     this._trailRange = {
@@ -76,9 +51,53 @@ class App extends Component {
       min: 1,
       max: 1000
     };
+    this._allCategoriesHidden = false;
+    this._userPaused = false;    // when animation is stopped due to all categories being hidden
 
     autoBind(this);
   }
+
+    handleClick(event) {
+
+       const jumpValue = document.getElementById("jump").value;
+
+       if(jumpValue.length > 6){
+
+         alert("Max length will be 6");
+
+         return false;
+       }
+
+       this.setState({jump: jumpValue});
+    }
+    
+    handleFrameSizeD(event) {
+        
+        const frameSizeValueD = document.getElementById("framesize").value;
+
+        if(frameSizeValueD.length > 6){
+
+           alert("Max length will be 6");
+
+           return false;
+         }
+
+        this.setState({FrameValueD:frameSizeValueD});
+    }
+
+    handleFrameSizeF(event) {
+
+       const frameSizeValueF = document.getElementById("framesize").value;
+
+       if(frameSizeValueF.length > 6){
+
+           alert("Max length will be 6");
+
+           return false;
+        }
+
+       this.setState({FrameValueF: frameSizeValueF});
+    }
 
   componentDidMount() {
     window.addEventListener('resize', this._onResize);
@@ -102,8 +121,10 @@ class App extends Component {
     this.setState({mapViewState});
   }
 
-  _setAnimating(isAnimating) {
+  _setAnimating(isAnimating, userPaused) {
+    if (isAnimating && this._allCategoriesHidden) return;
     this.setState({isAnimating});
+    this._userPaused = userPaused;
   }
 
   _toggleLoop() {
@@ -111,9 +132,44 @@ class App extends Component {
   }
 
   _toggleCategoryVisible(categoryName) {
+    const categorizedData = toggleCategoryVisible(this.state.categorizedData, categoryName);
+
+    const categoryVisibility = categorizedData.map(categoryData => categoryData.visible);
+    const allCategoriesVisible = categoryVisibility.reduce((v1, v2) => v1 && v2);
+    this._allCategoriesHidden = !categoryVisibility.reduce((v1, v2) => v1 || v2);
+    if (this._allCategoriesHidden) {
+      this._setAnimating(false, false);
+    }
+
     this.setState({
-      categorizedData: toggleCategoryVisible(this.state.categorizedData, categoryName)
+      categorizedData,
+      allCategoriesVisible,
     });
+    if (!this._allCategoriesHidden && !this.state.isAnimating && !this._userPaused) {
+      this._setAnimating(true);
+    }
+  }
+
+  _toggleAllCategoriesVisibility(categoryName) {
+    const visible = !this.state.allCategoriesVisible;
+    const categorizedData = this.state.categorizedData.map(
+      categoryData => ({...categoryData, visible}),
+    );
+
+    this._allCategoriesHidden = !visible;
+    if (!visible) {
+      if (this.state.isAnimating) {
+        this._setAnimating(false, false);
+      }
+    }
+
+    this.setState({
+      allCategoriesVisible: visible,
+      categorizedData,
+    });
+    if (visible && !this.state.isAnimating && !this._userPaused) {
+      this._setAnimating(true);
+    }
   }
 
   _onTrailLengthChange(trailLength) {
@@ -126,14 +182,82 @@ class App extends Component {
     });
   }
 
-  _setCurrentTime(currentTime) {
-    this.setState({currentTime});
+   _setCurrentTime(currentTime) {
+
+    let jump = this.state.jump;
+
+    let  fkeyD = this.state.FrameValueD;
+
+    let  fkeyF = this.state.FrameValueF;
+    
+    if(jump > 0){
+
+     currentTime  = 0 + parseInt(jump);
+
+     this.setState({currentTime});
+
+     document.getElementById("jump").value = 0;
+
+     this.handleClick();
+
+     document.getElementById("jump").value = parseInt(jump);
+    }
+    else{
+
+      this.setState({currentTime});
+    }
+
+    if(fkeyD > 0){
+
+     currentTime  = parseInt(currentTime) - parseInt(fkeyD);
+
+     this.setState({currentTime});
+
+     document.getElementById("framesize").value = 0;
+
+     this.handleFrameSizeD();
+
+     document.getElementById("framesize").value = parseInt(fkeyD);
+
+    }
+    else{
+
+
+      this.setState({currentTime});
+    }
+
+    if(fkeyF > 0){
+
+     currentTime  = parseInt(currentTime) + parseInt(fkeyF);
+
+     this.setState({currentTime});
+
+     document.getElementById("framesize").value = 0;
+
+     this.handleFrameSizeF();
+
+     document.getElementById("framesize").value = parseInt(fkeyF);;
+    }
+    else{
+
+      this.setState({currentTime});
+    }
+
   }
 
   _getAnimationTimeBounds(categorizedData) {
+<<<<<<< HEAD
     const visibleCategories = categorizedData.filter(categoryData => categoryData.visible);
     const startTime = 25200 // Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
     const endTime = 30600 // Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
+=======
+    let visibleCategories = categorizedData.filter(categoryData => categoryData.visible);
+    if (visibleCategories.length === 0) {
+      visibleCategories = categorizedData;   // else startTime and endTime will be Infinity and -Infinity
+    }
+    const startTime = Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
+    const endTime = Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
+>>>>>>> 21df13cd72b5f9f67bf32072edaac5c4c8f3f990
     return {
       startTime,
       endTime,
@@ -145,7 +269,7 @@ class App extends Component {
   }
 
   _setMapStyle(style) {
-    const mapStyle = mapStyleOptions.filter(ms => ms.style == style)[0];
+    const mapStyle = MAP_STYLES.filter(ms => ms.style == style)[0];
     this.setState({mapStyle});
   }
 
@@ -197,8 +321,14 @@ class App extends Component {
           animationSpeedRange={this._animationSpeedRange}
           onAnimationSpeedChange={this._onAnimationSpeedChange}
           mapStyle={this.state.mapStyle}
-          mapStyleOptions={mapStyleOptions}
+          mapStyleOptions={MAP_STYLES}
           setMapStyle={this._setMapStyle}
+          handleClick={this.handleClick}
+          handleFrameSizeD={this.handleFrameSizeD}
+          handleFrameSizeF={this.handleFrameSizeF}
+          frameval={this.state.frameval}
+          allCategoriesVisible={this.state.allCategoriesVisible}
+          toggleAllCategoriesVisibility={this._toggleAllCategoriesVisibility}
         />
       </div>
     );

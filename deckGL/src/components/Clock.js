@@ -34,6 +34,7 @@ const Clock = ({ time }) => (
         }}
       />
     </div>
+    <div className='twstyle'>{parseInt(time)}</div>
   </div>
 );
 

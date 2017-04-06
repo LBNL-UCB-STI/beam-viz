@@ -51,4 +51,16 @@ $refresh-interval:100ms;
     width: 2%;
     transition: transform $refresh-interval;
   }
+
+    & .twstyle {
+    color: white;
+    font-size: 14px;
+    margin-top: 82px;
+    padding: 2px 3px;
+    opacity: 0.8;
+    border-radius: 5px;
+    width:100px;
+    position: relative;
+    left: 15px;
+ }
 }
