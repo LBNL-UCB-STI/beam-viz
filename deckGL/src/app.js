@@ -56,7 +56,7 @@ class App extends Component {
       mapViewState: {
         latitude: 37.82785803280886,
         longitude: -122.43169756795798,
-        zoom: 9.82,
+        zoom: 10.82,
         pitch: 60,
         bearing: 0
       },
@@ -132,8 +132,8 @@ class App extends Component {
 
   _getAnimationTimeBounds(categorizedData) {
     const visibleCategories = categorizedData.filter(categoryData => categoryData.visible);
-    const startTime = Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
-    const endTime = Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
+    const startTime = 25200 // Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
+    const endTime = 30600 // Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
     return {
       startTime,
       endTime,
