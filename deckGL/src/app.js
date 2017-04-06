@@ -246,18 +246,12 @@ class App extends Component {
   }
 
   _getAnimationTimeBounds(categorizedData) {
-<<<<<<< HEAD
-    const visibleCategories = categorizedData.filter(categoryData => categoryData.visible);
-    const startTime = 25200 // Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
-    const endTime = 30600 // Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
-=======
     let visibleCategories = categorizedData.filter(categoryData => categoryData.visible);
     if (visibleCategories.length === 0) {
       visibleCategories = categorizedData;   // else startTime and endTime will be Infinity and -Infinity
     }
     const startTime = Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
     const endTime = Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
->>>>>>> 21df13cd72b5f9f67bf32072edaac5c4c8f3f990
     return {
       startTime,
       endTime,
