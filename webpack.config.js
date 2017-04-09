@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 
 const cwd = path.resolve(__dirname);
-const outputPath = path.join(cwd, 'assets');
+const outputPath = path.join(cwd, 'public');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 

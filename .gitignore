@@ -1,4 +1,4 @@
-deckGL/src/trips*.json
-deckGL/npm-debug.log
-deckGL/node_modules
+src/trips*.json
+npm-debug.log
+node_modules
 *DS_Store
