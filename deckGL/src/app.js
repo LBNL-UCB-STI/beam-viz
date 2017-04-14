@@ -28,16 +28,16 @@ class App extends Component {
       height: window.innerHeight,
       categorizedData: categorizedData,
       mapViewState: {
-        latitude: 37.82785803280886,
-        longitude: -122.43169756795798,
-        zoom: 10.82,
+        latitude: 37.72785803280886,
+        longitude: -122.38169756795798,
+        zoom: 11.42,
         pitch: 60,
-        bearing: 0
+        bearing: 30
       },
       isAnimating: true,
-      animationSpeed: 300,        // 1 second in the animation, represents 300 seconds in real life
+      animationSpeed: 200,        // 1 second in the animation, represents 300 seconds in real life
       loop: true,
-      trailLength: 150,
+      trailLength: 250,
       currentTime: categorizedData[0].startTime,
       mapStyle: MAP_STYLES[5],
       allCategoriesVisible: true,
@@ -48,8 +48,8 @@ class App extends Component {
       max: 1000
     };
     this._animationSpeedRange = {
-      min: 1,
-      max: 1000
+      min: 10,
+      max: 500
     };
     this._allCategoriesHidden = false;
     this._userPaused = false;    // when animation is stopped due to all categories being hidden

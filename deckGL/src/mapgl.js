@@ -8,7 +8,7 @@ const loadBuildings = (map) => {
       'source-layer': 'building',
       'filter': ['==', 'extrude', 'true'],
       'type': 'fill-extrusion',
-      'minzoom': 12,
+      'minzoom': 13,
       'paint': {
         'fill-extrusion-color': 'rgb(29,27,27)',
         'fill-extrusion-height': {

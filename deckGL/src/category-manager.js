@@ -1,8 +1,15 @@
 import {
   COLOR_OPTIONS,
   CAR_COLOR,
-  CHOICE_LOW_COLOR,
+  WALK_COLOR,
+  TAXI_COLOR,
+  BUS_COLOR,
+  SUBWAY_COLOR,
+  TRAM_COLOR,
+  RAIL_COLOR,
+  CABLE_CAR_COLOR,
   CHOICE_HIGH_COLOR,
+  CHOICE_LOW_COLOR
 } from './constants';
 
 const normalizeValue = (minValue, maxValue, value) => (
@@ -59,19 +66,21 @@ const getCategorizedLayers = (tripsData) => {
       };
 
       if (categoryName === 'WALK') {
-         category.color = [85,195,74];   // HARDCODED
+         category.color = WALK_COLOR;
       } else if (categoryName === 'BUS') {
-         category.color = [238,208,34];
+         category.color = BUS_COLOR;
       }else if (categoryName === 'CAR') {
-         category.color = [68,178,170];
+         category.color = CAR_COLOR;
+      }else if (categoryName === 'TAXI') {
+         category.color = TAXI_COLOR;
       }else if (categoryName === 'TRAM') {
-         category.color = [182,113,206];
+         category.color = TRAM_COLOR;
       }else if (categoryName === 'SUBWAY') {
-         category.color = [234,33,45];
+         category.color = SUBWAY_COLOR;
       }else if (categoryName === 'RAIL') {
-         category.color = [182,113,206];
+         category.color = RAIL_COLOR;
       }else if (categoryName === 'CABLE_CAR') {
-         category.color = [182,113,206];
+         category.color = CABLE_CAR_COLOR; 
       }
 
       if (categoryName === 'CHOICE') {
