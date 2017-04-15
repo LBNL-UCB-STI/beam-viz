@@ -35,7 +35,11 @@ const getCategorizedLayers = (tripsData) => {
   let categorizedData = {};
 
   tripsData.map(tripData => {
-    const categoryName = tripData[0].typ;
+    const categoryName = tripData.typ;
+    const path = tripData.shp;
+
+    if (path.length === 0 )
+      return;
 
     if (categoryName.toUpperCase() === 'ERROR')     // HARDCODED
       return;
@@ -77,9 +81,6 @@ const getCategorizedLayers = (tripsData) => {
     }
     let category = categorizedData[categoryName];
 
-    const path = tripData.map(
-      leg => [leg.shp[0], leg.shp[1], leg.tim]
-    );
     category.paths.push(path);
 
     if (path[0][2] < category.startTime) {
@@ -90,7 +91,7 @@ const getCategorizedLayers = (tripsData) => {
     }
 
     if (categoryName === 'CHOICE') {
-      const val = tripData[0].val;
+      const val = tripData.val;
       if (val < category.minValue)
         category.minValue = val;
       if (val > category.maxValue)
