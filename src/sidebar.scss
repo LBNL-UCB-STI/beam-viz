@@ -10,15 +10,14 @@ $ratio:1.1;
 $transition-time:0.3s;
 
 #sidebar {
-  position: fixed;
+  position: absolute;
   z-index: 10;
-  height: 100%;
   width: 240px;
   right: 0;
   top: 0;
   bottom: 0;
-  background: rgba(200,200,200,0.0);
-  padding: 0 20px 20px 20px;
+  background: rgba(200,200,200,0.9);
+  padding: 0 20px;
 
   & .sidebar--section {
       border-bottom: groove 2px #fff;
@@ -128,33 +127,22 @@ $transition-time:0.3s;
   }
 }
 
-.cbtn{
-  
- 
-}
-
 .form-class {
   margin-left: 40px;
-
 }
 
-.framesize{
-  
+.framesize {
   width:67px;
-  direction: rtl; 
 }
 
-.goto_label{
-  
+.goto_label {
   margin-right: 49px;
 }
 
-.framesize_label{
-  
+.framesize_label {
   margin-right: 10px;
 }
 
-.sbtn{
-  
+.sbtn {
   float:right;
 }

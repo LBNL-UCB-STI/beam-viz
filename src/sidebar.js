@@ -15,6 +15,7 @@ export default class Sidebar extends Component {
 
   render() {
     const {
+      height,
       categorizedData, toggleCategoryVisible,
       isAnimating, setAnimating,
       loop, toggleLoop,
@@ -25,9 +26,11 @@ export default class Sidebar extends Component {
       onChangeCategoryColor,
       mapStyle, mapStyleOptions, setMapStyle,
       allCategoriesVisible, toggleAllCategoriesVisibility,
+      goto, onGoto, onGotoChange,
+      jump, onJumpChange, onJumpForward, onJumpBackward,
     } = this.props;
     return (
-      <div id='sidebar'>
+      <div id='sidebar' style={{height: height}}>
         <div className='sidebar--section'>
           <h4>Settings</h4>
 
@@ -143,24 +146,22 @@ export default class Sidebar extends Component {
             <label className="goto_label" >
               Goto
             </label>&nbsp;
-            <input type="text" ref="jump" id ="jump" defaultValue="0"  className="cbtn framesize" />
-            <button type="button" onClick={this.props.handleClick} className="sbtn">Jump</button>
+            <input type="number" value={goto} onChange={e => onGotoChange(e.target.value)} className="cbtn framesize" />
+            <button type="button" onClick={onGoto} className="sbtn">Jump</button>
           </form>
-         
+
           <br/>
-           
+
           <form>
             <label className="framesize_label" >
               Frame size
             </label>
             &nbsp;
-            <input type="number" ref="framesize" defaultValue="60" className="framesize" id ="framesize"/>
-
-            <button type="button" onClick={this.props.handleFrameSizeF} className="sbtn"> &gt;</button>
-            <button type="button" onClick={this.props.handleFrameSizeD} className="sbtn"> &lt;</button>
-            
+            <input type="number" value={jump} onChange={e => onJumpChange(e.target.value)} className="framesize" />
+            <button type="button" onClick={onJumpForward} className="sbtn"> &gt;</button>
+            <button type="button" onClick={onJumpBackward} className="sbtn"> &lt;</button>
           </form>
-          </div>
+        </div>
       </div>
     );
   }

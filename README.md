@@ -1,6 +1,13 @@
 # beam-viz
 Visualizations for the BEAM Framework
 
+## Development
+* Install `webpack` and `yarn` globally
+* Run `yarn` in the project root directory
+* `npm start` will start the webpack development server with hot reloading
+* For production build, run `npm run build`
+
+
 ## Deploying on Heroku
 * Install [Heroku CLI][https://devcenter.heroku.com/articles/heroku-cli] and login
 * Run the following commands:

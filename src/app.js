@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import MapboxGLMap from './mapgl.js';
 import autoBind from 'react-autobind';
 
+import './app.scss';
+
 import {MAP_STYLES} from './constants';
 import BeamDeckGL from './BeamDeckGL';
 import Sidebar from './sidebar';
@@ -11,21 +13,24 @@ import {getCategorizedLayers, setCategoryColor, toggleCategoryVisible} from './c
 
 import tripsDataJson from './trips.json';
 
+const document_height = () => {
+  const html = document.documentElement;
+  const body = document.body;
+  return Math.max(
+    body.scrollHeight, body.offsetHeight,
+    html.clientHeight, html.scrollHeight, html.offsetHeight
+  )
+}
 
 
 class App extends Component {
   constructor(props) {
     super(props);
 
-     this.handleClick = this.handleClick.bind(this);
-     this.handleFrameSizeF = this.handleFrameSizeF.bind(this);
-     this.handleFrameSizeD = this.handleFrameSizeD.bind(this);
-
-
     const categorizedData = getCategorizedLayers(tripsDataJson);
     this.state = {
       width: window.innerWidth,
-      height: window.innerHeight,
+      height: document_height(),
       categorizedData: categorizedData,
       mapViewState: {
         latitude: 37.72785803280886,
@@ -41,6 +46,8 @@ class App extends Component {
       currentTime: categorizedData[0].startTime,
       mapStyle: MAP_STYLES[5],
       allCategoriesVisible: true,
+      goto: 0,
+      jump: 60,
     }
 
     this._trailRange = {
@@ -57,48 +64,6 @@ class App extends Component {
     autoBind(this);
   }
 
-    handleClick(event) {
-
-       const jumpValue = document.getElementById("jump").value;
-
-       if(jumpValue.length > 6){
-
-         alert("Max length will be 6");
-
-         return false;
-       }
-
-       this.setState({jump: jumpValue});
-    }
-
-    handleFrameSizeD(event) {
-
-        const frameSizeValueD = document.getElementById("framesize").value;
-
-        if(frameSizeValueD.length > 6){
-
-           alert("Max length will be 6");
-
-           return false;
-         }
-
-        this.setState({FrameValueD:frameSizeValueD});
-    }
-
-    handleFrameSizeF(event) {
-
-       const frameSizeValueF = document.getElementById("framesize").value;
-
-       if(frameSizeValueF.length > 6){
-
-           alert("Max length will be 6");
-
-           return false;
-        }
-
-       this.setState({FrameValueF: frameSizeValueF});
-    }
-
   componentDidMount() {
     window.addEventListener('resize', this._onResize);
   }
@@ -110,7 +75,7 @@ class App extends Component {
   _onResize() {
     this.setState({
       width: window.innerWidth,
-      height: window.innerHeight
+      height: document_height(),
     });
   }
 
@@ -183,66 +148,7 @@ class App extends Component {
   }
 
    _setCurrentTime(currentTime) {
-
-    let jump = this.state.jump;
-
-    let  fkeyD = this.state.FrameValueD;
-
-    let  fkeyF = this.state.FrameValueF;
-    
-    if(jump > 0){
-
-     currentTime  = 0 + parseInt(jump);
-
-     this.setState({currentTime});
-
-     document.getElementById("jump").value = 0;
-
-     this.handleClick();
-
-     document.getElementById("jump").value = parseInt(jump);
-    }
-    else{
-
       this.setState({currentTime});
-    }
-
-    if(fkeyD > 0){
-
-     currentTime  = parseInt(currentTime) - parseInt(fkeyD);
-
-     this.setState({currentTime});
-
-     document.getElementById("framesize").value = 0;
-
-     this.handleFrameSizeD();
-
-     document.getElementById("framesize").value = parseInt(fkeyD);
-
-    }
-    else{
-
-
-      this.setState({currentTime});
-    }
-
-    if(fkeyF > 0){
-
-     currentTime  = parseInt(currentTime) + parseInt(fkeyF);
-
-     this.setState({currentTime});
-
-     document.getElementById("framesize").value = 0;
-
-     this.handleFrameSizeF();
-
-     document.getElementById("framesize").value = parseInt(fkeyF);;
-    }
-    else{
-
-      this.setState({currentTime});
-    }
-
   }
 
   _getAnimationTimeBounds(categorizedData) {
@@ -258,13 +164,50 @@ class App extends Component {
     };
   }
 
+  _setMapStyle(style) {
+    const mapStyle = MAP_STYLES.filter(ms => ms.style == style)[0];
+    this.setState({mapStyle});
+  }
+
   _onAnimationSpeedChange(animationSpeed) {
     this.setState({animationSpeed});
   }
 
-  _setMapStyle(style) {
-    const mapStyle = MAP_STYLES.filter(ms => ms.style == style)[0];
-    this.setState({mapStyle});
+  _onGotoChange(goto) {
+    this.setState({
+      goto: parseInt(goto)
+    });
+  }
+
+  _onGoto() {
+    const goto = parseInt(this.state.goto);
+    const bounds = this._getAnimationTimeBounds(this.state.categorizedData);
+    if (goto < bounds.startTime) return this._setCurrentTime(bounds.startTime);
+    if (goto > bounds.endTime ) return this._setCurrentTime(bounds.endTime);
+    return this._setCurrentTime(goto);
+  }
+
+  _onJumpChange(jump) {
+    this.setState({
+      jump: parseInt(jump)
+    });
+  }
+
+  _onJump(direction) {
+    const jump = this.state.jump;
+    const time = this.state.currentTime + (direction == 'f' ? jump : -jump);
+    const bounds = this._getAnimationTimeBounds(this.state.categorizedData);
+    if (time < bounds.startTime) return this._setCurrentTime(bounds.startTime);
+    if (time > bounds.endTime ) return this._setCurrentTime(bounds.endTime);
+    this._setCurrentTime(time);
+  }
+
+  _onJumpForward() {
+    this._onJump('f');
+  }
+
+  _onJumpBackward() {
+    this._onJump('b');
   }
 
   render() {
@@ -278,7 +221,6 @@ class App extends Component {
           width={this.state.width} height={this.state.height}
           perspectiveEnabled
           onChangeViewport={this._onChangeViewport}
-          mapRef={map => this._map = map}
         >
           <BeamDeckGL
             mapViewState={this.state.mapViewState}
@@ -297,6 +239,7 @@ class App extends Component {
         <Clock time={this.state.currentTime} />
         <Sidebar
           categorizedData={this.state.categorizedData}
+          height={this.state.height}
           toggleCategoryVisible={this._toggleCategoryVisible}
           isAnimating={this.state.isAnimating}
           setAnimating={this._setAnimating}
@@ -317,10 +260,13 @@ class App extends Component {
           mapStyle={this.state.mapStyle}
           mapStyleOptions={MAP_STYLES}
           setMapStyle={this._setMapStyle}
-          handleClick={this.handleClick}
-          handleFrameSizeD={this.handleFrameSizeD}
-          handleFrameSizeF={this.handleFrameSizeF}
-          frameval={this.state.frameval}
+          goto={this.state.goto}
+          onGotoChange={this._onGotoChange}
+          onGoto={this._onGoto}
+          jump={this.state.jump}
+          onJumpChange={this._onJumpChange}
+          onJumpForward={this._onJumpForward}
+          onJumpBackward={this._onJumpBackward}
           allCategoriesVisible={this.state.allCategoriesVisible}
           toggleAllCategoriesVisibility={this._toggleAllCategoriesVisibility}
         />
