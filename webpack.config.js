@@ -22,7 +22,7 @@ const config = {
   output: {
     path: outputPath,
     filename: 'bundle.js',
-    publicPath: '/assets/'
+    publicPath: '/public/'
   },
   devtool: 'source-map',
   devServer: {
@@ -38,14 +38,6 @@ const config = {
   },
   module: {
     loaders: [
-      {
-        test: /node_modules[\/\\]mapbox-gl/,
-        loader: 'babel-loader',
-        query: {
-          plugins: ['transform-flow-strip-types'],
-          presets: ['es2015']
-        }
-      },
       {
         test: /\.js$/,
         loader: 'babel-loader',
