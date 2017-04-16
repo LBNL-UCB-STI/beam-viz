@@ -5,7 +5,7 @@ import autoBind from 'react-autobind';
 
 import './app.scss';
 
-import {MAP_STYLES} from './constants';
+import {MAP_STYLES, REFRESH_INTERVAL} from './constants';
 import BeamDeckGL from './BeamDeckGL';
 import Sidebar from './sidebar';
 import Clock from './components/Clock';
@@ -49,6 +49,8 @@ class App extends Component {
       goto: 0,
       jump: 60,
     }
+    this._autoRotation = true;
+    this._autoRotationSpeed = -0.5;       // degrees per second
 
     this._trailRange = {
       min: 10,
@@ -66,10 +68,12 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this._onResize);
+    if (this._autoRotation) this._autoRotate();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
+    if (this._autoRotation) clearInterval(this._autoRotateInterval);
   }
 
   _onResize() {
@@ -84,6 +88,16 @@ class App extends Component {
       mapViewState.pitch = 60;
     }
     this.setState({mapViewState});
+  }
+
+  _autoRotate() {
+    this._autoRotateInterval = setInterval(() => {
+      let bearing = this.state.mapViewState.bearing;
+      bearing += REFRESH_INTERVAL / 1000 * this._autoRotationSpeed;
+      this.setState({
+        mapViewState: {...this.state.mapViewState, bearing},
+      });
+    })
   }
 
   _setAnimating(isAnimating, userPaused) {

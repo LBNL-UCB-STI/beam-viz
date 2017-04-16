@@ -4,12 +4,12 @@ import {ExtrudedChoroplethLayer64} from 'deck.gl';
 import autoBind from 'react-autobind';
 
 import TripsLayer from './trips-layer';
+import {REFRESH_INTERVAL} from './constants';
 
 export default class BeamDeckGL extends Component {
   constructor(props) {
     super(props);
 
-    this._refreshInterval = 100;    // affects the "smoothness"
     this._buildingColor = [74, 80, 87];
     autoBind(this);
   }
@@ -42,8 +42,8 @@ export default class BeamDeckGL extends Component {
 
   _startAnimation({animationSpeed} =  this.props) {
     // currentTime, animationSpeed and animationBounds are in seconds,
-    // refreshInterval is in milli-seconds
-    const speed = animationSpeed * this._refreshInterval / 1000;
+    // REFRESH_INTERVAL is in milli-seconds
+    const speed = animationSpeed * REFRESH_INTERVAL / 1000;
     this._animator = setInterval(() => {
       const {currentTime, animationBounds, setCurrentTime} = this.props;
       let time = currentTime;
@@ -61,7 +61,7 @@ export default class BeamDeckGL extends Component {
         }
       }
       this.props.setCurrentTime(time);
-    }, this._refreshInterval)
+    }, REFRESH_INTERVAL)
   }
 
   _stopAnimation() {

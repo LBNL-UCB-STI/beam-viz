@@ -848,8 +848,8 @@ browserify-rsa@^4.0.0:
     randombytes "^2.0.1"
 
 browserify-sign@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/browserify-sign/-/browserify-sign-4.0.0.tgz#10773910c3c206d5420a46aad8694f820b85968f"
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/browserify-sign/-/browserify-sign-4.0.4.tgz#aa4eb68e5d7b658baa6bf6a57e630cbd7a93d298"
   dependencies:
     bn.js "^4.1.1"
     browserify-rsa "^4.0.0"
@@ -2350,8 +2350,8 @@ hawk@~3.1.3:
     sntp "1.x.x"
 
 hmac-drbg@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.0.tgz#3db471f45aae4a994a0688322171f51b8b91bee5"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
   dependencies:
     hash.js "^1.0.3"
     minimalistic-assert "^1.0.0"
@@ -2499,8 +2499,8 @@ ini@~1.3.0:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.4.tgz#0537cb79daf59b59a1a517dff706c86ec039162e"
 
 interpret@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.0.1.tgz#d579fb7f693b858004947af39fa0db49f795602c"
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.0.2.tgz#f4f623f0bb7122f15f5717c8e254b8161b5c5b2d"
 
 invariant@^2.2.0:
   version "2.2.2"
@@ -2976,11 +2976,11 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
-"mapbox-gl-function@github:mapbox/mapbox-gl-function#41c6724e2bbd7bd1eb5991451bbf118b7d02b525":
+mapbox-gl-function@mapbox/mapbox-gl-function#41c6724e2bbd7bd1eb5991451bbf118b7d02b525:
   version "1.3.0"
   resolved "https://codeload.github.com/mapbox/mapbox-gl-function/tar.gz/41c6724e2bbd7bd1eb5991451bbf118b7d02b525"
 
-"mapbox-gl-style-spec@github:mapbox/mapbox-gl-style-spec#d11f6d2775bf5b22534b3b2fb3410755b2473cdf":
+mapbox-gl-style-spec@mapbox/mapbox-gl-style-spec#d11f6d2775bf5b22534b3b2fb3410755b2473cdf:
   version "8.11.0"
   resolved "https://codeload.github.com/mapbox/mapbox-gl-style-spec/tar.gz/d11f6d2775bf5b22534b3b2fb3410755b2473cdf"
   dependencies:
@@ -4771,12 +4771,6 @@ tough-cookie@~2.3.0:
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.3.2.tgz#f081f76e4c85720e6c37a5faced737150d84072a"
   dependencies:
     punycode "^1.4.1"
-
-transform-loader@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/transform-loader/-/transform-loader-0.2.4.tgz#e5c87877ba96d51d3f225368587b46e226d1cec9"
-  dependencies:
-    loader-utils "^1.0.2"
 
 trim-newlines@^1.0.0:
   version "1.0.0"
