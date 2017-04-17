@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import DeckGL from 'deck.gl';
-import {ExtrudedChoroplethLayer64} from 'deck.gl';
+import DeckGL, {ScatterplotLayer, ExtrudedChoroplethLayer64} from 'deck.gl';
 import autoBind from 'react-autobind';
 
 import TripsLayer from './trips-layer';
@@ -88,10 +87,11 @@ export default class BeamDeckGL extends Component {
     // new TripsLayer is created with each render.
     // The new layer's id is compared with the old's. If the id's match, the new layer is ignored..
     // If we want to update the color (or anything else) after initialization, it needs to be reflected in the id.
-    let layers = categorizedData.filter(({ visible }) => visible)
+    const visibleCategories = categorizedData.filter(({ visible }) => visible);
+    const tripLayers = visibleCategories.filter(({ categoryType }) => categoryType === 'trip')
       .map(categoryData => new TripsLayer({
         id: categoryData.categoryName + '-layer' + categoryData.colorID,
-        data: categoryData.paths,
+        data: categoryData.shps,
         getPath: trip => trip,
         getColor: path => (
           categoryData.getColor
@@ -104,14 +104,25 @@ export default class BeamDeckGL extends Component {
       })
     );
 
-    if (buildingData) {
-      layers.push(new ExtrudedChoroplethLayer64({
-        id: 'building',
-        data: buildingData,
-        color: this._buildingColor,
-        opacity: 0.5
+    const dotLayers = visibleCategories.filter(({ categoryType }) => categoryType === 'dot')
+      .map(categoryData => new ScatterplotLayer({
+        id: categoryData.categoryName + '-layer' + categoryData.colorID,
+        data: categoryData.shps.filter(shp => currentTime >= shp[2] && currentTime <= shp[3]),
+        radiusScale: 20,
+        radiusMinPixels: 0.25,
+        getPosition: d => [d[0], d[1], 0],
+        getColor: d => categoryData.color,
+        getRadius: d => 10,
       }));
-    }
+
+    const buildingsLayer = buildingData && new ExtrudedChoroplethLayer64({
+      id: 'building',
+      data: buildingData,
+      color: this._buildingColor,
+      opacity: 0.5,
+    })
+
+    const layers = [...tripLayers, ...dotLayers, buildingsLayer].filter(Boolean);
 
     return (
       <DeckGL

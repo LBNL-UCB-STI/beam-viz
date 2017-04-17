@@ -9,17 +9,63 @@ const normalizeValue = (minValue, maxValue, value) => (
   : (value - minValue) / (maxValue - minValue)
 );
 
-const normalizedColor = (lowColor, highColor, normalValue) => (
+const getNormalizedColor = (lowColor, highColor, normalValue) => (
   lowColor.map((c, i) => c + (highColor[i] - c) * normalValue)
 );
 
-const getCategorizedLayers = (tripsData) => {
+const getCategoryDescription = categoryData => {
+  if (categoryData.typ[0] === '.') {
+    return {
+      categoryType: 'dot',
+      categoryName: categoryData.typ.substr(1),
+    };
+  }
+  return {
+    categoryType: 'trip',
+    categoryName: categoryData.typ,
+  };
+};
+
+let autoColoredCount = 0;
+const newCategory = (categoryName, categoryType) => {
+  let category = {
+    categoryName,
+    categoryType,
+    color: CATEGORY_COLORS[categoryName],
+    shps: [],
+    startTime: Infinity,
+    endTime: -Infinity,
+    visible: true,
+    minValue: Infinity,
+    maxValue: -Infinity,
+  };
+
+  if (!category.color) {
+    category.color = COLOR_OPTIONS[autoColoredCount % COLOR_OPTIONS.length];
+    autoColoredCount++;
+  }
+
+  if (categoryName === 'CHOICE') {
+    category.getColor = (categoryData, path) => {
+      const value = path.choiceValue;
+      const normalValue = normalizeValue(categoryData.minValue, categoryData.maxValue, value);
+      return getNormalizedColor(categoryData.color.lowColor, categoryData.color.highColor, normalValue);
+    };
+    category.colorID = category.color.lowColor.concat(category.color.highColor).join('');
+  }
+  else {
+    category.colorID = category.color.join('');
+  }
+  return category;
+};
+
+const getCategorizedLayers = (data) => {
   /*
+   * TODO update this
    * Input format: [InputTrip 1, InputTrip 2, ...]
    * InputTrip format: [[InputLeg 1, InputLeg 2, ...]
    * InputLeg format: {
-        "travel_type": "car",
-        "instruction": "Drive northwest on Steuart Street.",
+        "typ": "car",
         "length": 0.049,
         "shp": [-122.394181, 37.793991],
         "tim": 0,
@@ -34,11 +80,11 @@ const getCategorizedLayers = (tripsData) => {
   let categoryNames = [];
   let categorizedData = {};
 
-  tripsData.map(tripData => {
-    const categoryName = tripData.typ;
-    const path = tripData.shp;
+  data.map(categoryData => {
+    const {categoryName, categoryType} = getCategoryDescription(categoryData);
+    const shp = categoryData.shp;
 
-    if (path.length === 0 )
+    if (shp.length === 0 )
       return;
 
     if (categoryName.toUpperCase() === 'ERROR')     // HARDCODED
@@ -47,56 +93,38 @@ const getCategorizedLayers = (tripsData) => {
     if (categoryName.toUpperCase() === 'LEG_SWITCH')     // HARDCODED
       return;
 
-    let autoColoredCount = 0;
     if (categoryNames.indexOf(categoryName) === -1) {
-      let category = categorizedData[categoryName] = {
-        categoryName,
-        color: CATEGORY_COLORS[categoryName],
-        paths: [],
-        startTime: Infinity,
-        endTime: -Infinity,
-        visible: true,
-        minValue: Infinity,
-        maxValue: -Infinity,
-      };
-
-      if (!category.color) {
-        category.color = COLOR_OPTIONS[autoColoredCount % COLOR_OPTIONS.length];
-        autoColoredCount++;
-      }
-
-      if (categoryName === 'CHOICE') {
-        category.getColor = (categoryData, path) => {
-          const value = path.choiceValue;
-          const normalValue = normalizeValue(categoryData.minValue, categoryData.maxValue, value);
-          return normalizedColor(categoryData.color.lowColor, categoryData.color.highColor, normalValue);
-        };
-        category.colorID = category.color.lowColor.concat(category.color.highColor).join('');
-      }
-      else {
-        category.colorID = category.color.join('');
-      }
-
+      categorizedData[categoryName] = newCategory(categoryName, categoryType);
       categoryNames.push(categoryName);
     }
     let category = categorizedData[categoryName];
 
-    category.paths.push(path);
+    category.shps.push(shp);
 
-    if (path[0][2] < category.startTime) {
-      category.startTime = path[0][2];
+    let shpStartTime, shpEndTime;
+    if (categoryType === 'trip') {
+      shpStartTime = shp[0][2];
+      shpEndTime = shp[shp.length - 1][2];
     }
-    if (path[path.length - 1][2] > category.endTime) {
-      category.endTime = path[path.length - 1][2];
+    else if (categoryType === 'dot') {
+      shpStartTime = shp[2];
+      shpEndTime = shp[3];
+    }
+
+    if (shpStartTime < category.startTime) {
+      category.startTime = shpStartTime;
+    }
+    if (shpEndTime > category.endTime) {
+      category.endTime = shpEndTime;
     }
 
     if (categoryName === 'CHOICE') {
-      const val = tripData.val;
+      const val = categoryData.val;
       if (val < category.minValue)
         category.minValue = val;
       if (val > category.maxValue)
         category.maxValue = val;
-      path.choiceValue = val;
+      shp.choiceValue = val;
     }
 
   });
