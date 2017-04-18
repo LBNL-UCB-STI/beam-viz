@@ -59,6 +59,32 @@ const newCategory = (categoryName, categoryType) => {
   return category;
 };
 
+const createStarBurst = (time, location) => {
+  const radialLength = 0.0035;
+  const paceInTicksPerFrame = 25;
+  const numRays = 10;
+  const directionOut = true;
+  const numFrames = 4;
+  let radiusFromOrigin = [...Array(numFrames).keys()];
+  radiusFromOrigin = radiusFromOrigin.map(i => radialLength * i / (numFrames - 1));
+  let deltaRadian = 2 * Math.PI / numRays;
+  let frameIndices = [...Array(numFrames).keys()];
+  if (!directionOut) frameIndices.reverse();
+  let vizData = [];
+  for (let rayIndex = 0; rayIndex < numRays; ++rayIndex) {
+    let ray = [];
+    frameIndices.map(frameIndex => {
+      let len = radiusFromOrigin[frameIndex];
+      let x = location[0] + len * Math.cos(deltaRadian * rayIndex);
+      let y = location[1] + len * Math.sin(deltaRadian * rayIndex);
+      let frameTime = time + paceInTicksPerFrame * frameIndex;
+      ray.push([x, y, frameTime]);
+    });
+    vizData.push(ray);
+  }
+  return vizData;
+};
+
 const getCategorizedLayers = (data) => {
   /*
    * TODO update this
@@ -99,10 +125,21 @@ const getCategorizedLayers = (data) => {
     }
     let category = categorizedData[categoryName];
 
-    category.shps.push(shp);
+    if (categoryName == "STAR") {
+      let starShape = createStarBurst(shp[2], [shp[0], shp[1]]);
+      category.shps = [...category.shps, ...starShape];
+    }
+    else {
+      category.shps.push(shp);
+    }
 
     let shpStartTime, shpEndTime;
-    if (categoryType === 'trip') {
+    if (categoryName === 'STAR') {
+      shpStartTime = shp[2];
+      let ray = category.shps[category.shps.length - 1];
+      shpEndTime = ray[ray.length - 1][2];
+    }
+    else if (categoryType === 'trip') {
       shpStartTime = shp[0][2];
       shpEndTime = shp[shp.length - 1][2];
     }
