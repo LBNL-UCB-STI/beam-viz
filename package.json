@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "NODE_ENV=production node ./app.js",
+    "start": "node ./app.js",
     "build": "NODE_ENV=production webpack -p --progress --colors",
     "dev-server": "webpack-dev-server --progress --hot --colors"
   },
@@ -8,6 +8,7 @@
     "autoprefixer": "^6.7.7",
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",

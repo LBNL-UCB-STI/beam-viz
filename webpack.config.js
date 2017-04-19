@@ -31,13 +31,20 @@ const config = {
       poll: 1000
     }
   },
-  resolve: {
-    alias: {
-      'mapbox-gl$': path.join(cwd, 'node_modules', 'mapbox-gl', 'dist', 'mapbox-gl.js')
-    }
+  externals: {
+    'mapbox-gl': 'mapboxgl',
   },
   module: {
     loaders: [
+      {
+        test: /mapbox-gl/,    // react-map-gl uses some API (Transform), which is not directly exposed by mapbox-gl
+        loader: 'babel-loader',
+        query: {
+          cacheDirectory: true,
+          presets: ['es2015'],
+          plugins: ['transform-flow-strip-types'],
+        }
+      },
       {
         test: /\.js$/,
         loader: 'babel-loader',
