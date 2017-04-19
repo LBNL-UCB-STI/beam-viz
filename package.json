@@ -1,7 +1,8 @@
 {
   "scripts": {
-    "start": "node ./app.js",
-    "build": "NODE_ENV=production webpack -p --progress --colors"
+    "start": "NODE_ENV=production node ./app.js",
+    "build": "NODE_ENV=production webpack -p --progress --colors",
+    "dev-server": "webpack-dev-server --progress --hot --colors"
   },
   "dependencies": {
     "autoprefixer": "^6.7.7",
