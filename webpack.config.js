@@ -17,19 +17,12 @@ function getPostcssPlugins() {
   ];
 }
 
-const config = {
+let config = {
   entry: path.join(cwd, 'src', 'app.js'),
   output: {
     path: outputPath,
     filename: 'bundle.js',
     publicPath: '/public/'
-  },
-  devtool: 'source-map',
-  devServer: {
-    watchOptions: {
-      aggregateTimeout: 300,
-      poll: 1000
-    }
   },
   externals: {
     'mapbox-gl': 'mapboxgl',

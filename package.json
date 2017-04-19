@@ -1,10 +1,13 @@
 {
   "scripts": {
-    "start": "node ./app.js",
-    "build": "NODE_ENV=production webpack -p --progress --colors",
-    "dev-server": "webpack-dev-server --progress --hot --colors"
+    "start": "npm run build && node ./app.js",
+    "build": "NODE_ENV=production webpack --config webpack.prod.config.js -p --progress --colors",
+    "dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --hot --colors"
   },
   "dependencies": {
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.2",
+    "webpack-hot-middleware": "^2.18.0",
     "autoprefixer": "^6.7.7",
     "babel-core": "^6.24.0",
     "babel-loader": "^6.4.1",
@@ -37,8 +40,5 @@
     "url-loader": "^0.5.8"
   },
   "devDependencies": {
-    "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.4.2",
-    "webpack-hot-middleware": "^2.18.0"
   }
 }
