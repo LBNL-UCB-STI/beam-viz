@@ -80,7 +80,7 @@ export default class BeamDeckGL extends Component {
     gl.depthFunc(gl.LEQUAL);
   }
 
-  render () {
+  render() {
     const props = this.props;
     const {categorizedData, currentTime, trailLength, buildingData} = props;
 
@@ -88,7 +88,7 @@ export default class BeamDeckGL extends Component {
     // The new layer's id is compared with the old's. If the id's match, the new layer is ignored..
     // If we want to update the color (or anything else) after initialization, it needs to be reflected in the id.
     const visibleCategories = categorizedData.filter(({ visible }) => visible);
-    const tripLayers = visibleCategories.filter(({ categoryType }) => categoryType === 'trip')
+    const tripLayers = visibleCategories.filter(({ categoryType }) => categoryType === 'trajectory')
       .map(categoryData => new TripsLayer({
         id: categoryData.categoryName + '-layer' + categoryData.colorID,
         data: categoryData.shps,

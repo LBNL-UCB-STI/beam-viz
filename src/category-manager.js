@@ -3,35 +3,41 @@ import {
   COLOR_OPTIONS,
 } from './constants';
 
+// given a range, return the "normal" value of a number from 0 to 1 by interpolation
 const normalizeValue = (minValue, maxValue, value) => (
   (minValue === maxValue)
   ? 1
   : (value - minValue) / (maxValue - minValue)
 );
 
+// given color range, return the "normal" color of a "normal value" by interpolation
 const getNormalizedColor = (lowColor, highColor, normalValue) => (
   lowColor.map((c, i) => c + (highColor[i] - c) * normalValue)
 );
 
-const getCategoryDescription = categoryData => {
-  if (categoryData.typ[0] === '.') {
-    return {
-      categoryType: 'dot',
-      categoryName: categoryData.typ.substr(1),
-    };
-  }
+// given categoryData, return name and type of category
+const getCategoryDescription = ({typ, kind, mode}) => {
+  const categoryName = kind || mode;
+  let categoryType = typ;   // currently it can be on of 'trajectory' or 'dot'
+  if (typ === 'pointProcess')
+    categoryType = categoryName === 'CHOICE' ? 'trajectory': 'dot';
   return {
-    categoryType: 'trip',
-    categoryName: categoryData.typ,
+    categoryType,
+    categoryName,
   };
 };
 
-let autoColoredCount = 0;
+// given a list of colors, return a different one (in a cycle) with each function call
+const getNextColor = (() => {
+  let autoColoredCount = 0;
+  return () => COLOR_OPTIONS[(autoColoredCount++) % COLOR_OPTIONS.length];
+})();
+
 const newCategory = (categoryName, categoryType) => {
   let category = {
     categoryName,
     categoryType,
-    color: CATEGORY_COLORS[categoryName],
+    color: CATEGORY_COLORS[categoryName] || getNextColor(),
     shps: [],
     startTime: Infinity,
     endTime: -Infinity,
@@ -40,16 +46,11 @@ const newCategory = (categoryName, categoryType) => {
     maxValue: -Infinity,
   };
 
-  if (!category.color) {
-    category.color = COLOR_OPTIONS[autoColoredCount % COLOR_OPTIONS.length];
-    autoColoredCount++;
-  }
-
   if (categoryName === 'CHOICE') {
     category.getColor = (categoryData, path) => {
-      const value = path.choiceValue;
-      const normalValue = normalizeValue(categoryData.minValue, categoryData.maxValue, value);
-      return getNormalizedColor(categoryData.color.lowColor, categoryData.color.highColor, normalValue);
+      const {minValue, maxValue, color} = categoryData;
+      const normalValue = normalizeValue(minValue, maxValue, path.choiceValue);
+      return getNormalizedColor(color.lowColor, color.highColor, normalValue);
     };
     category.colorID = category.color.lowColor.concat(category.color.highColor).join('');
   }
@@ -59,7 +60,7 @@ const newCategory = (categoryName, categoryType) => {
   return category;
 };
 
-const createStarBurst = (time, location) => {
+const createStarBurst = (startTime, location) => {
   const radialLength = 0.0035;
   const paceInTicksPerFrame = 25;
   const numRays = 10;
@@ -70,107 +71,104 @@ const createStarBurst = (time, location) => {
   let deltaRadian = 2 * Math.PI / numRays;
   let frameIndices = [...Array(numFrames).keys()];
   if (!directionOut) frameIndices.reverse();
-  let vizData = [];
+  let shp = [];
   for (let rayIndex = 0; rayIndex < numRays; ++rayIndex) {
     let ray = [];
     frameIndices.map(frameIndex => {
       let len = radiusFromOrigin[frameIndex];
       let x = location[0] + len * Math.cos(deltaRadian * rayIndex);
       let y = location[1] + len * Math.sin(deltaRadian * rayIndex);
-      let frameTime = time + paceInTicksPerFrame * frameIndex;
+      let frameTime = startTime + paceInTicksPerFrame * frameIndex;
       ray.push([x, y, frameTime]);
     });
-    vizData.push(ray);
+    shp.push(ray);
   }
-  return vizData;
+  return shp;
 };
 
 const getCategorizedLayers = (data) => {
   /*
-   * TODO update this
-   * Input format: [InputTrip 1, InputTrip 2, ...]
-   * InputTrip format: [[InputLeg 1, InputLeg 2, ...]
-   * InputLeg format: {
-        "typ": "car",
-        "length": 0.049,
-        "shp": [-122.394181, 37.793991],
-        "tim": 0,
-        "end_time": 11
-      }
-   *
    * output format: [Category 1, Category 2, ...]
-   * Category format: {name: 'Category 1', color: 'c', paths: [Path 1, Path 2, Path 3]}
+   * Category format: {categoryName: 'Category 1', color: 'c', paths: [Path 1, Path 2, Path 3]}
    * Path format: [Leg 1, Leg 2, ..]
    * Leg format: [[lng 1, lat 1, time 1], [lng 2, lat 2, time 2], ...]
    */
+  let categorizedData = {
+    // categoryName
+    // categoryType
+    // shps         (paths)
+    // color        ({lowColor, highColor} in case of CHOICE)
+    // colorID      (calculated based on value of color)
+    // getColor()   (for CHOICE only)
+    // startTime
+    // endTime
+    // visible
+    // minValue     (for CHOICE only)
+    // maxValue     (for CHOICE only)
+  };
   let categoryNames = [];
-  let categorizedData = {};
 
-  data.map(categoryData => {
-    const {categoryName, categoryType} = getCategoryDescription(categoryData);
-    const shp = categoryData.shp;
+  data.map(d => {
+    const {categoryName, categoryType} = getCategoryDescription(d);
+    const shp = d.shp;
 
-    if (shp.length === 0 )
-      return;
+    // ignore if no shape data is available or for certain pre-defined categories
+    if (shp.length === 0
+      || categoryName.toUpperCase() === 'ERROR'
+      || categoryName.toUpperCase() === 'LEG_SWITCH'
+    ) return;
 
-    if (categoryName.toUpperCase() === 'ERROR')     // HARDCODED
-      return;
-
-    if (categoryName.toUpperCase() === 'LEG_SWITCH')     // HARDCODED
-      return;
-
+    // Create new category if not encountered before
     if (categoryNames.indexOf(categoryName) === -1) {
       categorizedData[categoryName] = newCategory(categoryName, categoryType);
       categoryNames.push(categoryName);
     }
+
+    // current category
     let category = categorizedData[categoryName];
 
-    if (categoryName == "STAR") {
-      let starShape = createStarBurst(shp[2], [shp[0], shp[1]]);
+    // insert shapes for the category
+    if (categoryName === 'CHOICE') {
+      let starShape = createStarBurst(d.startTime, shp[0]);
       category.shps = [...category.shps, ...starShape];
+    }
+    else if (categoryType === 'dot'){
+      category.shps.push(shp[0]);
     }
     else {
       category.shps.push(shp);
     }
 
+    // Calculate the category's time-bounds
     let shpStartTime, shpEndTime;
-    if (categoryName === 'STAR') {
-      shpStartTime = shp[2];
+    if (categoryName === 'CHOICE') {
+      shpStartTime = d.startTime;
       let ray = category.shps[category.shps.length - 1];
       shpEndTime = ray[ray.length - 1][2];
     }
-    else if (categoryType === 'trip') {
+    else if (categoryType === 'dot') {
+      shpStartTime = d.startTime;
+      shpEndTime = d.endTime;
+    }
+    else {      // if (categoryType === 'trajectory') {
       shpStartTime = shp[0][2];
       shpEndTime = shp[shp.length - 1][2];
     }
-    else if (categoryType === 'dot') {
-      shpStartTime = shp[2];
-      shpEndTime = shp[3];
-    }
+    category.startTime = Math.min(category.startTime, shpStartTime);
+    category.endTime = Math.max(category.endTime, shpEndTime);
 
-    if (shpStartTime < category.startTime) {
-      category.startTime = shpStartTime;
-    }
-    if (shpEndTime > category.endTime) {
-      category.endTime = shpEndTime;
-    }
-
+    // Other special cases
     if (categoryName === 'CHOICE') {
-      const val = categoryData.val;
-      if (val < category.minValue)
-        category.minValue = val;
-      if (val > category.maxValue)
-        category.maxValue = val;
+      const val = d.val;
+      category.minValue = Math.min(category.minValue, val);
+      category.maxValue = Math.max(category.maxValue, val);
       shp.choiceValue = val;
     }
 
   });
 
-  return categoryNames.map(
-    categoryName => categorizedData[categoryName]
-  );
+  return categoryNames.map(categoryName => categorizedData[categoryName]);
 }
-
 
 const setCategoryColor = (categorizedData, categoryName, color) => (
   categorizedData.map(categoryData => {
