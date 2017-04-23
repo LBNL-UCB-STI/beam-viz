@@ -129,7 +129,11 @@ const getCategorizedLayers = (data) => {
 
     // insert shapes for the category
     if (categoryName === 'CHOICE') {
-      let starShape = createStarBurst(d.startTime, shp[0]);
+      const starShape = createStarBurst(d.startTime, shp[0]);
+      const val = d.val;
+      category.minValue = Math.min(category.minValue, val);
+      category.maxValue = Math.max(category.maxValue, val);
+      starShape.map(shp => shp.choiceValue = val);
       category.shps = [...category.shps, ...starShape];
     }
     else if (categoryType === 'dot'){
