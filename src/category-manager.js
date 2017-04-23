@@ -133,7 +133,7 @@ const getCategorizedLayers = (data) => {
       category.shps = [...category.shps, ...starShape];
     }
     else if (categoryType === 'dot'){
-      category.shps.push(shp[0]);
+      category.shps.push([...shp[0], d.startTime, d.endTime]);
     }
     else {
       category.shps.push(shp);

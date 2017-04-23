@@ -106,7 +106,7 @@ export default class BeamDeckGL extends Component {
 
     const dotLayers = visibleCategories.filter(({ categoryType }) => categoryType === 'dot')
       .map(categoryData => new ScatterplotLayer({
-        id: categoryData.categoryName + '-layer' + categoryData.colorID,
+        id: categoryData.categoryName + '-layer' + categoryData.colorID + currentTime.toString(),
         data: categoryData.shps.filter(shp => currentTime >= shp[2] && currentTime <= shp[3]),
         radiusScale: 20,
         radiusMinPixels: 0.25,
