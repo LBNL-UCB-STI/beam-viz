@@ -2,7 +2,7 @@
   "scripts": {
     "start": "npm run build && node ./app.js",
     "build": "NODE_ENV=production webpack --config webpack.prod.config.js -p --progress --colors",
-    "dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --hot --colors"
+    "dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --hot --colors --host 0.0.0.0"
   },
   "dependencies": {
     "webpack": "^2.4.1",

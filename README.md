@@ -5,8 +5,9 @@ Visualizations for the BEAM Framework
 * Install `webpack` and `yarn` globally
 * Run `yarn` in the project root directory
 * `npm run dev-server` will start the webpack development server with hot reloading
-* For production build, run `npm run build` (or `npm start` to build and serve)
 
+## Production
+* Run `npm start`
 
 ## Deploying on Heroku
 * Install [Heroku CLI][https://devcenter.heroku.com/articles/heroku-cli] and login
