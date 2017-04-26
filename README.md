@@ -6,6 +6,10 @@ Visualizations for the BEAM Framework
 * Run `yarn` in the project root directory
 * `npm run dev-server` will start the webpack development server with hot reloading
 
+## Local Use
+* `npm install`
+* `npm run dev-server`
+
 ## Production
 * Run `npm start`
 
