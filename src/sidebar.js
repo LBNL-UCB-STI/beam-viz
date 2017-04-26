@@ -34,7 +34,7 @@ export default class Sidebar extends Component {
         <div className='sidebar--section'>
           <h4>Settings</h4>
 
-          <div className='sidebar--input-group'>
+          <div className='sidebar--input-group two'>
             <label>Map style</label>
             <select value={mapStyle.style}
               onChange={e => setMapStyle(e.target.value)}
@@ -47,7 +47,7 @@ export default class Sidebar extends Component {
             </select>
           </div>
 
-          <div className='sidebar--input-group'>
+          <div className='sidebar--input-group two'>
             <label>Animation</label>
             <input type='button'
               onClick={() => setAnimating(!isAnimating, true)}
@@ -55,7 +55,7 @@ export default class Sidebar extends Component {
             />
           </div>
 
-          <div className='sidebar--input-group'>
+          <div className='sidebar--input-group two'>
             <label htmlFor="loop">Play on loop</label>
             <input id="loop" type="checkbox"
               checked={loop}
@@ -63,7 +63,7 @@ export default class Sidebar extends Component {
             />
           </div>
 
-          <div className='sidebar--input-group'>
+          <div className='sidebar--input-group two'>
             <label>Animation speed</label>
             <InputRange
               formatLabel={() => ''}
@@ -74,7 +74,7 @@ export default class Sidebar extends Component {
             />
           </div>
 
-          <div className='sidebar--input-group'>
+          <div className='sidebar--input-group two'>
             <label>Time elapsed</label>
             <InputRange
               formatLabel={() => ''}
@@ -86,7 +86,7 @@ export default class Sidebar extends Component {
             />
           </div>
 
-          <div className='sidebar--input-group'>
+          <div className='sidebar--input-group two'>
             <label>Trail length</label>
             <InputRange
               formatLabel={() => ''}
@@ -139,28 +139,20 @@ export default class Sidebar extends Component {
             )
           )}
         </div>
-        <div>
-          <br/>
-
-           <form>
-            <label className="goto_label" >
-              Goto
-            </label>&nbsp;
-            <input type="number" value={goto} onChange={e => onGotoChange(e.target.value)} className="cbtn framesize" />
-            <button type="button" onClick={onGoto} className="sbtn">Jump</button>
-          </form>
-
-          <br/>
-
-          <form>
-            <label className="framesize_label" >
-              Frame size
-            </label>
-            &nbsp;
-            <input type="number" value={jump} onChange={e => onJumpChange(e.target.value)} className="framesize" />
-            <button type="button" onClick={onJumpForward} className="sbtn"> &gt;</button>
-            <button type="button" onClick={onJumpBackward} className="sbtn"> &lt;</button>
-          </form>
+        <div className='sidebar--section'>
+          <div className='sidebar--input-group three'>
+              <label className="goto_label" htmlFor="goto">Goto</label>
+              <span><input type="number" id="goto" value={goto} onChange={e => onGotoChange(e.target.value)} className="cbtn framesize" /></span>
+              <span><button type="button" onClick={onGoto} className="sbtn">Jump</button></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="framesize_label" htmlFor="jump">Frame size</label>
+              <span><input type="number" id="jump" value={jump} onChange={e => onJumpChange(e.target.value)} className="framesize" /></span>
+              <span>
+                <button type="button" onClick={onJumpForward} className="sbtn"> &gt;</button>
+                <button type="button" onClick={onJumpBackward} className="sbtn"> &lt;</button>
+              </span>
+          </div>
         </div>
       </div>
     );

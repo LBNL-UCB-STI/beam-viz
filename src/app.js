@@ -40,7 +40,7 @@ class App extends Component {
         bearing: 30
       },
       isAnimating: true,
-      animationSpeed: 200,        // 1 second in the animation, represents 300 seconds in real life
+      animationSpeed: 200,        // 1 second in the animation, represents 200 seconds in real life
       loop: true,
       trailLength: 250,
       currentTime: categorizedData[0].startTime,

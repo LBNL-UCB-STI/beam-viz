@@ -11,13 +11,14 @@ $transition-time:0.3s;
 
 #sidebar {
   position: absolute;
+  color: white;
   z-index: 10;
   width: 240px;
   right: 0;
   top: 0;
   bottom: 0;
-  background: rgba(200,200,200,0.9);
-  padding: 0 20px;
+  background: rgba(200,200,200,0.0);
+  padding: 0 20px 20px 20px;
 
   & .sidebar--section {
       border-bottom: groove 2px #fff;
@@ -39,8 +40,13 @@ $transition-time:0.3s;
 
         & > * {
           display: table-cell;
-          width: 50%;
           vertical-align: middle;
+        }
+        &.two > * {
+          width: 50%;
+        }
+        &.three > * {
+          width: 33.33%;
         }
 
         &.sidebar--layers {
