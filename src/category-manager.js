@@ -130,7 +130,7 @@ const getCategorizedLayers = (data) => {
     // insert shapes for the category
     if (categoryName === 'CHOICE') {
       const starShape = createStarBurst(d.startTime, shp[0]);
-      const val = d.val;
+      const val = d.attrib.val;
       category.minValue = Math.min(category.minValue, val);
       category.maxValue = Math.max(category.maxValue, val);
       starShape.map(shp => shp.choiceValue = val);
