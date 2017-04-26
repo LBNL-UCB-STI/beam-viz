@@ -129,7 +129,7 @@ const getCategorizedLayers = (data) => {
 
     // insert shapes for the category
     if (categoryName === 'CHOICE') {
-      const starShape = createStarBurst(d.startTime, shp[0]);
+      const starShape = createStarBurst(d.startTime, shp);
       const val = d.attrib.val;
       category.minValue = Math.min(category.minValue, val);
       category.maxValue = Math.max(category.maxValue, val);
@@ -160,15 +160,6 @@ const getCategorizedLayers = (data) => {
     }
     category.startTime = Math.min(category.startTime, shpStartTime);
     category.endTime = Math.max(category.endTime, shpEndTime);
-
-    // Other special cases
-    if (categoryName === 'CHOICE') {
-      const val = d.val;
-      category.minValue = Math.min(category.minValue, val);
-      category.maxValue = Math.max(category.maxValue, val);
-      shp.choiceValue = val;
-    }
-
   });
 
   return categoryNames.map(categoryName => categorizedData[categoryName]);
