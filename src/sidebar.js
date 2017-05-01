@@ -18,6 +18,7 @@ export default class Sidebar extends Component {
       height,
       categorizedData, toggleCategoryVisible,
       isAnimating, setAnimating,
+      autoMovement, toggleAutoMovement,
       loop, toggleLoop,
       trailLength, trailRange, onTrailLengthChange,
       currentTime, setCurrentTime,
@@ -60,6 +61,14 @@ export default class Sidebar extends Component {
             <input id="loop" type="checkbox"
               checked={loop}
               onChange={toggleLoop}
+            />
+          </div>
+
+          <div className='sidebar--input-group two'>
+            <label htmlFor="autoMovement">Move View</label>
+            <input id="autoMovement" type="checkbox"
+              checked={autoMovement}
+              onChange={toggleAutoMovement}
             />
           </div>
 

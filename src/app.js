@@ -48,10 +48,13 @@ class App extends Component {
       allCategoriesVisible: true,
       goto: 0,
       jump: 60,
+      autoMovement: true,
+      autoRotateSpeed: -0.2,    // degrees per second
+      autoZoomSpeed: 0.01,      // levels per second
+      autoPitchSpeed: -0.2,     // degrees per second
+      autoLatSpeed: 0.001,      // degrees per second
+      autoLonSpeed: 0.0001,     // degrees per second
     }
-    this._autoRotationAndZoom = true;
-    this._autoRotationSpeed = -0.5;       // degrees per second
-    this._autoZoomSpeed= 0.05;       // levels per second
 
     this._trailRange = {
       min: 10,
@@ -69,17 +72,15 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this._onResize);
-    if (this._autoRotationAndZoom) {
-      this._autoRotate();
-      this._autoZoom();
+    if (this.state.autoMovement) {
+      this._autoMovement();
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
-    if (this._autoRotationAndZoom){
-      clearInterval(this._autoRotateInterval);
-      clearInterval(this._autoZoomInterval);
+    if (this.state.autoMovement){
+      clearInterval(this._autoMovement);
     }
   }
 
@@ -97,23 +98,24 @@ class App extends Component {
     this.setState({mapViewState});
   }
 
-  _autoZoom() {
-    this._autoZoomInterval = setInterval(() => {
-      let zoom = this.state.mapViewState.zoom;
-      zoom += REFRESH_INTERVAL / 1000 * this._autoZoomSpeed;
-      this.setState({
-        mapViewState: {...this.state.mapViewState, zoom},
-      });
-    })
-  }
-
-  _autoRotate() {
-    this._autoRotateInterval = setInterval(() => {
-      let bearing = this.state.mapViewState.bearing;
-      bearing += REFRESH_INTERVAL / 1000 * this._autoRotationSpeed;
-      this.setState({
-        mapViewState: {...this.state.mapViewState, bearing},
-      });
+  _autoMovement() {
+    // Zoom
+    this._autoMovementInterval = setInterval(() => {
+      if(this.state.autoMovement){
+	let zoom = this.state.mapViewState.zoom;
+	zoom += REFRESH_INTERVAL / 1000 * this.state.autoZoomSpeed;
+	let bearing = this.state.mapViewState.bearing;
+	bearing += REFRESH_INTERVAL / 1000 * this.state.autoRotateSpeed;
+	let pitch = this.state.mapViewState.pitch;
+	pitch += REFRESH_INTERVAL / 1000 * this.state.autoPitchSpeed;
+	let latitude = this.state.mapViewState.latitude;
+	latitude += REFRESH_INTERVAL / 1000 * this.state.autoLatSpeed;
+	let longitude = this.state.mapViewState.longitude;
+	longitude += REFRESH_INTERVAL / 1000 * this.state.autoLonSpeed;
+	this.setState({
+	  mapViewState: {...this.state.mapViewState, zoom, bearing, pitch, longitude, latitude},
+	});
+      }
     })
   }
 
@@ -123,6 +125,16 @@ class App extends Component {
     this._userPaused = userPaused;
   }
 
+  _toggleAutoMovement() {
+    this.setState({autoMovement: !this.state.autoMovement});
+
+    //TODO this does not seem to do anything requiring the if(this.state.autoMovement) in the _autoMovement method above
+    if (this.state.autoMovement) {
+      this._autoMovement();
+    }else{
+      clearInterval(this._autoMovementInterval);
+    }
+  }
   _toggleLoop() {
     this.setState({loop: !this.state.loop});
   }
@@ -261,6 +273,7 @@ class App extends Component {
             setAnimating={this._setAnimating}
             animationSpeed={this.state.animationSpeed}
             loop={this.state.loop}
+            autoMovement={this.state.autoMovement}
             trailLength={this.state.trailLength}
             currentTime={this.state.currentTime}
             setCurrentTime={this._setCurrentTime}
@@ -278,6 +291,8 @@ class App extends Component {
           onPause={this._onPause}
           loop={this.state.loop}
           toggleLoop={this._toggleLoop}
+          autoMovement={this.state.autoMovement}
+          toggleAutoMovement={this._toggleAutoMovement}
           trailLength={this.state.trailLength}
           trailRange={this._trailRange}
           onTrailLengthChange={this._onTrailLengthChange}
