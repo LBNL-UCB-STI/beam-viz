@@ -29,10 +29,15 @@ export default class Sidebar extends Component {
       goto, onGoto, onGotoChange,
       jump, onJumpChange, onJumpForward, onJumpBackward,
       autoMovement, toggleAutoMovement,
+      bearing,onBearingChange,
       autoRotateSpeed, onAutoRotateSpeedChange,
+      zoom,onZoomChange,
       autoZoomSpeed, onAutoZoomSpeedChange,
+      pitch,onPitchChange,
       autoPitchSpeed, onAutoPitchSpeedChange, 
+      latitude,onLatChange,
       autoLatSpeed, onAutoLatSpeedChange,
+      longitude,onLonChange,
       autoLonSpeed, onAutoLonSpeedChange
     } = this.props;
     return (
@@ -167,23 +172,43 @@ export default class Sidebar extends Component {
             />
           </div>
           <div className='sidebar--input-group three'>
-              <label className="autoRotateSpeed_label" htmlFor="autoRotateSpeed">Rotate</label>
+              <label className="bearing_label" htmlFor="bearing">Bearing</label>
+              <span><input type="number" id="bearing" value={bearing} onChange={e => onBearingChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoRotateSpeed_label" htmlFor="autoRotateSpeed">dBearing</label>
               <span><input type="number" id="autoRotateSpeed" value={autoRotateSpeed} onChange={e => onAutoRotateSpeedChange(e.target.value)} className="cbtn framesize" /></span>
           </div>
           <div className='sidebar--input-group three'>
-              <label className="autoZoomSpeed_label" htmlFor="autoZoomSpeed">Zoom</label>
+              <label className="zoom_label" htmlFor="zoom">Zoom</label>
+              <span><input type="number" id="zoom" value={zoom} onChange={e => onZoomChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoZoomSpeed_label" htmlFor="autoZoomSpeed">dZoom</label>
               <span><input type="number" id="autoZoomSpeed" value={autoZoomSpeed} onChange={e => onAutoZoomSpeedChange(e.target.value)} className="cbtn framesize" /></span>
           </div>
           <div className='sidebar--input-group three'>
-              <label className="autoPitchSpeed_label" htmlFor="autoPitchSpeed">Pitch</label>
+              <label className="pitch_label" htmlFor="pitch">Pitch</label>
+              <span><input type="number" id="pitch" value={pitch} onChange={e => onPitchChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoPitchSpeed_label" htmlFor="autoPitchSpeed">dPitch</label>
               <span><input type="number" id="autoPitchSpeed" value={autoPitchSpeed} onChange={e => onAutoPitchSpeedChange(e.target.value)} className="cbtn framesize" /></span>
           </div>
           <div className='sidebar--input-group three'>
-              <label className="autoLatSpeed_label" htmlFor="autoLatSpeed">Lat</label>
+              <label className="lat_label" htmlFor="latitude">Lat</label>
+              <span><input type="number" id="latitude" value={latitude} onChange={e => onLatChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoLatSpeed_label" htmlFor="autoLatSpeed">dLat</label>
               <span><input type="number" id="autoLatSpeed" value={autoLatSpeed} onChange={e => onAutoLatSpeedChange(e.target.value)} className="cbtn framesize" /></span>
           </div>
           <div className='sidebar--input-group three'>
-              <label className="autoLonSpeed_label" htmlFor="autoLonSpeed">Lon</label>
+              <label className="lon_label" htmlFor="longitude">Long</label>
+              <span><input type="number" id="longitude" value={longitude} onChange={e => onLonChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoLonSpeed_label" htmlFor="autoLonSpeed">dLon</label>
               <span><input type="number" id="autoLonSpeed" value={autoLonSpeed} onChange={e => onAutoLonSpeedChange(e.target.value)} className="cbtn framesize" /></span>
           </div>
         </div>

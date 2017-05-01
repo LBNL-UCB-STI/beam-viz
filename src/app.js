@@ -49,11 +49,11 @@ class App extends Component {
       goto: 0,
       jump: 60,
       autoMovement: false,
-      autoRotateSpeed: -0.2,    // degrees per second
-      autoZoomSpeed: 0.01,      // levels per second
-      autoPitchSpeed: -0.2,     // degrees per second
-      autoLatSpeed: 0.001,      // degrees per second
-      autoLonSpeed: 0.0001,     // degrees per second
+      autoRotateSpeed: 0.0,    // degrees per second
+      autoZoomSpeed: 0.0,      // levels per second
+      autoPitchSpeed: 0.0,     // degrees per second
+      autoLatSpeed: 0.000,      // degrees per second
+      autoLonSpeed: 0.000,     // degrees per second
     }
 
     this._trailRange = {
@@ -188,8 +188,10 @@ class App extends Component {
     if (visibleCategories.length === 0) {
       visibleCategories = categorizedData;   // else startTime and endTime will be Infinity and -Infinity
     }
-    const startTime = Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));
-    const endTime = Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));
+    /*const startTime = Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));*/
+    /*const endTime = Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));*/
+    const startTime = 27000
+    const endTime = 31000
     return {
       startTime,
       endTime,
@@ -267,6 +269,31 @@ class App extends Component {
       autoLonSpeed: autoLonSpeed
     });
   }
+  _onBearingChange(bearing) {
+    this.setState({
+      mapViewState: {...this.state.mapViewState, bearing},
+    });
+  }
+  _onZoomChange(zoom) {
+    this.setState({
+      mapViewState: {...this.state.mapViewState, zoom},
+    });
+  }
+  _onPitchChange(pitch) {
+    this.setState({
+      mapViewState: {...this.state.mapViewState, pitch},
+    });
+  }
+  _onLatChange(latitude) {
+    this.setState({
+      mapViewState: {...this.state.mapViewState, latitude},
+    });
+  }
+  _onLonChange(longitude) {
+    this.setState({
+      mapViewState: {...this.state.mapViewState, longitude},
+    });
+  }
 
   render() {
     const animationBounds = this._getAnimationTimeBounds(this.state.categorizedData);
@@ -338,6 +365,16 @@ class App extends Component {
           onAutoLatSpeedChange={this._onAutoLatSpeedChange}
           autoLonSpeed={this.state.autoLonSpeed}
           onAutoLonSpeedChange={this._onAutoLonSpeedChange}
+          bearing={this.state.mapViewState.bearing}
+          zoom={this.state.mapViewState.zoom}
+          pitch={this.state.mapViewState.pitch}
+          latitude={this.state.mapViewState.latitude}
+          longitude={this.state.mapViewState.longitude}
+          onBearingChange={this._onBearingChange}
+          onZoomChange={this._onZoomChange}
+          onPitchChange={this._onPitchChange}
+          onLatChange={this._onLatChange}
+          onLonChange={this._onLonChange}
           allCategoriesVisible={this.state.allCategoriesVisible}
           toggleAllCategoriesVisibility={this._toggleAllCategoriesVisibility}
         />

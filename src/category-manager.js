@@ -110,25 +110,26 @@ const getCategorizedLayers = (data) => {
 
   data.map(d => {
     const {categoryName, categoryType} = getCategoryDescription(d);
+    var categoryNameUpper = categoryName.toUpperCase();
     const shp = d.shp;
 
     // ignore if no shape data is available or for certain pre-defined categories
     if (shp.length === 0
-      || categoryName.toUpperCase() === 'ERROR'
-      || categoryName.toUpperCase() === 'LEG_SWITCH'
+      || categoryNameUpper === 'ERROR'
+      || categoryNameUpper === 'LEG_SWITCH'
     ) return;
 
     // Create new category if not encountered before
-    if (categoryNames.indexOf(categoryName) === -1) {
-      categorizedData[categoryName] = newCategory(categoryName, categoryType);
-      categoryNames.push(categoryName);
+    if (categoryNames.indexOf(categoryNameUpper) === -1) {
+      categorizedData[categoryNameUpper] = newCategory(categoryNameUpper, categoryType);
+      categoryNames.push(categoryNameUpper);
     }
 
     // current category
-    let category = categorizedData[categoryName];
+    let category = categorizedData[categoryNameUpper];
 
     // insert shapes for the category
-    if (categoryName === 'CHOICE') {
+    if (categoryNameUpper === 'CHOICE') {
       const starShape = createStarBurst(d.startTime, shp);
       const val = d.attrib.val;
       category.minValue = Math.min(category.minValue, val);
@@ -145,7 +146,7 @@ const getCategorizedLayers = (data) => {
 
     // Calculate the category's time-bounds
     let shpStartTime, shpEndTime;
-    if (categoryName === 'CHOICE') {
+    if (categoryNameUpper === 'CHOICE') {
       shpStartTime = d.startTime;
       let ray = category.shps[category.shps.length - 1];
       shpEndTime = ray[ray.length - 1][2];
@@ -162,21 +163,22 @@ const getCategorizedLayers = (data) => {
     category.endTime = Math.max(category.endTime, shpEndTime);
   });
 
-  return categoryNames.map(categoryName => categorizedData[categoryName]);
+  return categoryNames.map(categoryNameUpper => categorizedData[categoryNameUpper]);
 }
 
 const setCategoryColor = (categorizedData, categoryName, color) => (
   categorizedData.map(categoryData => {
-    if (categoryData.categoryName === 'CHOICE' && (categoryName === 'CHOICE_HIGH' || categoryName === 'CHOICE_LOW')) {
-      const lowColor = (categoryName === 'CHOICE_LOW') ? color : categoryData.color.lowColor;
-      const highColor = (categoryName === 'CHOICE_HIGH') ? color : categoryData.color.highColor;
+    let categoryNameUpper = categoryName.toUpperCase();
+    if (categoryData.categoryName === 'CHOICE' && (categoryNameUpper === 'CHOICE_HIGH' || categoryNameUpper === 'CHOICE_LOW')) {
+      const lowColor = (categoryNameUpper === 'CHOICE_LOW') ? color : categoryData.color.lowColor;
+      const highColor = (categoryNameUpper === 'CHOICE_HIGH') ? color : categoryData.color.highColor;
       return {
         ...categoryData,
         color: {lowColor, highColor},
         colorID: lowColor.concat(highColor).join(''),
       };
     }
-    if (categoryData.categoryName !== categoryName) {
+    if (categoryData.categoryName !== categoryNameUpper) {
       return categoryData;
     }
     return {
@@ -188,11 +190,12 @@ const setCategoryColor = (categorizedData, categoryName, color) => (
 );
 
 const toggleCategoryVisible = (categorizedData, categoryName) => {
-  if (categoryName === 'CHOICE_HIGH' || categoryName === 'CHOICE_LOW') {
-    categoryName = 'CHOICE';
+  let categoryNameUpper = categoryName.toUpperCase();
+  if (categoryNameUpper === 'CHOICE_HIGH' || categoryNameUpper === 'CHOICE_LOW') {
+    categoryNameUpper = 'CHOICE';
   }
   return categorizedData.map(categoryData => {
-    if (categoryData.categoryName !== categoryName) return categoryData;
+    if (categoryData.categoryName !== categoryNameUpper) return categoryData;
     return {
       ...categoryData,
       visible: !categoryData.visible
