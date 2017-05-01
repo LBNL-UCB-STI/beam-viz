@@ -49,8 +49,9 @@ class App extends Component {
       goto: 0,
       jump: 60,
     }
-    this._autoRotation = true;
+    this._autoRotationAndZoom = true;
     this._autoRotationSpeed = -0.5;       // degrees per second
+    this._autoZoomSpeed= 0.05;       // levels per second
 
     this._trailRange = {
       min: 10,
@@ -68,12 +69,18 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this._onResize);
-    if (this._autoRotation) this._autoRotate();
+    if (this._autoRotationAndZoom) {
+      this._autoRotate();
+      this._autoZoom();
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
-    if (this._autoRotation) clearInterval(this._autoRotateInterval);
+    if (this._autoRotationAndZoom){
+      clearInterval(this._autoRotateInterval);
+      clearInterval(this._autoZoomInterval);
+    }
   }
 
   _onResize() {
@@ -88,6 +95,16 @@ class App extends Component {
       mapViewState.pitch = 60;
     }
     this.setState({mapViewState});
+  }
+
+  _autoZoom() {
+    this._autoZoomInterval = setInterval(() => {
+      let zoom = this.state.mapViewState.zoom;
+      zoom += REFRESH_INTERVAL / 1000 * this._autoZoomSpeed;
+      this.setState({
+        mapViewState: {...this.state.mapViewState, zoom},
+      });
+    })
   }
 
   _autoRotate() {
