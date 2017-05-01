@@ -18,7 +18,6 @@ export default class Sidebar extends Component {
       height,
       categorizedData, toggleCategoryVisible,
       isAnimating, setAnimating,
-      autoMovement, toggleAutoMovement,
       loop, toggleLoop,
       trailLength, trailRange, onTrailLengthChange,
       currentTime, setCurrentTime,
@@ -29,6 +28,12 @@ export default class Sidebar extends Component {
       allCategoriesVisible, toggleAllCategoriesVisibility,
       goto, onGoto, onGotoChange,
       jump, onJumpChange, onJumpForward, onJumpBackward,
+      autoMovement, toggleAutoMovement,
+      autoRotateSpeed, onAutoRotateSpeedChange,
+      autoZoomSpeed, onAutoZoomSpeedChange,
+      autoPitchSpeed, onAutoPitchSpeedChange, 
+      autoLatSpeed, onAutoLatSpeedChange,
+      autoLonSpeed, onAutoLonSpeedChange
     } = this.props;
     return (
       <div id='sidebar' style={{height: height}}>
@@ -61,14 +66,6 @@ export default class Sidebar extends Component {
             <input id="loop" type="checkbox"
               checked={loop}
               onChange={toggleLoop}
-            />
-          </div>
-
-          <div className='sidebar--input-group two'>
-            <label htmlFor="autoMovement">Move View</label>
-            <input id="autoMovement" type="checkbox"
-              checked={autoMovement}
-              onChange={toggleAutoMovement}
             />
           </div>
 
@@ -161,6 +158,33 @@ export default class Sidebar extends Component {
                 <button type="button" onClick={onJumpForward} className="sbtn"> &gt;</button>
                 <button type="button" onClick={onJumpBackward} className="sbtn"> &lt;</button>
               </span>
+          </div>
+          <div className='sidebar--input-group two'>
+            <label htmlFor="autoMovement">Move View</label>
+            <input id="autoMovement" type="checkbox"
+              checked={autoMovement}
+              onChange={toggleAutoMovement}
+            />
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoRotateSpeed_label" htmlFor="autoRotateSpeed">Rotate</label>
+              <span><input type="number" id="autoRotateSpeed" value={autoRotateSpeed} onChange={e => onAutoRotateSpeedChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoZoomSpeed_label" htmlFor="autoZoomSpeed">Zoom</label>
+              <span><input type="number" id="autoZoomSpeed" value={autoZoomSpeed} onChange={e => onAutoZoomSpeedChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoPitchSpeed_label" htmlFor="autoPitchSpeed">Pitch</label>
+              <span><input type="number" id="autoPitchSpeed" value={autoPitchSpeed} onChange={e => onAutoPitchSpeedChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoLatSpeed_label" htmlFor="autoLatSpeed">Lat</label>
+              <span><input type="number" id="autoLatSpeed" value={autoLatSpeed} onChange={e => onAutoLatSpeedChange(e.target.value)} className="cbtn framesize" /></span>
+          </div>
+          <div className='sidebar--input-group three'>
+              <label className="autoLonSpeed_label" htmlFor="autoLonSpeed">Lon</label>
+              <span><input type="number" id="autoLonSpeed" value={autoLonSpeed} onChange={e => onAutoLonSpeedChange(e.target.value)} className="cbtn framesize" /></span>
           </div>
         </div>
       </div>

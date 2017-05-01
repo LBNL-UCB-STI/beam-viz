@@ -48,7 +48,7 @@ class App extends Component {
       allCategoriesVisible: true,
       goto: 0,
       jump: 60,
-      autoMovement: true,
+      autoMovement: false,
       autoRotateSpeed: -0.2,    // degrees per second
       autoZoomSpeed: 0.01,      // levels per second
       autoPitchSpeed: -0.2,     // degrees per second
@@ -72,16 +72,12 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this._onResize);
-    if (this.state.autoMovement) {
-      this._autoMovement();
-    }
+    this._autoMovement();
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
-    if (this.state.autoMovement){
-      clearInterval(this._autoMovement);
-    }
+    clearInterval(this._autoMovement);
   }
 
   _onResize() {
@@ -127,13 +123,6 @@ class App extends Component {
 
   _toggleAutoMovement() {
     this.setState({autoMovement: !this.state.autoMovement});
-
-    //TODO this does not seem to do anything requiring the if(this.state.autoMovement) in the _autoMovement method above
-    if (this.state.autoMovement) {
-      this._autoMovement();
-    }else{
-      clearInterval(this._autoMovementInterval);
-    }
   }
   _toggleLoop() {
     this.setState({loop: !this.state.loop});
@@ -253,6 +242,32 @@ class App extends Component {
     this._onJump('b');
   }
 
+  _onAutoRotateSpeedChange(autoRotateSpeed) {
+    this.setState({
+      autoRotateSpeed: autoRotateSpeed
+    });
+  }
+  _onAutoZoomSpeedChange(autoZoomSpeed) {
+    this.setState({
+      autoZoomSpeed: autoZoomSpeed
+    });
+  }
+  _onAutoPitchSpeedChange(autoPitchSpeed) {
+    this.setState({
+      autoPitchSpeed: autoPitchSpeed
+    });
+  }
+  _onAutoLatSpeedChange(autoLatSpeed) {
+    this.setState({
+      autoLatSpeed: autoLatSpeed
+    });
+  }
+  _onAutoLonSpeedChange(autoLonSpeed) {
+    this.setState({
+      autoLonSpeed: autoLonSpeed
+    });
+  }
+
   render() {
     const animationBounds = this._getAnimationTimeBounds(this.state.categorizedData);
     return (
@@ -313,6 +328,16 @@ class App extends Component {
           onJumpChange={this._onJumpChange}
           onJumpForward={this._onJumpForward}
           onJumpBackward={this._onJumpBackward}
+          autoRotateSpeed={this.state.autoRotateSpeed}
+          onAutoRotateSpeedChange={this._onAutoRotateSpeedChange}
+          autoZoomSpeed={this.state.autoZoomSpeed}
+          onAutoZoomSpeedChange={this._onAutoZoomSpeedChange}
+          autoPitchSpeed={this.state.autoPitchSpeed}
+          onAutoPitchSpeedChange={this._onAutoPitchSpeedChange}
+          autoLatSpeed={this.state.autoLatSpeed}
+          onAutoLatSpeedChange={this._onAutoLatSpeedChange}
+          autoLonSpeed={this.state.autoLonSpeed}
+          onAutoLonSpeedChange={this._onAutoLonSpeedChange}
           allCategoriesVisible={this.state.allCategoriesVisible}
           toggleAllCategoriesVisibility={this._toggleAllCategoriesVisibility}
         />
