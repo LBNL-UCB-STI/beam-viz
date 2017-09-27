@@ -1,4 +1,4 @@
-export const REFRESH_INTERVAL = 100;
+export const REFRESH_INTERVAL = 50;
 export const MAP_STYLES = [
   {
     style: "Streets",

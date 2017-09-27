@@ -33,11 +33,16 @@ class App extends Component {
       height: document_height(),
       categorizedData: categorizedData,
       mapViewState: {
-        latitude: 37.72785803280886,
-        longitude: -122.38169756795798,
-        zoom: 11.42,
-        pitch: 60,
-        bearing: 30
+	latitude: 37.72785803280886,
+	longitude: -122.38169756795798,
+	zoom: 11.42,
+	pitch: 60,
+	bearing: 30
+	  /*latitude: 37.7,*/
+	  /*longitude: -122.22,*/
+	  /*zoom: 13,*/
+	  /*pitch: 60,*/
+	  /*bearing: 40*/
       },
       isAnimating: true,
       animationSpeed: 200,        // 1 second in the animation, represents 200 seconds in real life
@@ -49,11 +54,16 @@ class App extends Component {
       goto: 0,
       jump: 60,
       autoMovement: false,
-      autoRotateSpeed: 0.0,    // degrees per second
-      autoZoomSpeed: 0.0,      // levels per second
-      autoPitchSpeed: 0.0,     // degrees per second
-      autoLatSpeed: 0.000,      // degrees per second
-      autoLonSpeed: 0.000,     // degrees per second
+      /*autoRotateSpeed: 0.0,    // degrees per second*/
+      /*autoZoomSpeed: 0.0,      // levels per second*/
+      /*autoPitchSpeed: 0.0,     // degrees per second*/
+      /*autoLatSpeed: 0.000,      // degrees per second*/
+      /*autoLonSpeed: 0.000,     // degrees per second*/
+      autoRotateSpeed: -0.5,
+      autoZoomSpeed: -0.09, 
+      autoPitchSpeed: -1.0, 
+      autoLatSpeed: -0.001, 
+      autoLonSpeed: 0.0,
     }
 
     this._trailRange = {
@@ -72,12 +82,12 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this._onResize);
-    this._autoMovement();
+    /*this._autoMovement();*/
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this._onResize);
-    clearInterval(this._autoMovement);
+    /*clearInterval(this._autoMovement);*/
   }
 
   _onResize() {
@@ -90,6 +100,12 @@ class App extends Component {
   _onChangeViewport(mapViewState) {
     if (mapViewState.pitch > 60) {
       mapViewState.pitch = 60;
+    }
+    if (mapViewState.bearing < 0) {
+      mapViewState.bearing = mapViewState.bearing + 360;
+    }
+    if (mapViewState.bearing > 360) {
+      mapViewState.bearing = mapViewState.bearing - 360;
     }
     this.setState({mapViewState});
   }
@@ -109,8 +125,13 @@ class App extends Component {
 	let longitude = this.state.mapViewState.longitude;
 	longitude += REFRESH_INTERVAL / 1000 * this.state.autoLonSpeed;
 	this.setState({
-	  mapViewState: {...this.state.mapViewState, zoom, bearing, pitch, longitude, latitude},
-	});
+	  mapViewState: {
+	    latitude: latitude,
+	    longitude: longitude,
+	    zoom: zoom,
+	    pitch: pitch,
+	    bearing: bearing
+	}});
       }
     })
   }
@@ -190,7 +211,7 @@ class App extends Component {
     }
     /*const startTime = Math.min.apply(null, visibleCategories.map(categoryData => categoryData.startTime));*/
     /*const endTime = Math.max.apply(null, visibleCategories.map(categoryData => categoryData.endTime));*/
-    const startTime = 27000
+    const startTime = 26000
     const endTime = 31000
     return {
       startTime,
@@ -271,27 +292,27 @@ class App extends Component {
   }
   _onBearingChange(bearing) {
     this.setState({
-      mapViewState: {...this.state.mapViewState, bearing},
+      mapViewState: {bearing: bearing},
     });
   }
   _onZoomChange(zoom) {
     this.setState({
-      mapViewState: {...this.state.mapViewState, zoom},
+      mapViewState: {zoom: zoom},
     });
   }
   _onPitchChange(pitch) {
     this.setState({
-      mapViewState: {...this.state.mapViewState, pitch},
+      mapViewState: {pitch: pitch},
     });
   }
   _onLatChange(latitude) {
     this.setState({
-      mapViewState: {...this.state.mapViewState, latitude},
+      mapViewState: {latitude: latitude},
     });
   }
   _onLonChange(longitude) {
     this.setState({
-      mapViewState: {...this.state.mapViewState, longitude},
+      mapViewState: {longitude: longitude},
     });
   }
 
