@@ -10,7 +10,7 @@ import {csv as requestCsv} from 'd3-request';
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiY29saW5zaGVwcGFyZCIsImEiOiJjaXBzczVxcHowNGVzaDducnIxOWthNXZ0In0.rDGXDr8YNlpiOmNBondDYA';
 
 // Source data CSV
-const DATA_URL = 'https://raw.githubusercontent.com/LBNL-UCB-STI/beam-viz/master/data/bart.txt'
+const DATA_URL = 'https://s3.us-east-2.amazonaws.com/beam-outputs/experiment-2017-09-27/energy-deck.csv'
 
 class Root extends Component {
 
