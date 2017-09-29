@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import DeckGL, {HexagonLayer} from 'deck.gl';
 
 const LIGHT_SETTINGS = {
-  lightsPosition: [-0.144528, 49.739968, 8000, -3.807751, 54.104682, 8000],
+  lightsPosition: [-122, 37, 8000, -123, 37.5, 8000],
   ambientRatio: 0.4,
   diffuseRatio: 0.6,
   specularRatio: 0.2,
@@ -19,13 +19,20 @@ const colorRange = [
   [254, 173, 84],
   [209, 55, 78]
 ];
+/*[209, 55, 78],*/
+/*[254, 173, 84],*/
+/*[254, 237, 177],*/
+/*[216, 254, 181],*/
+/*[73, 227, 206],*/
+/*[1, 152, 189]*/
+
 
 const elevationScale = {min: 1, max: 50};
 
 const defaultProps = {
-  radius: 300,
-  upperPercentile: 99.9,
-  coverage: 0.75
+  radius: 100,
+  upperPercentile: 99,
+  coverage: 0.95
 };
 
 export default class DeckGLOverlay extends Component {
@@ -36,13 +43,13 @@ export default class DeckGLOverlay extends Component {
 
   static get defaultViewport() {
     return {
-      longitude: -122.341774,
-      latitude: 37.70,
-      zoom: 8.6,
+      longitude: -122.20,
+      latitude: 37.50,
+      zoom: 10.5,
       minZoom: 5,
       maxZoom: 15,
-      pitch: 50,
-      bearing: 15
+      pitch: 60,
+      bearing: 12 
     };
   }
 
@@ -77,11 +84,11 @@ export default class DeckGLOverlay extends Component {
     this._stopAnimate();
 
     // wait 1.5 secs to start animation so that all data are loaded
-    this.startAnimationTimer = window.setTimeout(this._startAnimate, 1500);
+    this.startAnimationTimer = window.setTimeout(this._startAnimate, 5000);
   }
 
   _startAnimate() {
-    this.intervalTimer = window.setInterval(this._animateHeight, 20);
+    this.intervalTimer = window.setInterval(this._animateHeight, 40);
   }
 
   _stopAnimate() {
@@ -97,6 +104,11 @@ export default class DeckGLOverlay extends Component {
     }
   }
 
+   _initialize(gl) {
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+    }
+
   render() {
     const {viewport, data, radius, coverage, upperPercentile} = this.props;
 
@@ -110,20 +122,20 @@ export default class DeckGLOverlay extends Component {
         colorRange,
         coverage,
         data,
-        elevationRange: [0, 3000],
+        elevationRange: [0, 1000],
         elevationScale: this.state.elevationScale,
         extruded: true,
         getPosition: d => d,
         lightSettings: LIGHT_SETTINGS,
         onHover: this.props.onHover,
-        opacity: 1,
+        opacity: 0.5,
         pickable: Boolean(this.props.onHover),
         radius,
         upperPercentile
       })
     ];
 
-    return <DeckGL {...viewport} layers={layers} initWebGLParameters />;
+    return <DeckGL {...viewport} layers={layers} onWebGLInitialized={this._initialize} />;
   }
 }
 
