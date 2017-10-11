@@ -1,7 +1,9 @@
 {
   "scripts": {
-    "start-local": "webpack-dev-server --env.local --progress --hot --port 3030 --open",
-    "start": "webpack-dev-server --progress --hot --port 3030 --open"
+    "start-local":
+      "./node_modules/.bin/webpack-dev-server --env.local --progress --hot --port 3030 --open",
+    "start":
+      "./node_modules/.bin/webpack-dev-server --progress --hot --port 3030 --open"
   },
   "dependencies": {
     "d3-request": "^1.0.5",
