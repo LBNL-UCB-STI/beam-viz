@@ -11,7 +11,7 @@ import Sidebar from './sidebar';
 import Clock from './components/Clock';
 import {getCategorizedLayers, setCategoryColor, toggleCategoryVisible} from './category-manager';
 
-import tripsDataJson from './trips.json';
+var data = require('raw-loader!./trips.json');
 
 const document_height = () => {
   const html = document.documentElement;
@@ -26,8 +26,11 @@ const document_height = () => {
 class App extends Component {
   constructor(props) {
     super(props);
-
-    const categorizedData = getCategorizedLayers(tripsDataJson);
+    var rawData =  data.replace(/module.exports =/i, ' ')
+    var jsonData = JSON.parse(rawData);
+    
+     
+    const categorizedData = getCategorizedLayers(jsonData);
     this.state = {
       width: window.innerWidth,
       height: document_height(),
