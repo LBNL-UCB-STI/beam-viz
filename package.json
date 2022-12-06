@@ -18,7 +18,7 @@
     "css-loader": "^0.27.3",
     "deck.gl": "4.0.0-beta.3",
     "exports-loader": "^0.6.4",
-    "express": "^4.15.2",
+    "express": "^4.17.3",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.1",
     "glslify": "^6.0.1",
